@@ -5,5 +5,10 @@
     "outDir": "../../dist/apps/postservice"
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
+  "exclude": ["node_modules", "dist", "test", "**/*spec.ts"],
+  "watchOptions": {
+    "watchFile": "dynamicprioritypolling",
+    "watchDirectory": "dynamicprioritypolling",
+    "excludeDirectories": ["**/node_modules", "./../../dist"]
+  }
 }

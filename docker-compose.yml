@@ -1,0 +1,50 @@
+services:
+  api-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    environment:
+      APP: apigateway
+    # volumes:
+    #   - './apps/apigateway:/app/apps/apigateway'
+    #   - '/app/node_modules'
+    depends_on:
+      - post-service
+    restart: always
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/apigateway
+          target: /app/apps/apigateway
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json
+
+  post-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3001:3001'
+    environment:
+      APP: postservice
+    # volumes:
+    #   - './apps/postservice:/app/apps/postservice'
+    #   - '/app/node_modules'
+    restart: always
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/postservice
+          target: /app/apps/postservice
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json
+
+networks:
+  app-network:
+    driver: bridge

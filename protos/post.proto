@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package post;
+
+service PostService {
+    rpc CreatePost(PostDto) returns (Post) {}
+}
+
+message PostDto {
+    string id = 1;
+    string title = 2;
+    string body = 3;
+}
+
+message Post {
+    string id = 1;
+    string title = 2;
+    string body = 3;
+}
