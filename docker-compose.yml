@@ -20,15 +20,23 @@ services:
           target: /app/apps/apigateway
           ignore:
             - node_modules/
+        - action: sync
+          path: ./libs/common
+          target: /app/libs/common
+          ignore:
+            - node_modules/
         - action: rebuild
           path: package.json
+    networks:
+      - app-network
 
   post-service:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - '3001:3001'
+      # - '3001:3001'
+      - '5000:5000'
     environment:
       APP: postservice
     # volumes:
@@ -42,8 +50,15 @@ services:
           target: /app/apps/postservice
           ignore:
             - node_modules/
+        - action: sync
+          path: ./libs/common
+          target: /app/libs/common
+          ignore:
+            - node_modules/
         - action: rebuild
           path: package.json
+    networks:
+      - app-network
 
 networks:
   app-network:

@@ -18,7 +18,9 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/apigateway/tsconfig.app.json",
-        "assets": ["protos/*.proto"],
+        "assets": [
+          "protos/*.proto"
+        ],
         "watchAssets": true
       }
     },
@@ -29,8 +31,19 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/postservice/tsconfig.app.json",
-        "assets": ["protos/*.proto"],
+        "assets": [
+          "protos/*.proto"
+        ],
         "watchAssets": true
+      }
+    },
+    "common": {
+      "type": "library",
+      "root": "libs/common",
+      "entryFile": "index",
+      "sourceRoot": "libs/common/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/common/tsconfig.lib.json"
       }
     }
   }

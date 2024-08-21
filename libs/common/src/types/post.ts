@@ -5,10 +5,10 @@
 // source: protos/post.proto
 
 /* eslint-disable */
-import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
-import { Observable } from "rxjs";
+import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
+import { Observable } from 'rxjs';
 
-export const protobufPackage = "post";
+export const protobufPackage = 'post';
 
 export interface PostDto {
   id: string;
@@ -22,7 +22,7 @@ export interface Post {
   body: string;
 }
 
-export const POST_PACKAGE_NAME = "post";
+export const POST_PACKAGE_NAME = 'post';
 
 export interface PostServiceClient {
   createPost(request: PostDto): Observable<Post>;
@@ -34,17 +34,31 @@ export interface PostServiceController {
 
 export function PostServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createPost"];
+    const grpcMethods: string[] = ['createPost'];
     for (const method of grpcMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcMethod("PostService", method)(constructor.prototype[method], method, descriptor);
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcMethod('PostService', method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcStreamMethod("PostService", method)(constructor.prototype[method], method, descriptor);
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcStreamMethod('PostService', method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
     }
   };
 }
 
-export const POST_SERVICE_NAME = "PostService";
+export const POST_SERVICE_NAME = 'PostService';

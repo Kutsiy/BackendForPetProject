@@ -17,11 +17,21 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "paths": {}
+    "paths": {
+      "@app/common": [
+        "libs/common/src"
+      ],
+      "@app/common/*": [
+        "libs/common/src/*"
+      ]
+    }
   },
   "watchOptions": {
     "watchFile": "dynamicprioritypolling",
     "watchDirectory": "dynamicprioritypolling",
-    "excludeDirectories": ["**/node_modules", "dist"]
+    "excludeDirectories": [
+      "**/node_modules",
+      "dist"
+    ]
   }
 }
