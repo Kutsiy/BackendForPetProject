@@ -11,7 +11,10 @@ import { protobufPackage } from '@app/common';
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      autoSchemaFile: join(
+        process.cwd(),
+        'apps/apigateway/src/schemas/schema.gql',
+      ),
       playground: true,
     }),
     ClientsModule.register([

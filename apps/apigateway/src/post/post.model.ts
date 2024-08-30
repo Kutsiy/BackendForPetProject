@@ -2,8 +2,8 @@ import { ObjectType, Field, Int } from '@nestjs/graphql';
 
 @ObjectType()
 export class Post {
-  @Field(() => Int)
-  id: number;
+  @Field()
+  id: string;
 
   @Field()
   title: string;
