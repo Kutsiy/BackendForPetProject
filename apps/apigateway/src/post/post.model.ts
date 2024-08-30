@@ -1,4 +1,4 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { ObjectType, Field } from '@nestjs/graphql';
 
 @ObjectType()
 export class Post {
@@ -10,4 +10,10 @@ export class Post {
 
   @Field()
   body: string;
+}
+
+@ObjectType()
+export class Posts {
+  @Field(() => [Post])
+  posts: Post[];
 }

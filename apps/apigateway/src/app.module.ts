@@ -15,7 +15,7 @@ import { protobufPackage } from '@app/common';
         process.cwd(),
         'apps/apigateway/src/schemas/schema.gql',
       ),
-      playground: true,
+      // playground: true,
     }),
     ClientsModule.register([
       {

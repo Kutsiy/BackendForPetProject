@@ -1,15 +1,15 @@
 import { Inject } from '@nestjs/common';
-import { Args, Int, Query, Resolver } from '@nestjs/graphql';
+import { Query, Resolver } from '@nestjs/graphql';
 import { AppService } from '../app.service';
 import { Observable } from 'rxjs';
-import { Post } from '@app/common';
-import { Post as PostModel } from './post.model';
+import { Posts } from '@app/common';
+import { Posts as PostsModel } from './post.model';
 
 @Resolver()
 export class PostResolver {
   constructor(@Inject(AppService) private appService: AppService) {}
-  @Query(() => PostModel)
-  sayHello(): Observable<Post> {
+  @Query(() => PostsModel)
+  sayHello(): Observable<Posts> {
     return this.appService.createPost();
   }
 }

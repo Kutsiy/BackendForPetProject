@@ -1,6 +1,7 @@
 import {
   Post,
   PostDto,
+  Posts,
   PostServiceController,
   PostServiceControllerMethods,
 } from '@app/common';
@@ -10,7 +11,13 @@ import { Observable } from 'rxjs';
 @Controller()
 @PostServiceControllerMethods()
 export class PostserviceController implements PostServiceController {
-  createPost(request: PostDto): Post {
-    return { id: 'a', title: 's', body: 'a' };
+  arrayOfPosts: Post[] = [
+    { id: 'aaaaa', title: 's', body: 'a' },
+    { id: 'bbbbb', title: 'what', body: 'hello' },
+    { id: 'ccccc', title: 'what&', body: 'hi' },
+  ];
+  createPost(request: PostDto): Posts | Promise<Posts> | Observable<Posts> {
+    this.arrayOfPosts.push(request);
+    return { posts: this.arrayOfPosts };
   }
 }
