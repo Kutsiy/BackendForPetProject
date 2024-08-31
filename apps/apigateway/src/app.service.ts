@@ -12,7 +12,7 @@ export class AppService implements OnModuleInit {
   }
   createPost() {
     return this.postService.createPost({
-      id: 'a',
+      id: `${Math.floor(Math.random() * 9999)}`,
       title: 'Hello',
       body: 'Hello',
     });

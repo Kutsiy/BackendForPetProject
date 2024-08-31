@@ -9,7 +9,7 @@ import { Posts as PostsModel } from './post.model';
 export class PostResolver {
   constructor(@Inject(AppService) private appService: AppService) {}
   @Query(() => PostsModel)
-  sayHello(): Observable<Posts> {
+  Posts(): Observable<Posts> {
     return this.appService.createPost();
   }
 }
