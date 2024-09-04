@@ -16,29 +16,35 @@ export interface PostDto {
   body: string;
 }
 
+export interface Empty {
+}
+
 export interface Post {
   id: string;
   title: string;
   body: string;
 }
 
-export interface Posts {
+export interface PaginatedPosts {
   posts: Post[];
+  totalCount: number;
+  pageCount: number;
+  currentPage: number;
 }
 
 export const POST_PACKAGE_NAME = "post";
 
 export interface PostServiceClient {
-  createPost(request: PostDto): Observable<Posts>;
+  getAllPosts(request: Empty): Observable<PaginatedPosts>;
 }
 
 export interface PostServiceController {
-  createPost(request: PostDto): Promise<Posts> | Observable<Posts> | Posts;
+  getAllPosts(request: Empty): Promise<PaginatedPosts> | Observable<PaginatedPosts> | PaginatedPosts;
 }
 
 export function PostServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createPost"];
+    const grpcMethods: string[] = ["getAllPosts"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("PostService", method)(constructor.prototype[method], method, descriptor);

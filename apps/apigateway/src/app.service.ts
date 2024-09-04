@@ -10,11 +10,7 @@ export class AppService implements OnModuleInit {
     this.postService =
       this.client.getService<PostServiceClient>(POST_SERVICE_NAME);
   }
-  createPost() {
-    return this.postService.createPost({
-      id: `${Math.floor(Math.random() * 9999)}`,
-      title: 'Hello',
-      body: 'Hello',
-    });
+  getAllPosts() {
+    return this.postService.getAllPosts({});
   }
 }

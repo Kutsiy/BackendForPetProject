@@ -1,7 +1,6 @@
 import {
   Post,
-  PostDto,
-  Posts,
+  PaginatedPosts,
   PostServiceController,
   PostServiceControllerMethods,
 } from '@app/common';
@@ -11,9 +10,12 @@ import { Observable } from 'rxjs';
 @Controller()
 @PostServiceControllerMethods()
 export class PostserviceController implements PostServiceController {
-  arrayOfPosts: Post[] = [{ id: 'aaaaa', title: 's', body: 'a' }];
-  createPost(request: PostDto): Posts | Promise<Posts> | Observable<Posts> {
-    this.arrayOfPosts.push(request);
+  arrayOfPosts: Post[] = Array(100).fill({
+    id: `${Math.floor(Math.random() * 9999)}`,
+    title: 'Hello',
+    body: 'Hello',
+  });
+  getAllPosts(): PaginatedPosts {
     return { posts: this.arrayOfPosts };
   }
 }

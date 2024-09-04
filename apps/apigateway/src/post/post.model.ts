@@ -13,7 +13,7 @@ export class Post {
 }
 
 @ObjectType()
-export class Posts {
+export class PaginatedPosts {
   @Field(() => [Post])
   posts: Post[];
 }
