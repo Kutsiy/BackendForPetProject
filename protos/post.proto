@@ -3,7 +3,7 @@ syntax = "proto3";
 package post;
 
 service PostService {
-    rpc GetAllPosts(Empty) returns (PaginatedPosts) {}
+    rpc GetAllPosts(PaginationArgs) returns (PaginatedPosts) {}
 }
 
 message PostDto {
@@ -26,4 +26,9 @@ message PaginatedPosts {
     int32 totalCount = 2;
     int32 pageCount = 3;
     int32 currentPage = 4;
+}
+
+message PaginationArgs {
+    int32 page = 1;
+    int32 take = 10;
 }
