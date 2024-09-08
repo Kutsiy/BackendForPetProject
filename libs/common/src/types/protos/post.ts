@@ -32,14 +32,19 @@ export interface PaginatedPosts {
   currentPage: number;
 }
 
+export interface PaginationArgs {
+  page: number;
+  take: number;
+}
+
 export const POST_PACKAGE_NAME = "post";
 
 export interface PostServiceClient {
-  getAllPosts(request: Empty): Observable<PaginatedPosts>;
+  getAllPosts(request: PaginationArgs): Observable<PaginatedPosts>;
 }
 
 export interface PostServiceController {
-  getAllPosts(request: Empty): Promise<PaginatedPosts> | Observable<PaginatedPosts> | PaginatedPosts;
+  getAllPosts(request: PaginationArgs): Promise<PaginatedPosts> | Observable<PaginatedPosts> | PaginatedPosts;
 }
 
 export function PostServiceControllerMethods() {
