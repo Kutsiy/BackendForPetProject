@@ -31,6 +31,7 @@ export interface PaginatedPosts {
   pageCount: number;
   currentPage: number;
   searchString: string;
+  isEmpty: boolean;
 }
 
 export interface PaginationArgs {

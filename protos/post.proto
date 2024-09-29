@@ -27,6 +27,7 @@ message PaginatedPosts {
     int32 pageCount = 3;
     int32 currentPage = 4;
     string searchString = 5;
+    bool isEmpty = 6;
 }
 
 message PaginationArgs {

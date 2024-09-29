@@ -25,6 +25,9 @@ export class PaginatedPosts {
 
   @Field(() => Int)
   currentPage: number;
+
+  @Field(() => Boolean)
+  isEmpty: boolean;
 }
 
 @ArgsType()

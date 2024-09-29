@@ -22,7 +22,11 @@ export class PostserviceController implements PostServiceController {
       allPosts = this.arrayOfPosts.filter((val: any) =>
         val.title.toLowerCase().includes(searchString.toLowerCase()),
       );
+      if (allPosts.length === 0) {
+        allPosts = [{ id: '-empty', title: 'none', body: 'none' }];
+      }
     }
+    const isEmpty = allPosts.length === 0 || allPosts[0].id === '-empty';
     if (page < 1 || take < 1) {
       throw new BadRequestException('Page and take must be positive integers.');
     }
@@ -40,6 +44,7 @@ export class PostserviceController implements PostServiceController {
       currentPage: page,
       pageCount,
       searchString,
+      isEmpty,
     };
   }
 }
