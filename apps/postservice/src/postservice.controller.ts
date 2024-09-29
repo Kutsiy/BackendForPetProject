@@ -16,15 +16,21 @@ export class PostserviceController implements PostServiceController {
     body: 'Hello',
   }));
   getAllPosts(request: PaginationArgs): PaginatedPosts {
-    const { page, take } = request;
+    const { searchString, page, take } = request;
+    let allPosts = this.arrayOfPosts;
+    if (searchString !== '' && searchString) {
+      allPosts = this.arrayOfPosts.filter((val: any) =>
+        val.title.toLowerCase().includes(searchString.toLowerCase()),
+      );
+    }
     if (page < 1 || take < 1) {
       throw new BadRequestException('Page and take must be positive integers.');
     }
     const skip = (page - 1) * take;
     const takePage = skip + take;
-    const totalCount = this.arrayOfPosts.length;
+    const totalCount = allPosts.length;
     const pageCount = Math.ceil(totalCount / take);
-    const posts = this.arrayOfPosts.slice(skip, takePage);
+    const posts = allPosts.slice(skip, takePage);
     if (page > pageCount) {
       throw new Error('Page > pageCount ');
     }
@@ -33,6 +39,7 @@ export class PostserviceController implements PostServiceController {
       totalCount,
       currentPage: page,
       pageCount,
+      searchString,
     };
   }
 }

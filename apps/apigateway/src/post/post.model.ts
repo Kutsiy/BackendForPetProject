@@ -29,6 +29,9 @@ export class PaginatedPosts {
 
 @ArgsType()
 export class PaginationArgs {
+  @Field(() => String, { nullable: true })
+  searchString: string;
+
   @Field(() => Int)
   page: number = 1;
 

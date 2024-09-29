@@ -26,9 +26,11 @@ message PaginatedPosts {
     int32 totalCount = 2;
     int32 pageCount = 3;
     int32 currentPage = 4;
+    string searchString = 5;
 }
 
 message PaginationArgs {
-    int32 page = 1;
-    int32 take = 10;
+    string searchString = 1;
+    int32 page = 2;
+    int32 take = 3;
 }

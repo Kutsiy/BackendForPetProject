@@ -30,9 +30,11 @@ export interface PaginatedPosts {
   totalCount: number;
   pageCount: number;
   currentPage: number;
+  searchString: string;
 }
 
 export interface PaginationArgs {
+  searchString: string;
   page: number;
   take: number;
 }

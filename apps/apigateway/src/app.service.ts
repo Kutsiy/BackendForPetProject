@@ -10,7 +10,7 @@ export class AppService implements OnModuleInit {
     this.postService =
       this.client.getService<PostServiceClient>(POST_SERVICE_NAME);
   }
-  getAllPosts(page, take) {
-    return this.postService.getAllPosts({ page, take});
+  getAllPosts(searchString: string, page, take) {
+    return this.postService.getAllPosts({ searchString, page, take });
   }
 }

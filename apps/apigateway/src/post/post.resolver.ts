@@ -15,7 +15,8 @@ export class PostResolver {
 
   @Query(() => PostsModel)
   Posts(@Args() paginationArgs: PaginationArgs): Observable<PaginatedPosts> {
-    const { page, take } = paginationArgs;
-    return this.appService.getAllPosts(page, take);
+    const { searchString, page, take } = paginationArgs;
+    let postsSearchString = searchString ?? '';
+    return this.appService.getAllPosts(postsSearchString, page, take);
   }
 }
