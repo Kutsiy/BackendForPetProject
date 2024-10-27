@@ -4,16 +4,31 @@ import {
   PostServiceController,
   PostServiceControllerMethods,
   PaginationArgs,
+  FindPostById,
 } from '@app/common';
 import { BadRequestException, Controller } from '@nestjs/common';
+import * as request from 'supertest';
 
 @Controller()
 @PostServiceControllerMethods()
 export class PostserviceController implements PostServiceController {
-  arrayOfPosts: Post[] = Array.from({ length: 100 }, (_, index) => ({
+  arrayOfWord = [
+    'Hello Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag.',
+    'Hello Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag.',
+    'Hello Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag.',
+    'Hello Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag.',
+    'Hello Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag.',
+    'Hello Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag.',
+    'Hello Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag.  ',
+  ];
+
+  arrayOfPosts: Post[] = Array.from({ length: 1000 }, (_, index) => ({
     id: `${index + 1}`,
     title: `Hello${index + 1}`,
-    body: 'Hello',
+    body:
+      this.arrayOfWord
+        .slice(0, Math.floor(Math.random() * this.arrayOfWord.length - 1))
+        .join('\n ') || 'Hello',
   }));
   getAllPosts(request: PaginationArgs): PaginatedPosts {
     const { searchString, page, take } = request;
@@ -46,5 +61,17 @@ export class PostserviceController implements PostServiceController {
       searchString,
       isEmpty,
     };
+  }
+  getPost(request: FindPostById): Post {
+    const { id } = request;
+    const result = this.arrayOfPosts.find((postsId) => id === postsId.id);
+    if (result === undefined) {
+      return {
+        id: 'none',
+        body: 'none',
+        title: 'none',
+      };
+    }
+    return result;
   }
 }

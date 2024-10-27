@@ -13,4 +13,8 @@ export class AppService implements OnModuleInit {
   getAllPosts(searchString: string, page, take) {
     return this.postService.getAllPosts({ searchString, page, take });
   }
+
+  getPost(args: { id: string }) {
+    return this.postService.getPost(args);
+  }
 }

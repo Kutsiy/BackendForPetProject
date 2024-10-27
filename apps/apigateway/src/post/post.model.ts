@@ -41,3 +41,9 @@ export class PaginationArgs {
   @Field(() => Int)
   take: number = 10;
 }
+
+@ArgsType()
+export class IdArgs {
+  @Field(() => String, { nullable: true })
+  id: string;
+}

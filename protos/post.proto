@@ -4,6 +4,11 @@ package post;
 
 service PostService {
     rpc GetAllPosts(PaginationArgs) returns (PaginatedPosts) {}
+    rpc GetPost(FindPostById) returns (Post) {}
+}
+
+message FindPostById {
+    string id = 1;
 }
 
 message PostDto {

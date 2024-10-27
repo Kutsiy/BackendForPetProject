@@ -10,6 +10,10 @@ import { Observable } from "rxjs";
 
 export const protobufPackage = "post";
 
+export interface FindPostById {
+  id: string;
+}
+
 export interface PostDto {
   id: string;
   title: string;
@@ -44,15 +48,19 @@ export const POST_PACKAGE_NAME = "post";
 
 export interface PostServiceClient {
   getAllPosts(request: PaginationArgs): Observable<PaginatedPosts>;
+
+  getPost(request: FindPostById): Observable<Post>;
 }
 
 export interface PostServiceController {
   getAllPosts(request: PaginationArgs): Promise<PaginatedPosts> | Observable<PaginatedPosts> | PaginatedPosts;
+
+  getPost(request: FindPostById): Promise<Post> | Observable<Post> | Post;
 }
 
 export function PostServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["getAllPosts"];
+    const grpcMethods: string[] = ["getAllPosts", "getPost"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("PostService", method)(constructor.prototype[method], method, descriptor);

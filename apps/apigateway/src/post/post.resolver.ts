@@ -7,6 +7,7 @@ import {
   PaginatedPosts as PostsModel,
   Post,
   PaginationArgs,
+  IdArgs,
 } from './post.model';
 
 @Resolver(() => Post)
@@ -18,5 +19,10 @@ export class PostResolver {
     const { searchString, page, take } = paginationArgs;
     let postsSearchString = searchString ?? '';
     return this.appService.getAllPosts(postsSearchString, page, take);
+  }
+
+  @Query(() => Post)
+  Post(@Args() IdArgs: IdArgs) {
+    return this.appService.getPost(IdArgs);
   }
 }
