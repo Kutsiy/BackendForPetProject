@@ -45,6 +45,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/common/tsconfig.lib.json"
       }
+    },
+    "authservice": {
+      "type": "application",
+      "root": "apps/authservice",
+      "entryFile": "main",
+      "sourceRoot": "apps/authservice/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/authservice/tsconfig.app.json"
+      }
     }
   }
 }
