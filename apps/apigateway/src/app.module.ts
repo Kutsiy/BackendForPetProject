@@ -24,7 +24,8 @@ import { protobufPackage } from '@app/common';
         options: {
           package: protobufPackage,
           protoPath: join(__dirname, '../post.proto'),
-          url: 'post-service:5000',
+          // url: 'post-service:5000',
+          url: 'localhost:5000',
         },
       },
     ]),

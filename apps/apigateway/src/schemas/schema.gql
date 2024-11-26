@@ -1,0 +1,22 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Post {
+  id: String!
+  title: String!
+  body: String!
+}
+
+type PaginatedPosts {
+  posts: [Post!]!
+  totalCount: Int!
+  pageCount: Int!
+  currentPage: Int!
+  isEmpty: Boolean!
+}
+
+type Query {
+  Posts(searchString: String, page: Int! = 1, take: Int! = 10): PaginatedPosts!
+  Post(id: String): Post!
+}

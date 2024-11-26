@@ -12,7 +12,8 @@ async function bootstrap() {
       options: {
         package: protobufPackage,
         protoPath: join(__dirname, '../post.proto'),
-        url: '0.0.0.0:5000',
+        // url: '0.0.0.0:5000',
+        url: 'localhost:5000',
       },
     },
   );

@@ -8,7 +8,7 @@
   "scripts": {
     "build": "nest build apigateway && nest build postservice",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
-    "start": "nest start",
+    "start": "nest start apigateway --watch && nest start postservice --watch",
     "start:dev:apigateway": "nest start apigateway --watch",
     "start:dev:postservice": "nest start postservice --watch",
     "start:debug": "nest start --debug --watch",
