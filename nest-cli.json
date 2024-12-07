@@ -18,9 +18,7 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/apigateway/tsconfig.app.json",
-        "assets": [
-          "protos/*.proto"
-        ],
+        "assets": ["protos/*.proto"],
         "watchAssets": true
       }
     },
@@ -31,9 +29,7 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/postservice/tsconfig.app.json",
-        "assets": [
-          "protos/*.proto"
-        ],
+        "assets": ["protos/*.proto"],
         "watchAssets": true
       }
     },
@@ -49,10 +45,12 @@
     "authservice": {
       "type": "application",
       "root": "apps/authservice",
-      "entryFile": "main",
-      "sourceRoot": "apps/authservice/src",
+      "entryFile": "src/main",
+      "sourceRoot": "./",
       "compilerOptions": {
-        "tsConfigPath": "apps/authservice/tsconfig.app.json"
+        "tsConfigPath": "apps/authservice/tsconfig.app.json",
+        "assets": ["protos/*.proto"],
+        "watchAssets": true
       }
     }
   }

@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package auth;
+
+service AuthService {
+    rpc Login(LoginArgs) returns (EmptyAuth) {}
+    rpc SignUp(EmptyAuth) returns (EmptyAuth) {}
+    rpc Logout(EmptyAuth) returns (EmptyAuth) {}
+}
+
+message LoginArgs {
+    string email = 1;
+    string password = 2;
+}
+
+message EmptyAuth {}

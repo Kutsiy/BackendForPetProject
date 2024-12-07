@@ -6,11 +6,12 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "nest build apigateway && nest build postservice",
+    "build": "nest build apigateway && nest build postservice && nest build authservice",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start apigateway --watch && nest start postservice --watch",
     "start:dev:apigateway": "nest start apigateway --watch",
     "start:dev:postservice": "nest start postservice --watch",
+    "start:dev:authservice": "nest start authservice --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/apps/apigateway/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -19,7 +20,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./apps/apigateway/test/jest-e2e.json",
-    "generate-proto": "npx protoc --plugin=protoc-gen-ts_proto=.\\node_modules\\.bin\\protoc-gen-ts_proto.cmd --ts_proto_out=./libs/common/src/types --ts_proto_opt=nestJs=true  ./protos/post.proto"
+    "generate-proto": "npx protoc --plugin=protoc-gen-ts_proto=.\\node_modules\\.bin\\protoc-gen-ts_proto.cmd --ts_proto_out=./libs/common/src/types --ts_proto_opt=nestJs=true  ./protos/auth.proto"
   },
   "dependencies": {
     "@apollo/server": "^4.11.0",
