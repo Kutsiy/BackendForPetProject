@@ -6,7 +6,7 @@ import { User, UserSchema } from './schema/user.schema';
 import { TokenService } from './token.service';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MailService } from './mail.service';
+import { MailService } from './mail/mail.service';
 import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
