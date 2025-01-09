@@ -5,69 +5,61 @@
 // source: protos/auth.proto
 
 /* eslint-disable */
-import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
-import { Observable } from 'rxjs';
+import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
+import { Observable } from "rxjs";
 
-export const protobufPackage = 'auth';
+export const protobufPackage = "auth";
 
 export interface LoginArgs {
   email: string;
   password: string;
 }
 
-export interface EmptyAuth {}
+export interface SignUpArgs {
+  name: string;
+  email: string;
+  password: string;
+}
 
-export const AUTH_PACKAGE_NAME = 'auth';
+export interface Tokens {
+  accessToken: string;
+  refreshToken: string;
+}
+
+export interface EmptyAuth {
+}
+
+export const AUTH_PACKAGE_NAME = "auth";
 
 export interface AuthServiceClient {
-  login(request: LoginArgs): Observable<EmptyAuth>;
+  login(request: LoginArgs): Observable<Tokens>;
 
-  signUp(request: EmptyAuth): Observable<EmptyAuth>;
+  signUp(request: SignUpArgs): Observable<Tokens>;
 
-  logout(request: EmptyAuth): Observable<EmptyAuth>;
+  logOut(request: EmptyAuth): Observable<EmptyAuth>;
 }
 
 export interface AuthServiceController {
-  login(
-    request: LoginArgs,
-  ): Promise<EmptyAuth> | Observable<EmptyAuth> | EmptyAuth;
+  login(request: LoginArgs): Promise<Tokens> | Observable<Tokens> | Tokens;
 
-  signUp(
-    request: EmptyAuth,
-  ): Promise<EmptyAuth> | Observable<EmptyAuth> | EmptyAuth;
+  signUp(request: SignUpArgs): Promise<Tokens> | Observable<Tokens> | Tokens;
 
-  logout(
-    request: EmptyAuth,
-  ): Promise<EmptyAuth> | Observable<EmptyAuth> | EmptyAuth;
+  logOut(request: EmptyAuth): Promise<EmptyAuth> | Observable<EmptyAuth> | EmptyAuth;
 }
 
 export function AuthServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ['login', 'signUp', 'logout'];
+    const grpcMethods: string[] = ["login", "signUp", "logOut"];
     for (const method of grpcMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(
-        constructor.prototype,
-        method,
-      );
-      GrpcMethod('AuthService', method)(
-        constructor.prototype[method],
-        method,
-        descriptor,
-      );
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcMethod("AuthService", method)(constructor.prototype[method], method, descriptor);
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(
-        constructor.prototype,
-        method,
-      );
-      GrpcStreamMethod('AuthService', method)(
-        constructor.prototype[method],
-        method,
-        descriptor,
-      );
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcStreamMethod("AuthService", method)(constructor.prototype[method], method, descriptor);
     }
   };
 }
 
-export const AUTH_SERVICE_NAME = 'AuthService';
+export const AUTH_SERVICE_NAME = "AuthService";

@@ -1,6 +1,6 @@
 import { Inject } from '@nestjs/common';
 import { Args, Query, Resolver } from '@nestjs/graphql';
-import { AppService } from '../app.service';
+import { PostService } from './post.service';
 import { Observable } from 'rxjs';
 import { PaginatedPosts } from '@app/common';
 import {
@@ -12,7 +12,7 @@ import {
 
 @Resolver(() => Post)
 export class PostResolver {
-  constructor(@Inject(AppService) private appService: AppService) {}
+  constructor(@Inject(PostService) private appService: PostService) {}
 
   @Query(() => PostsModel)
   Posts(@Args() paginationArgs: PaginationArgs): Observable<PaginatedPosts> {

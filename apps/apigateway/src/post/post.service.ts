@@ -1,9 +1,13 @@
 import { POST_SERVICE_NAME, PostServiceClient } from '@app/common';
+import {
+  AUTH_SERVICE_NAME,
+  AuthServiceClient,
+} from '@app/common/types/protos/auth';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 
 @Injectable()
-export class AppService implements OnModuleInit {
+export class PostService implements OnModuleInit {
   private postService: PostServiceClient;
   constructor(@Inject('POST_SERVICE') private client: ClientGrpc) {}
   onModuleInit() {

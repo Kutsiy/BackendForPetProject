@@ -16,7 +16,15 @@ type PaginatedPosts {
   isEmpty: Boolean!
 }
 
+type Tokens {
+  accessToken: String!
+  refreshToken: String!
+}
+
 type Query {
   Posts(searchString: String, page: Int! = 1, take: Int! = 10): PaginatedPosts!
   Post(id: String): Post!
+  Login(email: String!, password: String!): Tokens!
+  LogOut: Tokens!
+  SignUp(name: String!, email: String!, password: String!): Tokens!
 }
