@@ -8,9 +8,6 @@ service AuthService {
     rpc LogOut(EmptyAuth) returns (EmptyAuth) {}
 }
 
-service MailService {
-}
-
 message LoginArgs {
     string email = 1;
     string password = 2;

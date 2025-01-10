@@ -18,7 +18,9 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/apigateway/tsconfig.app.json",
-        "assets": ["protos/*.proto"],
+        "assets": [
+          "protos/*.proto"
+        ],
         "watchAssets": true
       }
     },
@@ -29,7 +31,9 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/postservice/tsconfig.app.json",
-        "assets": ["protos/*.proto"],
+        "assets": [
+          "protos/*.proto"
+        ],
         "watchAssets": true
       }
     },
@@ -49,8 +53,19 @@
       "sourceRoot": "./",
       "compilerOptions": {
         "tsConfigPath": "apps/authservice/tsconfig.app.json",
-        "assets": ["protos/*.proto"],
+        "assets": [
+          "protos/*.proto"
+        ],
         "watchAssets": true
+      }
+    },
+    "mailservice": {
+      "type": "application",
+      "root": "apps/mailservice",
+      "entryFile": "main",
+      "sourceRoot": "apps/mailservice/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/mailservice/tsconfig.app.json"
       }
     }
   }
