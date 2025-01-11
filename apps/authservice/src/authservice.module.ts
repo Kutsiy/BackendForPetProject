@@ -7,7 +7,9 @@ import { TokenService } from './token.service';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MailService } from './mail/mail.service';
-import { MailerModule } from '@nestjs-modules/mailer';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { join } from 'path';
+import { protobufPackage as mailProtobufPackage } from '@app/common/types/protos/mail';
 
 @Module({
   imports: [
@@ -20,24 +22,18 @@ import { MailerModule } from '@nestjs-modules/mailer';
     ),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     JwtModule,
-    MailerModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (config: ConfigService) => {
-        return {
-          transport: {
-            service: 'Gmail',
-            host: 'smtp.gmail.com',
-            port: 587,
-            secure: false,
-            auth: {
-              user: config.get<string>('MAIL_USER'),
-              pass: config.get<string>('MAIL_PASS'),
-            },
-          },
-        };
+    ClientsModule.register([
+      {
+        name: 'MAIL_SERVICE',
+        transport: Transport.GRPC,
+        options: {
+          package: mailProtobufPackage,
+          protoPath: join(__dirname, '../mail.proto'),
+          // url: 'post-service:5002',
+          url: 'localhost:5002',
+        },
       },
-    }),
+    ]),
   ],
   controllers: [AuthserviceController],
   providers: [

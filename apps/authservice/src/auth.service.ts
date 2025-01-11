@@ -7,12 +7,14 @@ import { RpcException } from '@nestjs/microservices';
 import { v4 as uuidv4 } from 'uuid';
 import { hash, compare } from 'bcrypt';
 import { TokenService } from './token.service';
+import { MailService } from './mail/mail.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocumentType>,
     private readonly tokenService: TokenService,
+    private readonly mailService: MailService,
   ) {}
   async login(args: LoginArgs): Promise<Tokens> {
     const coincidence = await this.userModel
@@ -52,6 +54,7 @@ export class AuthService {
       password: hashPassword,
       linkForActivate: link,
     });
+    await this.mailService.sendMail({ link, mail: args.email });
     return {
       accessToken,
       refreshToken,

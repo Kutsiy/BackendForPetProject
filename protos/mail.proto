@@ -4,10 +4,16 @@ package mail;
 
 service MailService {
     rpc CheckMail(CheckLinkArg) returns (Empty) {}
+    rpc SendMail(SendMailArgs) returns (Empty) {}
 }
 
 message CheckLinkArg {
     string link = 1;
+}
+
+message SendMailArgs {
+    string link = 1;
+    string mail = 2;
 }
 
 message Empty {}

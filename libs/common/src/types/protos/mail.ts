@@ -14,6 +14,11 @@ export interface CheckLinkArg {
   link: string;
 }
 
+export interface SendMailArgs {
+  link: string;
+  mail: string;
+}
+
 export interface Empty {
 }
 
@@ -21,15 +26,19 @@ export const MAIL_PACKAGE_NAME = "mail";
 
 export interface MailServiceClient {
   checkMail(request: CheckLinkArg): Observable<Empty>;
+
+  sendMail(request: SendMailArgs): Observable<Empty>;
 }
 
 export interface MailServiceController {
   checkMail(request: CheckLinkArg): Promise<Empty> | Observable<Empty> | Empty;
+
+  sendMail(request: SendMailArgs): Promise<Empty> | Observable<Empty> | Empty;
 }
 
 export function MailServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["checkMail"];
+    const grpcMethods: string[] = ["checkMail", "sendMail"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("MailService", method)(constructor.prototype[method], method, descriptor);
