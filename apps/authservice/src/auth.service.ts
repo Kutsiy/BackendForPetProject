@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocumentType } from './schema/user.schema';
+import { User, UserDocumentType } from '@app/common/schema/user.schema';
 import { Model } from 'mongoose';
 import { LoginArgs, SignUpArgs, Tokens } from '@app/common/types/protos/auth';
 import { RpcException } from '@nestjs/microservices';

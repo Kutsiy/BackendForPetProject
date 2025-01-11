@@ -2,7 +2,7 @@ import { Resolver, Query, Args, Context } from '@nestjs/graphql';
 import { LoginArgs, SignUpArgs, Tokens } from './auth.model';
 import { AuthService } from './auth.service';
 import { UseFilters } from '@nestjs/common';
-import { AllExceptionFilter } from '../exeption/exeption.filter';
+import { AllExceptionFilter } from '../tools/exeption/exeption.filter';
 import { Response } from 'express';
 
 @Resolver(() => Tokens)

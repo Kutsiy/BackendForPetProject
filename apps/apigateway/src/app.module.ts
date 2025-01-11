@@ -9,6 +9,10 @@ import { auth, protobufPackage } from '@app/common';
 import { AuthResolver } from './auth/auth.resolver';
 import { AuthService } from './auth/auth.service';
 import { GraphQLError, GraphQLFormattedError } from 'graphql';
+import { protobufPackage as mailProtobufPackage } from '@app/common/types/protos/mail';
+import { protobufPackage as authProtobufPackage } from '@app/common/types/protos/auth';
+import { MailService } from './mail/mail.service';
+import { MailController } from './mail/mail.controller';
 
 @Module({
   imports: [
@@ -16,7 +20,7 @@ import { GraphQLError, GraphQLFormattedError } from 'graphql';
       driver: ApolloDriver,
       autoSchemaFile: join(
         process.cwd(),
-        'apps/apigateway/src/schemas/schema.gql',
+        'apps/apigateway/src/tools/schemas/schema.gql',
       ),
       playground: {
         settings: {
@@ -46,15 +50,31 @@ import { GraphQLError, GraphQLFormattedError } from 'graphql';
         name: 'AUTH_SERVICE',
         transport: Transport.GRPC,
         options: {
-          package: auth.protobufPackage,
+          package: authProtobufPackage,
           protoPath: join(__dirname, '../auth.proto'),
           // url: 'post-service:5000',
           url: 'localhost:5001',
         },
       },
+      {
+        name: 'MAIL_SERVICE',
+        transport: Transport.GRPC,
+        options: {
+          package: mailProtobufPackage,
+          protoPath: join(__dirname, '../mail.proto'),
+          // url: 'post-service:5000',
+          url: 'localhost:5002',
+        },
+      },
     ]),
   ],
-  controllers: [],
-  providers: [PostService, PostResolver, AuthResolver, AuthService],
+  controllers: [MailController],
+  providers: [
+    PostService,
+    PostResolver,
+    AuthResolver,
+    AuthService,
+    MailService,
+  ],
 })
 export class AppModule {}

@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package mail;
+
+service MailService {
+    rpc CheckMail(CheckLinkArg) returns (Empty) {}
+}
+
+message CheckLinkArg {
+    string link = 1;
+}
+
+message Empty {}
