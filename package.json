@@ -8,8 +8,7 @@
   "scripts": {
     "build": "nest build apigateway && nest build postservice && nest build authservice",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
-    "start": "nest start apigateway --watch && nest start postservice --watch",
-    "start:dev:all": "concurrently \"npm run start:dev:apigateway\" \"npm run start:dev:postservice\" \"npm run start:dev:authservice\" \"npm run start:dev:mailservice\"",
+    "start": "concurrently \"npm run start:dev:apigateway\" \"npm run start:dev:postservice\" \"npm run start:dev:authservice\" \"npm run start:dev:mailservice\"",
     "start:dev:apigateway": "nest start apigateway --watch",
     "start:dev:postservice": "nest start postservice --watch",
     "start:dev:authservice": "nest start authservice --watch",

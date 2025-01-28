@@ -33,7 +33,10 @@ export class AuthResolver {
     return { accessToken, refreshToken };
   }
   @Query(() => Tokens)
-  LogOut(): Tokens {
+  LogOut(@Context() context: { res: Response }): Tokens {
+    const { res } = context;
+    res.clearCookie('access_token');
+    res.clearCookie('refresh_token');
     return {
       accessToken: 'a',
       refreshToken: 'a',

@@ -16,11 +16,10 @@ export class MailserviceService {
 
   async sendMail({ link, mail }) {
     await this.mailerService.sendMail({
-      from: this.configService.get<string>('MAIL_USER'),
+      from: `NE <${this.configService.get<string>('MAIL_USER')}>`,
       to: mail,
-      subject: 'Testing Nest MailerModule',
-      text: 'welcome',
-      html: '<b>welcome</b>',
+      subject: 'NE: Activate account',
+      html: `<p>Please activate your account, click to this text => <a href="http://localhost:3000/link/${link}">ACTIVATE</a></p>`,
     });
     return {};
   }
