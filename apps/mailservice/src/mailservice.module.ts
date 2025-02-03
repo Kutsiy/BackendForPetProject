@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { MailserviceController } from './mailservice.controller';
 import { MailserviceService } from './mailservice.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from '@app/common/schema/user.schema';
+import { User, UserSchema } from '@app/common/schemas/user.schema';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 

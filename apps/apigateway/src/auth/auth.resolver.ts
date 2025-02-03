@@ -1,9 +1,10 @@
 import { Resolver, Query, Args, Context } from '@nestjs/graphql';
 import { LoginArgs, SignUpArgs, Tokens } from './auth.model';
 import { AuthService } from './auth.service';
-import { UseFilters } from '@nestjs/common';
+import { UseFilters, UseGuards } from '@nestjs/common';
 import { AllExceptionFilter } from '../tools/exeption/exeption.filter';
 import { Response } from 'express';
+import { AuthGuard } from '../tools/guards/auth/auth.guard';
 
 @Resolver(() => Tokens)
 @UseFilters(new AllExceptionFilter())
@@ -21,12 +22,14 @@ export class AuthResolver {
     res.cookie('access_token', `${accessToken}`, {
       httpOnly: true,
       sameSite: 'strict',
+      secure: true,
       maxAge: 15 * 60 * 1000,
     });
 
     res.cookie('refresh_token', `${refreshToken}`, {
       httpOnly: true,
       sameSite: 'strict',
+      secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -51,14 +54,16 @@ export class AuthResolver {
     const result = await this.authService.signUp(args);
     const { accessToken, refreshToken } = await result.toPromise();
     res.cookie('access_token', `${accessToken}`, {
-      httpOnly: true,
+      // httpOnly: true,
       sameSite: 'strict',
+      // secure: true,
       maxAge: 15 * 60 * 1000,
     });
 
     res.cookie('refresh_token', `${refreshToken}`, {
-      httpOnly: true,
+      // httpOnly: true,
       sameSite: 'strict',
+      // secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 

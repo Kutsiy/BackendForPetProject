@@ -17,8 +17,8 @@ type PaginatedPosts {
 }
 
 type Tokens {
-  accessToken: String!
-  refreshToken: String!
+  accessToken: String
+  refreshToken: String
 }
 
 type Query {

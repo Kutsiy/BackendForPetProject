@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocumentType } from '@app/common/schema/user.schema';
+import { User, UserDocumentType } from '@app/common';
 import { Model } from 'mongoose';
 import { LoginArgs, SignUpArgs, Tokens } from '@app/common/types/protos/auth';
 import { RpcException } from '@nestjs/microservices';
@@ -23,6 +23,11 @@ export class AuthService {
     if (!coincidence) {
       throw new RpcException('User not found!');
     }
+    if (coincidence.isActivated) {
+      throw new RpcException(
+        'A user with this email already exists, but not activated',
+      );
+    }
     const isPasswordCorrect = await compare(
       args.password,
       coincidence.password,
@@ -31,6 +36,7 @@ export class AuthService {
       throw new RpcException('Incorrect login or password');
     }
     const { accessToken, refreshToken } = this.tokenService.generateToken(args);
+    await this.tokenService.saveRefreshToken(refreshToken, coincidence._id);
     return {
       accessToken,
       refreshToken,
@@ -48,12 +54,15 @@ export class AuthService {
     const hashPassword = await hash(args.password, 10);
 
     const link = uuidv4();
-    await this.userModel.create({
+    const user = await this.userModel.create({
       name: args.name,
       email: args.email,
       password: hashPassword,
       linkForActivate: link,
     });
+
+    await this.tokenService.saveRefreshToken(refreshToken, user._id);
+
     await this.mailService.sendMail({ link, mail: args.email });
     return {
       accessToken,

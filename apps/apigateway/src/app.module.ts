@@ -13,9 +13,16 @@ import { protobufPackage as mailProtobufPackage } from '@app/common/types/protos
 import { protobufPackage as authProtobufPackage } from '@app/common/types/protos/auth';
 import { MailService } from './mail/mail.service';
 import { MailController } from './mail/mail.controller';
+import { AuthGuard } from './tools/guards/auth/auth.guard';
+import { JwtModule, JwtService } from '@nestjs/jwt';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
+    JwtModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(
@@ -75,6 +82,9 @@ import { MailController } from './mail/mail.controller';
     AuthResolver,
     AuthService,
     MailService,
+    AuthGuard,
+    JwtService,
+    ConfigService,
   ],
 })
 export class AppModule {}

@@ -1,4 +1,4 @@
-import { Inject } from '@nestjs/common';
+import { Inject, UseGuards } from '@nestjs/common';
 import { Args, Query, Resolver } from '@nestjs/graphql';
 import { PostService } from './post.service';
 import { Observable } from 'rxjs';
@@ -9,8 +9,10 @@ import {
   PaginationArgs,
   IdArgs,
 } from './post.model';
+import { AuthGuard } from '../tools/guards/auth/auth.guard';
 
 @Resolver(() => Post)
+@UseGuards(AuthGuard)
 export class PostResolver {
   constructor(@Inject(PostService) private appService: PostService) {}
 

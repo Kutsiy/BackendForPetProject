@@ -1,4 +1,4 @@
-import { User, UserDocumentType } from '@app/common/schema/user.schema';
+import { User, UserDocumentType } from '@app/common/schemas/user.schema';
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';

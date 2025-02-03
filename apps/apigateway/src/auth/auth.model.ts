@@ -40,9 +40,9 @@ export class SignUpArgs implements SignUp {
 
 @ObjectType()
 export class Tokens {
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   accessToken: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   refreshToken: string;
 }
