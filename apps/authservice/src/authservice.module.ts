@@ -18,6 +18,7 @@ import {
   UserRole,
   UserRoleSchema,
 } from '@app/common';
+import { RoleService } from './role.service';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import {
     JwtService,
     ConfigService,
     MailService,
+    RoleService,
   ],
 })
 export class AuthserviceModule {}

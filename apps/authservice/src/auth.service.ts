@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocumentType } from '@app/common';
+import {
+  User,
+  UserDocumentType,
+  UserRole,
+  UserRoleDocumentType,
+} from '@app/common';
 import { Model } from 'mongoose';
 import { LoginArgs, SignUpArgs, Tokens } from '@app/common/types/protos/auth';
 import { RpcException } from '@nestjs/microservices';
@@ -8,13 +13,17 @@ import { v4 as uuidv4 } from 'uuid';
 import { hash, compare } from 'bcrypt';
 import { TokenService } from './token.service';
 import { MailService } from './mail/mail.service';
+import { RoleService } from './role.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocumentType>,
+    @InjectModel(UserRole.name)
+    private readonly userRoleModel: Model<UserRoleDocumentType>,
     private readonly tokenService: TokenService,
     private readonly mailService: MailService,
+    private readonly roleService: RoleService,
   ) {}
   async login(args: LoginArgs): Promise<Tokens> {
     const coincidence = await this.userModel
@@ -62,6 +71,8 @@ export class AuthService {
     });
 
     await this.tokenService.saveRefreshToken(refreshToken, user._id);
+    const roleId = await this.roleService.getRoleIdByName('USER');
+    await this.userRoleModel.create({ userId: user._id, roleId });
 
     await this.mailService.sendMail({ link, mail: args.email });
     return {
