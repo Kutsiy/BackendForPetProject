@@ -3,7 +3,7 @@ import { HydratedDocument, Types } from 'mongoose';
 
 export type UserDocumentType = HydratedDocument<User>;
 
-@Schema()
+@Schema({ toJSON: { virtuals: true }, toObject: { virtuals: true } })
 export class User {
   @Prop({ required: true })
   name: string;
@@ -17,8 +17,18 @@ export class User {
   @Prop({ required: true, default: false })
   isActivated: boolean;
 
-  @Prop({ required: true })
+  @Prop()
   linkForActivate: string;
+
+  roles: Types.ObjectId[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.virtual('roles', {
+  ref: 'UserRole',
+  localField: '_id',
+  foreignField: 'userId',
+  justOne: false,
+  options: { populate: { path: 'roleId', select: 'name' } },
+});

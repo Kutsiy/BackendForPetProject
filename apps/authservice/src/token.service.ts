@@ -6,6 +6,11 @@ import { RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 
+interface Payload {
+  id: Types.ObjectId;
+  email: string;
+  roles: string[];
+}
 @Injectable()
 export class TokenService {
   constructor(
@@ -15,15 +20,41 @@ export class TokenService {
     private readonly tokenModel: Model<TokenDocumentType>,
   ) {}
 
-  generateToken(payload) {
+  findSecret() {
     const accessJwtSecret = this.configService.get<string>('ACCESS_JWT_SECRET');
-
     const refreshJwtSecret =
       this.configService.get<string>('REFRESH_JWT_SECRET');
-
     if (!accessJwtSecret || !refreshJwtSecret) {
       throw new RpcException('JWT secret not defined in environment');
     }
+    return { accessJwtSecret, refreshJwtSecret };
+  }
+
+  validateAccessToken(token: string) {
+    const { accessJwtSecret } = this.findSecret();
+
+    try {
+      this.jwtService.verify(token, { secret: accessJwtSecret });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  validateRefreshToken(token: string) {
+    const { refreshJwtSecret } = this.findSecret();
+
+    try {
+      this.jwtService.verify(token, { secret: refreshJwtSecret });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  generateToken(payload: Payload) {
+    const { accessJwtSecret, refreshJwtSecret } = this.findSecret();
+
     const accessToken = this.jwtService.sign(payload, {
       secret: accessJwtSecret,
       expiresIn: '60s',

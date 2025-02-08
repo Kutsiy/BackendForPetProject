@@ -5,10 +5,10 @@ export type UserRoleDocumentType = HydratedDocument<UserRole>;
 
 @Schema()
 export class UserRole {
-  @Prop({ type: Types.ObjectId, required: true, ref: 'User', unique: true })
+  @Prop({ type: Types.ObjectId, required: true, ref: 'User' })
   userId: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, required: true, ref: 'Role', unique: true })
+  @Prop({ type: Types.ObjectId, required: true, ref: 'Role' })
   roleId: Types.ObjectId;
 }
 

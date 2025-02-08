@@ -22,6 +22,6 @@ export class RoleService {
     if (!role) {
       throw new Error(`Role with name "${name}" not found`);
     }
-    return role._id;
+    return role;
   }
 }

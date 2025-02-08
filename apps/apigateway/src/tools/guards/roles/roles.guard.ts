@@ -1,44 +1,39 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Reflector } from '@nestjs/core';
+import { RolesSetter } from './roles.guard-setter';
 import { GqlExecutionContext } from '@nestjs/graphql';
-import { JwtService } from '@nestjs/jwt';
 import { RpcException } from '@nestjs/microservices';
-import { Request } from 'express';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable({})
-export class AuthGuard implements CanActivate {
+export class RolesGuard implements CanActivate {
   constructor(
+    private reflector: Reflector,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    const roles: string[] = this.reflector.get('roles', context.getHandler());
     const accessJwtSecret = this.configService.get<string>('ACCESS_JWT_SECRET');
     if (!accessJwtSecret) {
       throw new RpcException('JWT secret not defined in environment');
     }
+    if (!roles) {
+      return true;
+    }
     const graphQlContext = GqlExecutionContext.create(context);
     const request = graphQlContext.getContext().req;
-    const token = this.extractTokenFromHeader(request);
+    const token = request.headers.authorization;
     if (!token) {
       throw new RpcException('You are not authorized');
     }
-    try {
-      await this.jwtService.signAsync(token, {
-        secret: accessJwtSecret,
-      });
-    } catch (error) {
-      throw new RpcException('Error signing');
-    }
-    return true;
-  }
-
-  private extractTokenFromHeader(request: Request): string | undefined {
-    const token = request.headers.authorization;
-
-    if (!token) return undefined;
-
     const [type, splitToken] = token.split(' ');
-    return type === 'Bearer' ? splitToken : undefined;
+    const decodedToken = this.jwtService.verify(splitToken, {
+      secret: accessJwtSecret,
+    });
+    const decodedUserRoles: string[] = decodedToken.roles;
+    return decodedUserRoles.every((role) => roles.includes(role));
   }
 }

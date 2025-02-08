@@ -28,6 +28,7 @@ export class AuthService {
   async login(args: LoginArgs): Promise<Tokens> {
     const coincidence = await this.userModel
       .findOne({ email: args.email })
+      .populate('roles')
       .exec();
     if (!coincidence) {
       throw new RpcException('User not found!');
@@ -44,14 +45,23 @@ export class AuthService {
     if (!isPasswordCorrect) {
       throw new RpcException('Incorrect login or password');
     }
-    const { accessToken, refreshToken } = this.tokenService.generateToken(args);
+
+    const roles = coincidence.roles.map((ur: any) => ur.roleId.name);
+
+    const { accessToken, refreshToken } = this.tokenService.generateToken({
+      id: coincidence._id,
+      email: coincidence.email,
+      roles,
+    });
     await this.tokenService.saveRefreshToken(refreshToken, coincidence._id);
+
     return {
       accessToken,
       refreshToken,
     };
   }
   async logOut() {}
+
   async signUp(args: SignUpArgs): Promise<Tokens> {
     const coincidence = await this.userModel
       .findOne({ email: args.email })
@@ -59,8 +69,8 @@ export class AuthService {
     if (coincidence) {
       throw new RpcException('A user with this email already exists.');
     }
-    const { accessToken, refreshToken } = this.tokenService.generateToken(args);
     const hashPassword = await hash(args.password, 10);
+    const roleId = await this.roleService.getRoleIdByName('USER');
 
     const link = uuidv4();
     const user = await this.userModel.create({
@@ -69,11 +79,13 @@ export class AuthService {
       password: hashPassword,
       linkForActivate: link,
     });
-
+    await this.userRoleModel.create({ userId: user._id, roleId: roleId._id });
+    const { accessToken, refreshToken } = this.tokenService.generateToken({
+      id: user._id,
+      email: user.email,
+      roles: [roleId.name],
+    });
     await this.tokenService.saveRefreshToken(refreshToken, user._id);
-    const roleId = await this.roleService.getRoleIdByName('USER');
-    await this.userRoleModel.create({ userId: user._id, roleId });
-
     await this.mailService.sendMail({ link, mail: args.email });
     return {
       accessToken,
