@@ -75,4 +75,17 @@ export class TokenService {
       await this.tokenModel.create({ userId: userId, refreshToken });
     }
   }
+
+  async refreshToken(refreshTokenFromUser: string) {
+    this.validateRefreshToken(refreshTokenFromUser);
+    const { id, email, roles }: Payload =
+      this.jwtService.decode(refreshTokenFromUser);
+    const { accessToken, refreshToken } = this.generateToken({
+      id,
+      email,
+      roles,
+    });
+    await this.saveRefreshToken(refreshToken, id);
+    return { accessToken, refreshToken };
+  }
 }
