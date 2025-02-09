@@ -25,12 +25,11 @@ export class RolesGuard implements CanActivate {
     }
     const graphQlContext = GqlExecutionContext.create(context);
     const request = graphQlContext.getContext().req;
-    const token = request.headers.authorization;
+    const token = request.cookies?.access_token;
     if (!token) {
       throw new RpcException('You are not authorized');
     }
-    const [type, splitToken] = token.split(' ');
-    const decodedToken = this.jwtService.verify(splitToken, {
+    const decodedToken = this.jwtService.verify(token, {
       secret: accessJwtSecret,
     });
     const decodedUserRoles: string[] = decodedToken.roles;

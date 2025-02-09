@@ -19,26 +19,27 @@ export class AuthGuard implements CanActivate {
     }
     const graphQlContext = GqlExecutionContext.create(context);
     const request = graphQlContext.getContext().req;
-    const token = this.extractTokenFromHeader(request);
+    const token = request.cookies?.access_token;
     if (!token) {
       throw new RpcException('You are not authorized');
     }
     try {
-      await this.jwtService.signAsync(token, {
+      const payload = await this.jwtService.signAsync(token, {
         secret: accessJwtSecret,
       });
+      request.user = payload;
     } catch (error) {
       throw new RpcException('Error signing');
     }
     return true;
   }
 
-  private extractTokenFromHeader(request: Request): string | undefined {
-    const token = request.headers.authorization;
+  // private extractTokenFromHeader(request: Request): string | undefined {
+  //   const token = request.headers.authorization;
 
-    if (!token) return undefined;
+  //   if (!token) return undefined;
 
-    const [type, splitToken] = token.split(' ');
-    return type === 'Bearer' ? splitToken : undefined;
-  }
+  //   const [type, splitToken] = token.split(' ');
+  //   return type === 'Bearer' ? splitToken : undefined;
+  // }
 }
