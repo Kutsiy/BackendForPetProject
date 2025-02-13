@@ -22,14 +22,14 @@ export class AuthResolver {
     const { accessToken, refreshToken } = tokens;
     res.cookie('access_token', `${accessToken}`, {
       httpOnly: true,
-      sameSite: 'strict',
+      sameSite: 'none',
       secure: true,
       maxAge: 15 * 60 * 1000,
     });
 
     res.cookie('refresh_token', `${refreshToken}`, {
       httpOnly: true,
-      sameSite: 'strict',
+      sameSite: 'none',
       secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
@@ -57,14 +57,14 @@ export class AuthResolver {
     const { accessToken, refreshToken } = tokens;
     res.cookie('access_token', `${accessToken}`, {
       httpOnly: true,
-      sameSite: 'strict',
+      sameSite: 'none',
       secure: true,
       maxAge: 15 * 60 * 1000,
     });
 
     res.cookie('refresh_token', `${refreshToken}`, {
       httpOnly: true,
-      sameSite: 'strict',
+      sameSite: 'none',
       secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
