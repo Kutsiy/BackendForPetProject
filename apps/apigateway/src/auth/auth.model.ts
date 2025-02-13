@@ -46,3 +46,21 @@ export class Tokens {
   @Field(() => String, { nullable: true })
   refreshToken: string;
 }
+
+@ObjectType()
+export class User {
+  @Field(() => String)
+  id: string;
+
+  @Field(() => String)
+  email: string;
+}
+
+@ObjectType()
+export class AuthReturn {
+  @Field(() => Tokens)
+  tokens: Tokens;
+
+  @Field(() => User)
+  user: User;
+}

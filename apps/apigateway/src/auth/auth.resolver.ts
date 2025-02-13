@@ -1,5 +1,5 @@
 import { Resolver, Query, Args, Context } from '@nestjs/graphql';
-import { LoginArgs, SignUpArgs, Tokens } from './auth.model';
+import { AuthReturn, LoginArgs, SignUpArgs, Tokens } from './auth.model';
 import { AuthService } from './auth.service';
 import { UseFilters, UseGuards } from '@nestjs/common';
 import { AllExceptionFilter } from '../tools/exeption/exeption.filter';
@@ -11,14 +11,15 @@ import { AuthGuard } from '../tools/guards/auth/auth.guard';
 export class AuthResolver {
   constructor(private authService: AuthService) {}
 
-  @Query(() => Tokens)
+  @Query(() => AuthReturn)
   async Login(
     @Args() args: LoginArgs,
     @Context() context: { res: Response },
-  ): Promise<Tokens> {
+  ): Promise<AuthReturn> {
     const { res } = context;
     const result = await this.authService.login(args);
-    const { accessToken, refreshToken } = await result.toPromise();
+    const { tokens, user } = await result.toPromise();
+    const { accessToken, refreshToken } = tokens;
     res.cookie('access_token', `${accessToken}`, {
       httpOnly: true,
       sameSite: 'strict',
@@ -33,7 +34,7 @@ export class AuthResolver {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    return { accessToken, refreshToken };
+    return { tokens, user };
   }
   @Query(() => Tokens)
   LogOut(@Context() context: { res: Response }): Tokens {
@@ -45,28 +46,29 @@ export class AuthResolver {
       refreshToken: 'a',
     };
   }
-  @Query(() => Tokens)
+  @Query(() => AuthReturn)
   async SignUp(
     @Args() args: SignUpArgs,
     @Context() context: { res: Response },
-  ): Promise<Tokens> {
+  ): Promise<AuthReturn> {
     const { res } = context;
     const result = await this.authService.signUp(args);
-    const { accessToken, refreshToken } = await result.toPromise();
+    const { tokens, user } = await result.toPromise();
+    const { accessToken, refreshToken } = tokens;
     res.cookie('access_token', `${accessToken}`, {
-      // httpOnly: true,
+      httpOnly: true,
       sameSite: 'strict',
-      // secure: true,
+      secure: true,
       maxAge: 15 * 60 * 1000,
     });
 
     res.cookie('refresh_token', `${refreshToken}`, {
-      // httpOnly: true,
+      httpOnly: true,
       sameSite: 'strict',
-      // secure: true,
+      secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    return { accessToken, refreshToken };
+    return { tokens, user };
   }
 }

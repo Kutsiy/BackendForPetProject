@@ -4,9 +4,9 @@ import {
   AuthServiceController,
   LoginArgs,
   SignUpArgs,
-  Tokens,
   AuthServiceControllerMethods,
   EmptyAuth,
+  AuthReturns,
 } from '@app/common/types/protos/auth';
 import { Observable } from 'rxjs';
 
@@ -14,10 +14,10 @@ import { Observable } from 'rxjs';
 @AuthServiceControllerMethods()
 export class AuthserviceController implements AuthServiceController {
   constructor(private authService: AuthService) {}
-  async login(request: LoginArgs): Promise<Tokens> {
+  async login(request: LoginArgs): Promise<AuthReturns> {
     return await this.authService.login(request);
   }
-  async signUp(request: SignUpArgs): Promise<Tokens> {
+  async signUp(request: SignUpArgs): Promise<AuthReturns> {
     return await this.authService.signUp(request);
   }
   logOut(

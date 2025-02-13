@@ -3,8 +3,8 @@ syntax = "proto3";
 package auth;
 
 service AuthService {
-    rpc Login(LoginArgs) returns (Tokens) {}
-    rpc SignUp(SignUpArgs) returns (Tokens) {}
+    rpc Login(LoginArgs) returns (AuthReturns) {}
+    rpc SignUp(SignUpArgs) returns (AuthReturns) {}
     rpc LogOut(EmptyAuth) returns (EmptyAuth) {}
 }
 
@@ -22,6 +22,16 @@ message SignUpArgs {
 message Tokens {
     string accessToken = 1;
     string refreshToken = 2;
+}
+
+message User {
+    string id = 1;
+    string email = 2;
+}
+
+message AuthReturns {
+    Tokens tokens = 1;
+    User user = 2;
 }
 
 message EmptyAuth {}

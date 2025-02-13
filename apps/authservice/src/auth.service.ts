@@ -7,7 +7,11 @@ import {
   UserRoleDocumentType,
 } from '@app/common';
 import { Model } from 'mongoose';
-import { LoginArgs, SignUpArgs, Tokens } from '@app/common/types/protos/auth';
+import {
+  AuthReturns,
+  LoginArgs,
+  SignUpArgs,
+} from '@app/common/types/protos/auth';
 import { RpcException } from '@nestjs/microservices';
 import { v4 as uuidv4 } from 'uuid';
 import { hash, compare } from 'bcrypt';
@@ -25,7 +29,7 @@ export class AuthService {
     private readonly mailService: MailService,
     private readonly roleService: RoleService,
   ) {}
-  async login(args: LoginArgs): Promise<Tokens> {
+  async login(args: LoginArgs): Promise<AuthReturns> {
     const coincidence = await this.userModel
       .findOne({ email: args.email })
       .populate('roles')
@@ -56,13 +60,19 @@ export class AuthService {
     await this.tokenService.saveRefreshToken(refreshToken, coincidence._id);
 
     return {
-      accessToken,
-      refreshToken,
+      tokens: {
+        accessToken,
+        refreshToken,
+      },
+      user: {
+        id: `${coincidence._id}`,
+        email: coincidence.email,
+      },
     };
   }
   async logOut() {}
 
-  async signUp(args: SignUpArgs): Promise<Tokens> {
+  async signUp(args: SignUpArgs): Promise<AuthReturns> {
     const coincidence = await this.userModel
       .findOne({ email: args.email })
       .exec();
@@ -88,8 +98,14 @@ export class AuthService {
     await this.tokenService.saveRefreshToken(refreshToken, user._id);
     await this.mailService.sendMail({ link, mail: args.email });
     return {
-      accessToken,
-      refreshToken,
+      tokens: {
+        accessToken,
+        refreshToken,
+      },
+      user: {
+        id: `${user._id}`,
+        email: user.email,
+      },
     };
   }
 }

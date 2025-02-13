@@ -5,7 +5,7 @@ import {
   SignUpArgs,
 } from '@app/common/types/protos/auth';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
-import { ClientGrpc, RpcException } from '@nestjs/microservices';
+import { ClientGrpc } from '@nestjs/microservices';
 
 @Injectable()
 export class AuthService implements OnModuleInit {
@@ -16,7 +16,7 @@ export class AuthService implements OnModuleInit {
       this.authClient.getService<AuthServiceClient>(AUTH_SERVICE_NAME);
   }
 
-  async login(args: LoginArgs): Promise<any> {
+  async login(args: LoginArgs) {
     return await this.authService.login(args);
   }
 

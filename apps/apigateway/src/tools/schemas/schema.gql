@@ -21,10 +21,20 @@ type Tokens {
   refreshToken: String
 }
 
+type User {
+  id: String!
+  email: String!
+}
+
+type AuthReturn {
+  tokens: Tokens!
+  user: User!
+}
+
 type Query {
   Posts(searchString: String, page: Int! = 1, take: Int! = 10): PaginatedPosts!
   Post(id: String): Post!
-  Login(email: String!, password: String!): Tokens!
+  Login(email: String!, password: String!): AuthReturn!
   LogOut: Tokens!
-  SignUp(name: String!, email: String!, password: String!): Tokens!
+  SignUp(name: String!, email: String!, password: String!): AuthReturn!
 }

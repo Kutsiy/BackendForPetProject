@@ -26,23 +26,33 @@ export interface Tokens {
   refreshToken: string;
 }
 
+export interface User {
+  id: string;
+  email: string;
+}
+
+export interface AuthReturns {
+  tokens: Tokens | undefined;
+  user: User | undefined;
+}
+
 export interface EmptyAuth {
 }
 
 export const AUTH_PACKAGE_NAME = "auth";
 
 export interface AuthServiceClient {
-  login(request: LoginArgs): Observable<Tokens>;
+  login(request: LoginArgs): Observable<AuthReturns>;
 
-  signUp(request: SignUpArgs): Observable<Tokens>;
+  signUp(request: SignUpArgs): Observable<AuthReturns>;
 
   logOut(request: EmptyAuth): Observable<EmptyAuth>;
 }
 
 export interface AuthServiceController {
-  login(request: LoginArgs): Promise<Tokens> | Observable<Tokens> | Tokens;
+  login(request: LoginArgs): Promise<AuthReturns> | Observable<AuthReturns> | AuthReturns;
 
-  signUp(request: SignUpArgs): Promise<Tokens> | Observable<Tokens> | Tokens;
+  signUp(request: SignUpArgs): Promise<AuthReturns> | Observable<AuthReturns> | AuthReturns;
 
   logOut(request: EmptyAuth): Promise<EmptyAuth> | Observable<EmptyAuth> | EmptyAuth;
 }
