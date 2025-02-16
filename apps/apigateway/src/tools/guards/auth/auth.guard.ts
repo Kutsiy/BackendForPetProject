@@ -27,7 +27,14 @@ export class AuthGuard implements CanActivate {
     const request = graphQlContext.getContext().req;
     const token = request.cookies?.access_token;
     if (!token) {
-      throw new RpcException('You are not authorized');
+      throw new GraphQLError('You are not authorized', {
+        extensions: {
+          code: 'You are not authorized',
+          http: {
+            status: 401,
+          },
+        },
+      });
     }
     try {
       const payload = await this.jwtService.verifyAsync(token, {

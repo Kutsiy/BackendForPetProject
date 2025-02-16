@@ -1,4 +1,4 @@
-import { Resolver, Query, Args, Context } from '@nestjs/graphql';
+import { Resolver, Query, Args, Context, Mutation } from '@nestjs/graphql';
 import { AuthReturn, LoginArgs, SignUpArgs, Tokens } from './auth.model';
 import { AuthService } from './auth.service';
 import { UseFilters, UseGuards } from '@nestjs/common';
@@ -71,4 +71,7 @@ export class AuthResolver {
 
     return { tokens, user };
   }
+
+  @Mutation()
+  async Refresh() {}
 }

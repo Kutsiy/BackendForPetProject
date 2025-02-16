@@ -36,6 +36,10 @@ export interface AuthReturns {
   user: User | undefined;
 }
 
+export interface RefreshArgs {
+  refreshToken: string;
+}
+
 export interface EmptyAuth {
 }
 
@@ -47,6 +51,8 @@ export interface AuthServiceClient {
   signUp(request: SignUpArgs): Observable<AuthReturns>;
 
   logOut(request: EmptyAuth): Observable<EmptyAuth>;
+
+  refresh(request: RefreshArgs): Observable<EmptyAuth>;
 }
 
 export interface AuthServiceController {
@@ -55,11 +61,13 @@ export interface AuthServiceController {
   signUp(request: SignUpArgs): Promise<AuthReturns> | Observable<AuthReturns> | AuthReturns;
 
   logOut(request: EmptyAuth): Promise<EmptyAuth> | Observable<EmptyAuth> | EmptyAuth;
+
+  refresh(request: RefreshArgs): Promise<EmptyAuth> | Observable<EmptyAuth> | EmptyAuth;
 }
 
 export function AuthServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["login", "signUp", "logOut"];
+    const grpcMethods: string[] = ["login", "signUp", "logOut", "refresh"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("AuthService", method)(constructor.prototype[method], method, descriptor);
