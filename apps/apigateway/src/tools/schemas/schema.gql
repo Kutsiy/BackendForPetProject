@@ -38,3 +38,7 @@ type Query {
   LogOut: Tokens!
   SignUp(name: String!, email: String!, password: String!): AuthReturn!
 }
+
+type Mutation {
+  Refresh: Boolean!
+}

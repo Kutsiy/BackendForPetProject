@@ -7,6 +7,8 @@ import {
   AuthServiceControllerMethods,
   EmptyAuth,
   AuthReturns,
+  RefreshArgs,
+  Tokens,
 } from '@app/common/types/protos/auth';
 import { Observable } from 'rxjs';
 
@@ -14,6 +16,10 @@ import { Observable } from 'rxjs';
 @AuthServiceControllerMethods()
 export class AuthserviceController implements AuthServiceController {
   constructor(private authService: AuthService) {}
+  async refresh(request: RefreshArgs): Promise<Tokens> {
+    const { refreshToken } = request;
+    return await this.authService.refresh(refreshToken);
+  }
   async login(request: LoginArgs): Promise<AuthReturns> {
     return await this.authService.login(request);
   }

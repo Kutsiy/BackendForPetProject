@@ -41,11 +41,17 @@ export class TokenService {
     }
   }
 
-  validateRefreshToken(token: string) {
+  async validateRefreshToken(token: string) {
     const { refreshJwtSecret } = this.findSecret();
 
     try {
       this.jwtService.verify(token, { secret: refreshJwtSecret });
+      const tokenFromDb = await this.tokenModel
+        .findOne({ refreshToken: token })
+        .exec();
+      if (!tokenFromDb) {
+        throw new RpcException('Refresh token not found');
+      }
       return true;
     } catch (e) {
       return false;
@@ -77,7 +83,10 @@ export class TokenService {
   }
 
   async refreshToken(refreshTokenFromUser: string) {
-    this.validateRefreshToken(refreshTokenFromUser);
+    const isValid = await this.validateRefreshToken(refreshTokenFromUser);
+    if (!isValid) {
+      throw new RpcException('Invalid refresh token');
+    }
     const { id, email, roles }: Payload =
       this.jwtService.decode(refreshTokenFromUser);
     const { accessToken, refreshToken } = this.generateToken({
@@ -85,7 +94,8 @@ export class TokenService {
       email,
       roles,
     });
-    await this.saveRefreshToken(refreshToken, id);
+    const userIdObject = new Types.ObjectId(id);
+    await this.saveRefreshToken(refreshToken, userIdObject);
     return { accessToken, refreshToken };
   }
 }

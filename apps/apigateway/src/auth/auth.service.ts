@@ -2,6 +2,7 @@ import {
   AUTH_SERVICE_NAME,
   AuthServiceClient,
   LoginArgs,
+  RefreshArgs,
   SignUpArgs,
 } from '@app/common/types/protos/auth';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
@@ -22,5 +23,9 @@ export class AuthService implements OnModuleInit {
 
   async signUp(args: SignUpArgs) {
     return await this.authService.signUp(args);
+  }
+
+  async refresh(args: RefreshArgs) {
+    return await this.authService.refresh(args);
   }
 }

@@ -6,7 +6,7 @@ service AuthService {
     rpc Login(LoginArgs) returns (AuthReturns) {}
     rpc SignUp(SignUpArgs) returns (AuthReturns) {}
     rpc LogOut(EmptyAuth) returns (EmptyAuth) {}
-    rpc Refresh(RefreshArgs) returns (EmptyAuth) {}
+    rpc Refresh(RefreshArgs) returns (Tokens) {}
 }
 
 message LoginArgs {

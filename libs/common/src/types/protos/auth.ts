@@ -52,7 +52,7 @@ export interface AuthServiceClient {
 
   logOut(request: EmptyAuth): Observable<EmptyAuth>;
 
-  refresh(request: RefreshArgs): Observable<EmptyAuth>;
+  refresh(request: RefreshArgs): Observable<Tokens>;
 }
 
 export interface AuthServiceController {
@@ -62,7 +62,7 @@ export interface AuthServiceController {
 
   logOut(request: EmptyAuth): Promise<EmptyAuth> | Observable<EmptyAuth> | EmptyAuth;
 
-  refresh(request: RefreshArgs): Promise<EmptyAuth> | Observable<EmptyAuth> | EmptyAuth;
+  refresh(request: RefreshArgs): Promise<Tokens> | Observable<Tokens> | Tokens;
 }
 
 export function AuthServiceControllerMethods() {

@@ -108,4 +108,8 @@ export class AuthService {
       },
     };
   }
+
+  async refresh(refreshToken: string) {
+    return await this.tokenService.refreshToken(refreshToken);
+  }
 }

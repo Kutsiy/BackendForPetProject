@@ -3,7 +3,7 @@ import { AuthReturn, LoginArgs, SignUpArgs, Tokens } from './auth.model';
 import { AuthService } from './auth.service';
 import { UseFilters, UseGuards } from '@nestjs/common';
 import { AllExceptionFilter } from '../tools/exeption/exeption.filter';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { AuthGuard } from '../tools/guards/auth/auth.guard';
 
 @Resolver(() => Tokens)
@@ -72,6 +72,26 @@ export class AuthResolver {
     return { tokens, user };
   }
 
-  @Mutation()
-  async Refresh() {}
+  @Mutation(() => Boolean)
+  async Refresh(@Context() context: { res: Response; req: Request }) {
+    const { res, req } = context;
+    const result = await this.authService.refresh({
+      refreshToken: req.cookies?.refresh_token,
+    });
+    const { accessToken, refreshToken } = await result.toPromise();
+    res.cookie('access_token', `${accessToken}`, {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+      maxAge: 15 * 60 * 1000,
+    });
+
+    res.cookie('refresh_token', `${refreshToken}`, {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+    return true;
+  }
 }
