@@ -1,5 +1,11 @@
 import { Resolver, Query, Args, Context, Mutation } from '@nestjs/graphql';
-import { AuthReturn, LoginArgs, SignUpArgs, Tokens } from './auth.model';
+import {
+  AuthReturn,
+  LoginArgs,
+  RefreshReturn,
+  SignUpArgs,
+  Tokens,
+} from './auth.model';
 import { AuthService } from './auth.service';
 import { UseFilters, UseGuards } from '@nestjs/common';
 import { AllExceptionFilter } from '../tools/exeption/exeption.filter';
@@ -72,13 +78,16 @@ export class AuthResolver {
     return { tokens, user };
   }
 
-  @Mutation(() => Boolean)
-  async Refresh(@Context() context: { res: Response; req: Request }) {
+  @Mutation(() => RefreshReturn)
+  async Refresh(
+    @Context() context: { res: Response; req: Request },
+  ): Promise<RefreshReturn> {
     const { res, req } = context;
     const result = await this.authService.refresh({
       refreshToken: req.cookies?.refresh_token,
     });
-    const { accessToken, refreshToken } = await result.toPromise();
+    const { tokens, user } = await result.toPromise();
+    const { accessToken, refreshToken } = tokens;
     res.cookie('access_token', `${accessToken}`, {
       httpOnly: true,
       sameSite: 'none',
@@ -92,6 +101,6 @@ export class AuthResolver {
       secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-    return true;
+    return { tokens, user };
   }
 }

@@ -64,3 +64,13 @@ export class AuthReturn {
   @Field(() => User)
   user: User;
 }
+
+
+@ObjectType()
+export class RefreshReturn {
+  @Field(() => Tokens)
+  tokens: Tokens;
+
+  @Field(() => User)
+  user: User;
+}

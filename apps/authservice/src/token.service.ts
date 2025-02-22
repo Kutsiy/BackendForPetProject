@@ -10,6 +10,7 @@ interface Payload {
   id: Types.ObjectId;
   email: string;
   roles: string[];
+  // isActivated: boolean;
 }
 @Injectable()
 export class TokenService {
@@ -96,6 +97,6 @@ export class TokenService {
     });
     const userIdObject = new Types.ObjectId(id);
     await this.saveRefreshToken(refreshToken, userIdObject);
-    return { accessToken, refreshToken };
+    return { accessToken, refreshToken, user: { id: `${id}`, email } };
   }
 }

@@ -6,7 +6,7 @@ service AuthService {
     rpc Login(LoginArgs) returns (AuthReturns) {}
     rpc SignUp(SignUpArgs) returns (AuthReturns) {}
     rpc LogOut(EmptyAuth) returns (EmptyAuth) {}
-    rpc Refresh(RefreshArgs) returns (Tokens) {}
+    rpc Refresh(RefreshArgs) returns (RefreshReturns) {}
 }
 
 message LoginArgs {
@@ -35,8 +35,14 @@ message AuthReturns {
     User user = 2;
 }
 
+
 message RefreshArgs {
     string refreshToken = 1;
+}
+
+message RefreshReturns {
+    Tokens tokens = 1;
+    User user = 2;
 }
 
 message EmptyAuth {}

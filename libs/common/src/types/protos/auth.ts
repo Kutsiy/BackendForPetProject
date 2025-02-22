@@ -40,6 +40,11 @@ export interface RefreshArgs {
   refreshToken: string;
 }
 
+export interface RefreshReturns {
+  tokens: Tokens | undefined;
+  user: User | undefined;
+}
+
 export interface EmptyAuth {
 }
 
@@ -52,7 +57,7 @@ export interface AuthServiceClient {
 
   logOut(request: EmptyAuth): Observable<EmptyAuth>;
 
-  refresh(request: RefreshArgs): Observable<Tokens>;
+  refresh(request: RefreshArgs): Observable<RefreshReturns>;
 }
 
 export interface AuthServiceController {
@@ -62,7 +67,7 @@ export interface AuthServiceController {
 
   logOut(request: EmptyAuth): Promise<EmptyAuth> | Observable<EmptyAuth> | EmptyAuth;
 
-  refresh(request: RefreshArgs): Promise<Tokens> | Observable<Tokens> | Tokens;
+  refresh(request: RefreshArgs): Promise<RefreshReturns> | Observable<RefreshReturns> | RefreshReturns;
 }
 
 export function AuthServiceControllerMethods() {

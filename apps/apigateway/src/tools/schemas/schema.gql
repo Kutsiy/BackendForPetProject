@@ -31,6 +31,11 @@ type AuthReturn {
   user: User!
 }
 
+type RefreshReturn {
+  tokens: Tokens!
+  user: User!
+}
+
 type Query {
   Posts(searchString: String, page: Int! = 1, take: Int! = 10): PaginatedPosts!
   Post(id: String): Post!
@@ -40,5 +45,5 @@ type Query {
 }
 
 type Mutation {
-  Refresh: Boolean!
+  Refresh: RefreshReturn!
 }
