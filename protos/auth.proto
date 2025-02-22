@@ -28,6 +28,7 @@ message Tokens {
 message User {
     string id = 1;
     string email = 2;
+    bool isActivated = 3;
 }
 
 message AuthReturns {

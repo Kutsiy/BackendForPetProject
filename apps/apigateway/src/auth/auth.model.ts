@@ -54,6 +54,9 @@ export class User {
 
   @Field(() => String)
   email: string;
+
+  @Field(() => Boolean)
+  isActivated: boolean;
 }
 
 @ObjectType()
@@ -64,7 +67,6 @@ export class AuthReturn {
   @Field(() => User)
   user: User;
 }
-
 
 @ObjectType()
 export class RefreshReturn {

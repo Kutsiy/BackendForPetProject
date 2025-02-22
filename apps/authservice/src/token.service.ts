@@ -1,4 +1,4 @@
-import { Token, TokenDocumentType } from '@app/common';
+import { Token, TokenDocumentType, User, UserDocumentType } from '@app/common';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -10,7 +10,7 @@ interface Payload {
   id: Types.ObjectId;
   email: string;
   roles: string[];
-  // isActivated: boolean;
+  isActivated: boolean;
 }
 @Injectable()
 export class TokenService {
@@ -19,6 +19,7 @@ export class TokenService {
     private readonly configService: ConfigService,
     @InjectModel(Token.name)
     private readonly tokenModel: Model<TokenDocumentType>,
+    @InjectModel(User.name) private readonly userModel: Model<UserDocumentType>,
   ) {}
 
   findSecret() {
@@ -88,15 +89,25 @@ export class TokenService {
     if (!isValid) {
       throw new RpcException('Invalid refresh token');
     }
-    const { id, email, roles }: Payload =
-      this.jwtService.decode(refreshTokenFromUser);
+    const { id }: Payload = this.jwtService.decode(refreshTokenFromUser);
+    const userIdObject = new Types.ObjectId(id);
+    const {
+      email,
+      roles: ObjectIdRoles,
+      isActivated,
+    } = await this.userModel.findById(userIdObject).populate('roles').exec();
+    const roles = ObjectIdRoles.map((ur: any) => ur.roleId.name);
     const { accessToken, refreshToken } = this.generateToken({
       id,
       email,
       roles,
+      isActivated,
     });
-    const userIdObject = new Types.ObjectId(id);
     await this.saveRefreshToken(refreshToken, userIdObject);
-    return { accessToken, refreshToken, user: { id: `${id}`, email } };
+    return {
+      accessToken,
+      refreshToken,
+      user: { id: `${id}`, email, isActivated },
+    };
   }
 }

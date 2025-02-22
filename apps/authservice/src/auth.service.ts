@@ -56,6 +56,7 @@ export class AuthService {
       id: coincidence._id,
       email: coincidence.email,
       roles,
+      isActivated: coincidence.isActivated,
     });
     await this.tokenService.saveRefreshToken(refreshToken, coincidence._id);
 
@@ -67,6 +68,7 @@ export class AuthService {
       user: {
         id: `${coincidence._id}`,
         email: coincidence.email,
+        isActivated: coincidence.isActivated,
       },
     };
   }
@@ -94,6 +96,7 @@ export class AuthService {
       id: user._id,
       email: user.email,
       roles: [roleId.name],
+      isActivated: user.isActivated,
     });
     await this.tokenService.saveRefreshToken(refreshToken, user._id);
     await this.mailService.sendMail({ link, mail: args.email });
@@ -105,6 +108,7 @@ export class AuthService {
       user: {
         id: `${user._id}`,
         email: user.email,
+        isActivated: user.isActivated,
       },
     };
   }

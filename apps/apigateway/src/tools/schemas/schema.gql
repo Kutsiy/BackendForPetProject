@@ -24,6 +24,7 @@ type Tokens {
 type User {
   id: String!
   email: String!
+  isActivated: Boolean!
 }
 
 type AuthReturn {
