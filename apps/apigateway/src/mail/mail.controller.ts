@@ -18,6 +18,7 @@ export class MailController {
   @Redirect('http://localhost:4200')
   async checkMail(@Param('link') link: string) {
     const result = await this.mailserviceService.checkMail(link);
-    return { url: 'http://localhost:4200' };
+    const { link: url } = await result.toPromise();
+    return { url };
   }
 }

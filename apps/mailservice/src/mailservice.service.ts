@@ -31,6 +31,6 @@ export class MailserviceService {
     user.isActivated = true;
     user.save();
     console.log('LOGGG');
-    return {};
+    return { link: 'http://localhost:4200' };
   }
 }

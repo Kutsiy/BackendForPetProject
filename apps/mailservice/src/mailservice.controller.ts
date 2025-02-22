@@ -2,6 +2,7 @@ import { Controller, Get } from '@nestjs/common';
 import { MailserviceService } from './mailservice.service';
 import {
   CheckLinkArg,
+  CheckMailReturn,
   Empty,
   MailServiceController,
   MailServiceControllerMethods,
@@ -18,7 +19,7 @@ export class MailserviceController implements MailServiceController {
     return await this.mailService.sendMail(request);
   }
 
-  async checkMail(request: CheckLinkArg): Promise<Empty> {
+  async checkMail(request: CheckLinkArg): Promise<CheckMailReturn> {
     return await this.mailService.checkMail(request.link);
   }
 }

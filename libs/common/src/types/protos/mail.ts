@@ -14,6 +14,10 @@ export interface CheckLinkArg {
   link: string;
 }
 
+export interface CheckMailReturn {
+  link: string;
+}
+
 export interface SendMailArgs {
   link: string;
   mail: string;
@@ -25,13 +29,13 @@ export interface Empty {
 export const MAIL_PACKAGE_NAME = "mail";
 
 export interface MailServiceClient {
-  checkMail(request: CheckLinkArg): Observable<Empty>;
+  checkMail(request: CheckLinkArg): Observable<CheckMailReturn>;
 
   sendMail(request: SendMailArgs): Observable<Empty>;
 }
 
 export interface MailServiceController {
-  checkMail(request: CheckLinkArg): Promise<Empty> | Observable<Empty> | Empty;
+  checkMail(request: CheckLinkArg): Promise<CheckMailReturn> | Observable<CheckMailReturn> | CheckMailReturn;
 
   sendMail(request: SendMailArgs): Promise<Empty> | Observable<Empty> | Empty;
 }

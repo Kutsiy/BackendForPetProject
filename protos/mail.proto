@@ -3,11 +3,15 @@ syntax = "proto3";
 package mail;
 
 service MailService {
-    rpc CheckMail(CheckLinkArg) returns (Empty) {}
+    rpc CheckMail(CheckLinkArg) returns (CheckMailReturn) {}
     rpc SendMail(SendMailArgs) returns (Empty) {}
 }
 
 message CheckLinkArg {
+    string link = 1;
+}
+
+message CheckMailReturn {
     string link = 1;
 }
 
