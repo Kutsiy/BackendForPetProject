@@ -47,4 +47,5 @@ type Query {
 
 type Mutation {
   Refresh: RefreshReturn!
+  GetUser: User!
 }

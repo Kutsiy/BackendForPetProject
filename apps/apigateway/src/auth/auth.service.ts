@@ -1,6 +1,7 @@
 import {
   AUTH_SERVICE_NAME,
   AuthServiceClient,
+  GetUserArgs,
   LoginArgs,
   RefreshArgs,
   SignUpArgs,
@@ -27,5 +28,9 @@ export class AuthService implements OnModuleInit {
 
   async refresh(args: RefreshArgs) {
     return await this.authService.refresh(args);
+  }
+
+  async getUser(args: GetUserArgs) {
+    return await this.authService.getUser(args);
   }
 }

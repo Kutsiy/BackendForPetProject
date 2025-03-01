@@ -5,6 +5,7 @@ import {
   RefreshReturn,
   SignUpArgs,
   Tokens,
+  User,
 } from './auth.model';
 import { AuthService } from './auth.service';
 import { UseFilters, UseGuards } from '@nestjs/common';
@@ -102,5 +103,15 @@ export class AuthResolver {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     return { tokens, user };
+  }
+
+  @Mutation(() => User)
+  async GetUser(@Context() context: { req: Request }): Promise<User> {
+    const { req } = context;
+    const result = await this.authService.getUser({
+      refreshToken: req.cookies?.refresh_token,
+    });
+    const { id, email, isActivated } = await result.toPromise();
+    return { id, email, isActivated };
   }
 }

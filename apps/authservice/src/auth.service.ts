@@ -15,9 +15,10 @@ import {
 import { RpcException } from '@nestjs/microservices';
 import { v4 as uuidv4 } from 'uuid';
 import { hash, compare } from 'bcrypt';
-import { TokenService } from './token.service';
+import { Payload, TokenService } from './token.service';
 import { MailService } from './mail/mail.service';
 import { RoleService } from './role.service';
+import * as request from 'supertest';
 
 @Injectable()
 export class AuthService {
@@ -37,11 +38,6 @@ export class AuthService {
     if (!coincidence) {
       throw new RpcException('User not found!');
     }
-    if (coincidence.isActivated) {
-      throw new RpcException(
-        'A user with this email already exists, but not activated',
-      );
-    }
     const isPasswordCorrect = await compare(
       args.password,
       coincidence.password,
@@ -52,12 +48,14 @@ export class AuthService {
 
     const roles = coincidence.roles.map((ur: any) => ur.roleId.name);
 
-    const { accessToken, refreshToken } = this.tokenService.generateToken({
-      id: coincidence._id,
-      email: coincidence.email,
-      roles,
-      isActivated: coincidence.isActivated,
-    });
+    const { accessToken, refreshToken } = await this.tokenService.generateToken(
+      {
+        id: coincidence._id,
+        email: coincidence.email,
+        roles,
+        isActivated: coincidence.isActivated,
+      },
+    );
     await this.tokenService.saveRefreshToken(refreshToken, coincidence._id);
 
     return {
@@ -81,6 +79,11 @@ export class AuthService {
     if (coincidence) {
       throw new RpcException('A user with this email already exists.');
     }
+    // if (!coincidence.isActivated) {
+    //   throw new RpcException(
+    //     'A user with this email already exists, but not activated',
+    //   );
+    // }
     const hashPassword = await hash(args.password, 10);
     const roleId = await this.roleService.getRoleIdByName('USER');
 
@@ -92,12 +95,14 @@ export class AuthService {
       linkForActivate: link,
     });
     await this.userRoleModel.create({ userId: user._id, roleId: roleId._id });
-    const { accessToken, refreshToken } = this.tokenService.generateToken({
-      id: user._id,
-      email: user.email,
-      roles: [roleId.name],
-      isActivated: user.isActivated,
-    });
+    const { accessToken, refreshToken } = await this.tokenService.generateToken(
+      {
+        id: user._id,
+        email: user.email,
+        roles: [roleId.name],
+        isActivated: user.isActivated,
+      },
+    );
     await this.tokenService.saveRefreshToken(refreshToken, user._id);
     await this.mailService.sendMail({ link, mail: args.email });
     return {
@@ -114,6 +119,20 @@ export class AuthService {
   }
 
   async refresh(refreshToken: string) {
-    return await this.tokenService.refreshToken(refreshToken);
+    try {
+      return await this.tokenService.refreshToken(refreshToken);
+    } catch (err) {
+      console.log(err, 'ERROR FROM AUTHSERVICE');
+    }
+  }
+
+  async getUser(refreshToken: string) {
+    try {
+      const { id, email, isActivated }: Payload =
+        await this.tokenService.getUserByToken(refreshToken);
+      return { id, email, isActivated };
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

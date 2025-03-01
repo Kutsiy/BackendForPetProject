@@ -1,12 +1,17 @@
 import { Token, TokenDocumentType, User, UserDocumentType } from '@app/common';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
+import {
+  JsonWebTokenError,
+  JwtService,
+  NotBeforeError,
+  TokenExpiredError,
+} from '@nestjs/jwt';
 import { RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 
-interface Payload {
+export interface Payload {
   id: Types.ObjectId;
   email: string;
   roles: string[];
@@ -47,67 +52,100 @@ export class TokenService {
     const { refreshJwtSecret } = this.findSecret();
 
     try {
-      this.jwtService.verify(token, { secret: refreshJwtSecret });
+      await this.jwtService.verifyAsync(token, {
+        secret: refreshJwtSecret,
+      });
       const tokenFromDb = await this.tokenModel
         .findOne({ refreshToken: token })
         .exec();
-      if (!tokenFromDb) {
-        throw new RpcException('Refresh token not found');
+      if (!tokenFromDb || !tokenFromDb.refreshToken) {
+        throw new RpcException('TOKEN NOT FOUND');
       }
       return true;
     } catch (e) {
-      return false;
+      if (e instanceof TokenExpiredError) {
+        throw new RpcException('Refresh token has expired');
+      } else if (e instanceof JsonWebTokenError) {
+        throw new RpcException('Invalid refresh token');
+      } else if (e instanceof NotBeforeError) {
+        throw new RpcException('Token is not active yet');
+      } else {
+        throw new RpcException(e);
+      }
     }
   }
 
-  generateToken(payload: Payload) {
+  async generateToken(payload: Payload) {
     const { accessJwtSecret, refreshJwtSecret } = this.findSecret();
 
-    const accessToken = this.jwtService.sign(payload, {
+    const accessToken = await this.jwtService.signAsync(payload, {
       secret: accessJwtSecret,
-      expiresIn: '60s',
+      expiresIn: '15m',
     });
-    const refreshToken = this.jwtService.sign(payload, {
+    const refreshToken = await this.jwtService.signAsync(payload, {
       secret: refreshJwtSecret,
-      expiresIn: '2w',
+      expiresIn: '7d',
     });
     return { accessToken, refreshToken };
   }
 
   async saveRefreshToken(refreshToken: string, userId: Types.ObjectId) {
-    const token = await this.tokenModel.findOne({ userId }).exec();
-    if (token) {
-      token.refreshToken = refreshToken;
-      await token.save();
-    } else {
-      await this.tokenModel.create({ userId: userId, refreshToken });
-    }
+    // const token = await this.tokenModel.findOne({ userId }).exec();
+    // if (token) {
+    //   token.refreshToken = refreshToken;
+    //   await token.save();
+    // } else {
+    //   await this.tokenModel.create({ userId: userId, refreshToken });
+    // }
+    await this.tokenModel
+      .findOneAndUpdate(
+        { userId },
+        { refreshToken },
+        { upsert: true, new: true, returnDocument: 'after' },
+      )
+      .exec();
   }
 
   async refreshToken(refreshTokenFromUser: string) {
-    const isValid = await this.validateRefreshToken(refreshTokenFromUser);
+    try {
+      const isValid = await this.validateRefreshToken(refreshTokenFromUser);
+      if (!isValid) {
+        throw new RpcException('Invalid refresh token');
+      }
+      const { id }: Payload = this.jwtService.decode(refreshTokenFromUser);
+      const userIdObject = new Types.ObjectId(id);
+      const {
+        email,
+        roles: ObjectIdRoles,
+        isActivated,
+      } = await this.userModel.findById(userIdObject).populate('roles').exec();
+      const roles = ObjectIdRoles.map((ur: any) => ur.roleId.name);
+      const { accessToken, refreshToken } = await this.generateToken({
+        id,
+        email,
+        roles,
+        isActivated,
+      });
+      if (!accessToken || !refreshToken) {
+        throw new RpcException('Access and refresh tokens not allowed');
+      }
+      await this.saveRefreshToken(refreshToken, userIdObject);
+      return {
+        accessToken,
+        refreshToken,
+        user: { id: `${id}`, email, isActivated },
+      };
+    } catch (err) {
+      console.log(err, 'ERROR FROM REFRESH_TOKEN');
+      throw new RpcException(err.message || 'Failed to refresh token');
+    }
+  }
+
+  async getUserByToken(refreshToken: string) {
+    const isValid = await this.validateRefreshToken(refreshToken);
     if (!isValid) {
       throw new RpcException('Invalid refresh token');
     }
-    const { id }: Payload = this.jwtService.decode(refreshTokenFromUser);
-    const userIdObject = new Types.ObjectId(id);
-    const {
-      email,
-      roles: ObjectIdRoles,
-      isActivated,
-    } = await this.userModel.findById(userIdObject).populate('roles').exec();
-    const roles = ObjectIdRoles.map((ur: any) => ur.roleId.name);
-    const { accessToken, refreshToken } = this.generateToken({
-      id,
-      email,
-      roles,
-      isActivated,
-    });
-    await this.saveRefreshToken(refreshToken, userIdObject);
-    return {
-      accessToken,
-      refreshToken,
-      user: { id: `${id}`, email, isActivated },
-    };
+    return this.jwtService.decode(refreshToken);
   }
 }

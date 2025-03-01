@@ -9,6 +9,8 @@ import {
   AuthReturns,
   RefreshArgs,
   RefreshReturns,
+  GetUserArgs,
+  User,
 } from '@app/common/types/protos/auth';
 import { Observable } from 'rxjs';
 
@@ -16,14 +18,23 @@ import { Observable } from 'rxjs';
 @AuthServiceControllerMethods()
 export class AuthserviceController implements AuthServiceController {
   constructor(private authService: AuthService) {}
+
+  async getUser(request: GetUserArgs): Promise<User> {
+    const { refreshToken } = request;
+    return await this.authService.getUser(refreshToken);
+  }
   async refresh(request: RefreshArgs): Promise<RefreshReturns> {
-    const { refreshToken: refreshTokenRequest } = request;
-    const { accessToken, refreshToken, user } =
-      await this.authService.refresh(refreshTokenRequest);
-    return {
-      tokens: { accessToken: accessToken, refreshToken: refreshToken },
-      user,
-    };
+    try {
+      const { refreshToken: refreshTokenRequest } = request;
+      const { accessToken, refreshToken, user } =
+        await this.authService.refresh(refreshTokenRequest);
+      return {
+        tokens: { accessToken: accessToken, refreshToken: refreshToken },
+        user,
+      };
+    } catch (error) {
+      console.log(error, 'ERROR FROM CONTROLLER');
+    }
   }
   async login(request: LoginArgs): Promise<AuthReturns> {
     return await this.authService.login(request);

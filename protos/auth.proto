@@ -7,6 +7,7 @@ service AuthService {
     rpc SignUp(SignUpArgs) returns (AuthReturns) {}
     rpc LogOut(EmptyAuth) returns (EmptyAuth) {}
     rpc Refresh(RefreshArgs) returns (RefreshReturns) {}
+    rpc GetUser(GetUserArgs) returns (User) {}
 }
 
 message LoginArgs {
@@ -29,6 +30,10 @@ message User {
     string id = 1;
     string email = 2;
     bool isActivated = 3;
+}
+
+message GetUserArgs {
+    string refreshToken = 1;
 }
 
 message AuthReturns {
