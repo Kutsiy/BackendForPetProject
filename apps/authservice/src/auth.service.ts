@@ -135,4 +135,19 @@ export class AuthService {
       console.log(error);
     }
   }
+
+  async getAllInfoAboutUser(refreshToken: string) {
+    try {
+      const { email }: Payload =
+        await this.tokenService.getUserByToken(refreshToken);
+      const user = await this.userModel
+        .findOne({ email })
+        .populate('roles')
+        .exec();
+      const roles = user.roles.map((ur: any) => ur.roleId.name);
+      return { name: user.name, email: user.email, roles };
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }

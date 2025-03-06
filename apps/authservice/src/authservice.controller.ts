@@ -11,6 +11,8 @@ import {
   RefreshReturns,
   GetUserArgs,
   User,
+  GetAllInfoAboutUserArgs,
+  UserInfo,
 } from '@app/common/types/protos/auth';
 import { Observable } from 'rxjs';
 
@@ -18,10 +20,18 @@ import { Observable } from 'rxjs';
 @AuthServiceControllerMethods()
 export class AuthserviceController implements AuthServiceController {
   constructor(private authService: AuthService) {}
+  async getAllInfoAboutUser(
+    request: GetAllInfoAboutUserArgs,
+  ): Promise<UserInfo> {
+    const { refreshToken } = request;
+    return await this.authService.getAllInfoAboutUser(refreshToken);
+  }
 
   async getUser(request: GetUserArgs): Promise<User> {
     const { refreshToken } = request;
-    return await this.authService.getUser(refreshToken);
+    const { id, email, isActivated } =
+      await this.authService.getUser(refreshToken);
+    return { id: `${id}`, email, isActivated };
   }
   async refresh(request: RefreshArgs): Promise<RefreshReturns> {
     try {

@@ -60,6 +60,18 @@ export class User {
 }
 
 @ObjectType()
+export class UserInfo {
+  @Field(() => String)
+  name: string;
+
+  @Field(() => String)
+  email: string;
+
+  @Field(() => [String])
+  roles: string[];
+}
+
+@ObjectType()
 export class AuthReturn {
   @Field(() => Tokens)
   tokens: Tokens;

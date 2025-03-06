@@ -27,6 +27,12 @@ type User {
   isActivated: Boolean!
 }
 
+type UserInfo {
+  name: String!
+  email: String!
+  roles: [String!]!
+}
+
 type AuthReturn {
   tokens: Tokens!
   user: User!
@@ -43,6 +49,7 @@ type Query {
   Login(email: String!, password: String!): AuthReturn!
   LogOut: Tokens!
   SignUp(name: String!, email: String!, password: String!): AuthReturn!
+  getAllInfoAboutUser: UserInfo!
 }
 
 type Mutation {

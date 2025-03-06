@@ -1,6 +1,7 @@
 import {
   AUTH_SERVICE_NAME,
   AuthServiceClient,
+  GetAllInfoAboutUserArgs,
   GetUserArgs,
   LoginArgs,
   RefreshArgs,
@@ -32,5 +33,9 @@ export class AuthService implements OnModuleInit {
 
   async getUser(args: GetUserArgs) {
     return await this.authService.getUser(args);
+  }
+
+  async getAllInfoAboutUser(args: GetAllInfoAboutUserArgs) {
+    return await this.authService.getAllInfoAboutUser(args);
   }
 }

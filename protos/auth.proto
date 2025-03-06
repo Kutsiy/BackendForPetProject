@@ -8,6 +8,7 @@ service AuthService {
     rpc LogOut(EmptyAuth) returns (EmptyAuth) {}
     rpc Refresh(RefreshArgs) returns (RefreshReturns) {}
     rpc GetUser(GetUserArgs) returns (User) {}
+    rpc GetAllInfoAboutUser(GetAllInfoAboutUserArgs) returns (UserInfo) {}
 }
 
 message LoginArgs {
@@ -32,6 +33,12 @@ message User {
     bool isActivated = 3;
 }
 
+message UserInfo {
+    string name = 1;
+    string email = 2;
+    repeated string roles = 3;
+}
+
 message GetUserArgs {
     string refreshToken = 1;
 }
@@ -49,6 +56,10 @@ message RefreshArgs {
 message RefreshReturns {
     Tokens tokens = 1;
     User user = 2;
+}
+
+message GetAllInfoAboutUserArgs {
+    string refreshToken = 1;
 }
 
 message EmptyAuth {}
