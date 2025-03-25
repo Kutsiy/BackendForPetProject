@@ -5,6 +5,7 @@ import { GqlExecutionContext } from '@nestjs/graphql';
 import { RpcException } from '@nestjs/microservices';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { GraphQLError } from 'graphql';
 
 @Injectable({})
 export class RolesGuard implements CanActivate {
@@ -27,7 +28,14 @@ export class RolesGuard implements CanActivate {
     const request = graphQlContext.getContext().req;
     const token = request.cookies?.access_token;
     if (!token) {
-      throw new RpcException('You are not authorized');
+      throw new GraphQLError('You are not authorized', {
+        extensions: {
+          code: 'You are not authorized',
+          http: {
+            status: 401,
+          },
+        },
+      });
     }
     const decodedToken = this.jwtService.verify(token, {
       secret: accessJwtSecret,

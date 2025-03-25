@@ -24,7 +24,7 @@ export class AuthResolver {
       httpOnly: true,
       sameSite: 'none',
       secure: true,
-      maxAge: 15 * 60 * 1000,
+      maxAge: 20 * 60 * 1000,
     });
 
     res.cookie('refresh_token', tokens.refreshToken, {
@@ -79,20 +79,7 @@ export class AuthResolver {
       refreshToken: req.cookies?.refresh_token,
     });
     const { tokens, user } = await result.toPromise();
-    const { accessToken, refreshToken } = tokens;
-    res.cookie('access_token', `${accessToken}`, {
-      httpOnly: true,
-      sameSite: 'none',
-      secure: true,
-      maxAge: 15 * 60 * 1000,
-    });
-
-    res.cookie('refresh_token', `${refreshToken}`, {
-      httpOnly: true,
-      sameSite: 'none',
-      secure: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    this.setCookies(res, tokens);
     return { tokens, user };
   }
 
@@ -109,7 +96,7 @@ export class AuthResolver {
 
   @Query(() => UserInfo)
   @UseGuards(AuthGuard)
-  async getAllInfoAboutUser(@Context() context: { req: Request }) {
+  async GetAllInfoAboutUser(@Context() context: { req: Request }) {
     const { req } = context;
 
     const result = await this.authService.getAllInfoAboutUser({

@@ -29,7 +29,7 @@ export class AuthGuard implements CanActivate {
     if (!token) {
       throw new GraphQLError('You are not authorized', {
         extensions: {
-          code: 'You are not authorized',
+          code: 'UNAUTHORIZED',
           http: {
             status: 401,
           },
