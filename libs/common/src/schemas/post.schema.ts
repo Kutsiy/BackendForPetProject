@@ -5,11 +5,14 @@ export type PostDocumentType = HydratedDocument<Post>;
 
 @Schema({ timestamps: true })
 export class Post {
+  @Prop({ type: String, default: null })
+  imageUrl?: string;
+
   @Prop({ required: true })
   title: string;
 
   @Prop({ required: true })
-  content: string;
+  body: string;
 
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   authorId: Types.ObjectId;

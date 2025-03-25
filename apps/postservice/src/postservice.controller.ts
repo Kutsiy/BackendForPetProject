@@ -5,8 +5,11 @@ import {
   PostServiceControllerMethods,
   PaginationArgs,
   FindPostById,
+  CreatePostArgs,
+  Empty,
 } from '@app/common';
 import { BadRequestException, Controller } from '@nestjs/common';
+import { Observable } from 'rxjs';
 import * as request from 'supertest';
 
 @Controller()
@@ -73,5 +76,9 @@ export class PostserviceController implements PostServiceController {
       };
     }
     return result;
+  }
+
+  async createPost(request: CreatePostArgs): Promise<Empty> {
+    throw new Error('Method not implemented.');
   }
 }

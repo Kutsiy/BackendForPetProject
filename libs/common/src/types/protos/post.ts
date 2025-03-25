@@ -44,23 +44,35 @@ export interface PaginationArgs {
   take: number;
 }
 
+export interface CreatePostArgs {
+  imageUrl: string;
+  title: string;
+  body: string;
+  tags: string[];
+  authorId: string;
+}
+
 export const POST_PACKAGE_NAME = "post";
 
 export interface PostServiceClient {
   getAllPosts(request: PaginationArgs): Observable<PaginatedPosts>;
 
   getPost(request: FindPostById): Observable<Post>;
+
+  createPost(request: CreatePostArgs): Observable<Empty>;
 }
 
 export interface PostServiceController {
   getAllPosts(request: PaginationArgs): Promise<PaginatedPosts> | Observable<PaginatedPosts> | PaginatedPosts;
 
   getPost(request: FindPostById): Promise<Post> | Observable<Post> | Post;
+
+  createPost(request: CreatePostArgs): Promise<Empty> | Observable<Empty> | Empty;
 }
 
 export function PostServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["getAllPosts", "getPost"];
+    const grpcMethods: string[] = ["getAllPosts", "getPost", "createPost"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("PostService", method)(constructor.prototype[method], method, descriptor);
