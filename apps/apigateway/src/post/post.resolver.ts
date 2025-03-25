@@ -30,4 +30,6 @@ export class PostResolver {
   Post(@Args() IdArgs: IdArgs) {
     return this.appService.getPost(IdArgs);
   }
+
+  AddPost() {}
 }
