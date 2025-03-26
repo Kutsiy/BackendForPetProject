@@ -20,6 +20,9 @@ export class User {
   @Prop()
   linkForActivate: string;
 
+  @Prop()
+  avatarLink: string;
+
   roles: Types.ObjectId[];
 }
 

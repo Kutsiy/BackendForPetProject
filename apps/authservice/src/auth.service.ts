@@ -92,6 +92,7 @@ export class AuthService {
       email: args.email,
       password: hashPassword,
       linkForActivate: link,
+      avatarLink: '',
     });
     await this.userRoleModel.create({ userId: user._id, roleId: roleId._id });
     const { accessToken, refreshToken } = await this.tokenService.generateToken(
