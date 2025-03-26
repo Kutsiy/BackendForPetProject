@@ -18,7 +18,6 @@ import { hash, compare } from 'bcrypt';
 import { Payload, TokenService } from './token.service';
 import { MailService } from './mail/mail.service';
 import { RoleService } from './role.service';
-import * as request from 'supertest';
 
 @Injectable()
 export class AuthService {

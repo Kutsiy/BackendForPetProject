@@ -53,3 +53,5 @@ export class Post {
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);
+
+export type PostType = InstanceType<typeof Post>;
