@@ -55,4 +55,8 @@ type Query {
 type Mutation {
   Refresh: RefreshReturn!
   GetUser: User!
+  uploadAvatar(file: Upload!): String!
 }
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload

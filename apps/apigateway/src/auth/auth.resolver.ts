@@ -13,6 +13,9 @@ import { UseFilters, UseGuards } from '@nestjs/common';
 import { AllExceptionFilter } from '../tools/exeption/exeption.filter';
 import { Response, Request } from 'express';
 import { AuthGuard } from '../tools/guards/auth/auth.guard';
+import { GraphQLUpload, FileUpload } from 'graphql-upload';
+import { join } from 'path';
+import { createWriteStream } from 'fs';
 
 @Resolver(() => Tokens)
 @UseFilters(new AllExceptionFilter())
@@ -106,5 +109,24 @@ export class AuthResolver {
     const { name, email, roles } = await result.toPromise();
 
     return { name, email, roles };
+  }
+
+  @Mutation(() => String)
+  async uploadAvatar(
+    @Args({ name: 'file', type: () => GraphQLUpload })
+    { createReadStream, filename }: FileUpload,
+  ): Promise<string> {
+    const filePath = join(process.cwd(), 'uploads/avatars', filename);
+
+    await new Promise((resolve, reject) =>
+      createReadStream()
+        .pipe(createWriteStream(filePath))
+        .on('finish', resolve)
+        .on('error', reject),
+    );
+
+    const avatarUrl = `/uploads/avatars/${filename}`;
+
+    return avatarUrl;
   }
 }
