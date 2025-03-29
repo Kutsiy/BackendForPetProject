@@ -11,10 +11,13 @@ import {
 import { BadRequestException, Controller } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import * as request from 'supertest';
+import { PostService } from './post.service';
 
 @Controller()
 @PostServiceControllerMethods()
 export class PostserviceController implements PostServiceController {
+  constructor(private readonly postService: PostService) {}
+
   arrayOfWord = [
     'Hello Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag.',
     'Hello Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag.',

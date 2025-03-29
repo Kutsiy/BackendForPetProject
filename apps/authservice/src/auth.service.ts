@@ -18,6 +18,8 @@ import { hash, compare } from 'bcrypt';
 import { Payload, TokenService } from './token.service';
 import { MailService } from './mail/mail.service';
 import { RoleService } from './role.service';
+import { join } from 'path';
+const fs = require('fs');
 
 @Injectable()
 export class AuthService {
@@ -163,6 +165,19 @@ export class AuthService {
     try {
       const { email }: Payload =
         await this.tokenService.getUserByToken(refreshToken);
+
+      const user = await this.userModel.findOne({ email }).exec();
+
+      if (user.avatarLink !== '' && user.avatarLink) {
+        const oldAvatarPath = join(process.cwd(), user.avatarLink);
+        try {
+          await fs.access(oldAvatarPath, () => {});
+          await fs.unlink(oldAvatarPath, () => {});
+        } catch (err) {
+          console.error('Error', err);
+        }
+      }
+
       await this.userModel.findOneAndUpdate(
         { email },
         { $set: { avatarLink } },
