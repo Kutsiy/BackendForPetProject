@@ -48,8 +48,12 @@ export interface CreatePostArgs {
   imageUrl: string;
   title: string;
   body: string;
-  tags: string[];
+  category: string;
   authorId: string;
+}
+
+export interface CreatePostReturns {
+  result: string;
 }
 
 export const POST_PACKAGE_NAME = "post";
@@ -59,7 +63,7 @@ export interface PostServiceClient {
 
   getPost(request: FindPostById): Observable<Post>;
 
-  createPost(request: CreatePostArgs): Observable<Empty>;
+  createPost(request: CreatePostArgs): Observable<CreatePostReturns>;
 }
 
 export interface PostServiceController {
@@ -67,7 +71,7 @@ export interface PostServiceController {
 
   getPost(request: FindPostById): Promise<Post> | Observable<Post> | Post;
 
-  createPost(request: CreatePostArgs): Promise<Empty> | Observable<Empty> | Empty;
+  createPost(request: CreatePostArgs): Promise<CreatePostReturns> | Observable<CreatePostReturns> | CreatePostReturns;
 }
 
 export function PostServiceControllerMethods() {

@@ -16,6 +16,10 @@ type PaginatedPosts {
   isEmpty: Boolean!
 }
 
+type AddPostReturn {
+  result: String!
+}
+
 type Tokens {
   accessToken: String
   refreshToken: String
@@ -58,6 +62,7 @@ type Query {
 }
 
 type Mutation {
+  AddPost(file: Upload!, title: String!, body: String!, category: String!, authorId: String!): AddPostReturn!
   Refresh: RefreshReturn!
   GetUser: User!
   uploadAvatar(file: Upload!): UploadAvatarReturn!

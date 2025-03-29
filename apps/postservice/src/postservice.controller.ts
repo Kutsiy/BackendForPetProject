@@ -7,6 +7,7 @@ import {
   FindPostById,
   CreatePostArgs,
   Empty,
+  CreatePostReturns,
 } from '@app/common';
 import { BadRequestException, Controller } from '@nestjs/common';
 import { Observable } from 'rxjs';
@@ -81,7 +82,8 @@ export class PostserviceController implements PostServiceController {
     return result;
   }
 
-  async createPost(request: CreatePostArgs): Promise<Empty> {
-    throw new Error('Method not implemented.');
+  async createPost(request: CreatePostArgs): Promise<CreatePostReturns> {
+    await this.postService.createPost(request);
+    return { result: 'post created successfully' };
   }
 }

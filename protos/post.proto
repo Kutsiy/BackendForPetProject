@@ -5,7 +5,7 @@ package post;
 service PostService {
     rpc GetAllPosts(PaginationArgs) returns (PaginatedPosts) {}
     rpc GetPost(FindPostById) returns (Post) {}
-    rpc CreatePost(CreatePostArgs) returns (Empty) {}
+    rpc CreatePost(CreatePostArgs) returns (CreatePostReturns) {}
 }
 
 message FindPostById {
@@ -46,6 +46,11 @@ message CreatePostArgs {
     string imageUrl = 1;
     string title = 2;
     string body = 3;
-    repeated string tags = 4;
+    string category = 4;
     string authorId = 5;
+}
+
+
+message CreatePostReturns {
+    string result = 1;
 }

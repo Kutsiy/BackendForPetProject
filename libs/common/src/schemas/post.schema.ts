@@ -6,7 +6,7 @@ export type PostDocumentType = HydratedDocument<Post>;
 @Schema({ timestamps: true })
 export class Post {
   @Prop({ type: String, default: null })
-  imageUrl?: string;
+  imageUrl: string;
 
   @Prop({ required: true })
   title: string;

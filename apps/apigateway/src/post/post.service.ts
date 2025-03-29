@@ -1,4 +1,8 @@
-import { POST_SERVICE_NAME, PostServiceClient } from '@app/common';
+import {
+  CreatePostArgs,
+  POST_SERVICE_NAME,
+  PostServiceClient,
+} from '@app/common';
 import {
   AUTH_SERVICE_NAME,
   AuthServiceClient,
@@ -20,5 +24,9 @@ export class PostService implements OnModuleInit {
 
   getPost(args: { id: string }) {
     return this.postService.getPost(args);
+  }
+
+  async addPost(args: CreatePostArgs) {
+    return await this.postService.createPost(args);
   }
 }
