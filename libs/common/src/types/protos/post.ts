@@ -50,6 +50,7 @@ export interface CreatePostArgs {
   body: string;
   category: string;
   authorId: string;
+  refreshToken: string;
 }
 
 export interface CreatePostReturns {

@@ -57,6 +57,7 @@ export class PostResolver {
     const result = await this.appService.addPost({
       imageUrl: postUrl,
       ...addPostArgs,
+      refreshToken,
     });
     return await result.toPromise();
   }

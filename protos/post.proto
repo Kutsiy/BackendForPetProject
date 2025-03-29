@@ -48,6 +48,7 @@ message CreatePostArgs {
     string body = 3;
     string category = 4;
     string authorId = 5;
+    string refreshToken = 6;
 }
 
 
