@@ -14,7 +14,7 @@ async function bootstrap() {
     credentials: true,
   });
   app.use(graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }));
-  app.use('/uploads', express.static(join(__dirname, '..', 'uploads')));
+  app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
   app.useGlobalPipes(new ValidationPipe());
   await app.listen(3000);
 }

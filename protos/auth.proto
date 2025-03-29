@@ -9,6 +9,7 @@ service AuthService {
     rpc Refresh(RefreshArgs) returns (RefreshReturns) {}
     rpc GetUser(GetUserArgs) returns (User) {}
     rpc GetAllInfoAboutUser(GetAllInfoAboutUserArgs) returns (UserInfo) {}
+    rpc UploadAvatar(UploadAvatarArgs) returns (UploadAvatarReturn) {}
 }
 
 message LoginArgs {
@@ -31,6 +32,7 @@ message User {
     string id = 1;
     string email = 2;
     bool isActivated = 3;
+    string avatarLink = 4;
 }
 
 message UserInfo {
@@ -60,6 +62,15 @@ message RefreshReturns {
 
 message GetAllInfoAboutUserArgs {
     string refreshToken = 1;
+}
+
+message UploadAvatarArgs {
+    string refreshToken = 1;
+    string avatarLink = 2;
+}
+
+message UploadAvatarReturn {
+    string avatarLink = 1;
 }
 
 message EmptyAuth {}

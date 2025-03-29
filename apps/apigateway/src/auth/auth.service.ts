@@ -6,6 +6,7 @@ import {
   LoginArgs,
   RefreshArgs,
   SignUpArgs,
+  UploadAvatarArgs,
 } from '@app/common/types/protos/auth';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
@@ -37,5 +38,9 @@ export class AuthService implements OnModuleInit {
 
   async getAllInfoAboutUser(args: GetAllInfoAboutUserArgs) {
     return await this.authService.getAllInfoAboutUser(args);
+  }
+
+  async uploadAvatar(args: UploadAvatarArgs) {
+    return await this.authService.uploadAvatar(args);
   }
 }

@@ -57,6 +57,9 @@ export class User {
 
   @Field(() => Boolean)
   isActivated: boolean;
+
+  @Field(() => String)
+  avatarLink: string;
 }
 
 @ObjectType()
@@ -87,4 +90,10 @@ export class RefreshReturn {
 
   @Field(() => User)
   user: User;
+}
+
+@ObjectType()
+export class UploadAvatarReturn {
+  @Field(() => String)
+  avatarLink: string;
 }

@@ -13,6 +13,8 @@ import {
   User,
   GetAllInfoAboutUserArgs,
   UserInfo,
+  UploadAvatarArgs,
+  UploadAvatarReturn,
 } from '@app/common/types/protos/auth';
 import { Observable } from 'rxjs';
 
@@ -20,6 +22,7 @@ import { Observable } from 'rxjs';
 @AuthServiceControllerMethods()
 export class AuthserviceController implements AuthServiceController {
   constructor(private authService: AuthService) {}
+
   async getAllInfoAboutUser(
     request: GetAllInfoAboutUserArgs,
   ): Promise<UserInfo> {
@@ -29,9 +32,9 @@ export class AuthserviceController implements AuthServiceController {
 
   async getUser(request: GetUserArgs): Promise<User> {
     const { refreshToken } = request;
-    const { id, email, isActivated } =
+    const { id, email, isActivated, avatarLink } =
       await this.authService.getUser(refreshToken);
-    return { id: `${id}`, email, isActivated };
+    return { id: `${id}`, email, isActivated, avatarLink };
   }
   async refresh(request: RefreshArgs): Promise<RefreshReturns> {
     try {
@@ -56,5 +59,11 @@ export class AuthserviceController implements AuthServiceController {
     request: EmptyAuth,
   ): Promise<EmptyAuth> | Observable<EmptyAuth> | EmptyAuth {
     throw new Error('Method not implemented.');
+  }
+
+  async uploadAvatar(request: UploadAvatarArgs): Promise<UploadAvatarReturn> {
+    const { refreshToken, avatarLink } = request;
+    await this.authService.uploadAvatar(refreshToken, avatarLink);
+    return { avatarLink };
   }
 }

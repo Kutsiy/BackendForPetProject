@@ -5,6 +5,7 @@ import {
   RefreshReturn,
   SignUpArgs,
   Tokens,
+  UploadAvatarReturn,
   User,
   UserInfo,
 } from './auth.model';
@@ -93,8 +94,8 @@ export class AuthResolver {
     const result = await this.authService.getUser({
       refreshToken: req.cookies?.refresh_token,
     });
-    const { id, email, isActivated } = await result.toPromise();
-    return { id, email, isActivated };
+    const { id, email, isActivated, avatarLink } = await result.toPromise();
+    return { id, email, isActivated, avatarLink };
   }
 
   @Query(() => UserInfo)
@@ -111,22 +112,30 @@ export class AuthResolver {
     return { name, email, roles };
   }
 
-  @Mutation(() => String)
+  @Mutation(() => UploadAvatarReturn)
   async uploadAvatar(
     @Args({ name: 'file', type: () => GraphQLUpload })
     { createReadStream, filename }: FileUpload,
-  ): Promise<string> {
+    @Context() context: { req: Request },
+  ) {
+    const { req } = context;
+    const refreshToken = req.cookies?.refresh_token;
     const filePath = join(process.cwd(), 'uploads/avatars', filename);
-
     await new Promise((resolve, reject) =>
       createReadStream()
         .pipe(createWriteStream(filePath))
         .on('finish', resolve)
         .on('error', reject),
     );
-
     const avatarUrl = `/uploads/avatars/${filename}`;
 
-    return avatarUrl;
+    const result = await this.authService.uploadAvatar({
+      refreshToken,
+      avatarLink: avatarUrl,
+    });
+
+    const { avatarLink } = await result.toPromise();
+
+    return { avatarLink: avatarLink };
   }
 }

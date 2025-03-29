@@ -66,6 +66,7 @@ export class AuthService {
         id: `${coincidence._id}`,
         email: coincidence.email,
         isActivated: coincidence.isActivated,
+        avatarLink: coincidence.avatarLink,
       },
     };
   }
@@ -114,6 +115,7 @@ export class AuthService {
         id: `${user._id}`,
         email: user.email,
         isActivated: user.isActivated,
+        avatarLink: user.avatarLink,
       },
     };
   }
@@ -130,7 +132,13 @@ export class AuthService {
     try {
       const { id, email, isActivated }: Payload =
         await this.tokenService.getUserByToken(refreshToken);
-      return { id, email, isActivated };
+      const user = await this.userModel.findOne({ email }).exec();
+      return {
+        id,
+        email,
+        isActivated: user.isActivated,
+        avatarLink: user.avatarLink,
+      };
     } catch (error) {
       console.log(error);
     }
@@ -146,6 +154,19 @@ export class AuthService {
         .exec();
       const roles = user.roles.map((ur: any) => ur.roleId.name);
       return { name: user.name, email: user.email, roles };
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async uploadAvatar(refreshToken: string, avatarLink: string) {
+    try {
+      const { email }: Payload =
+        await this.tokenService.getUserByToken(refreshToken);
+      await this.userModel.findOneAndUpdate(
+        { email },
+        { $set: { avatarLink } },
+      );
     } catch (error) {
       console.log(error);
     }

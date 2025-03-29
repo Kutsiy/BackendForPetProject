@@ -118,6 +118,7 @@ export class TokenService {
         email,
         roles: ObjectIdRoles,
         isActivated,
+        avatarLink,
       } = await this.userModel.findById(userIdObject).populate('roles').exec();
       const roles = ObjectIdRoles.map((ur: any) => ur.roleId.name);
       const { accessToken, refreshToken } = await this.generateToken({
@@ -133,7 +134,7 @@ export class TokenService {
       return {
         accessToken,
         refreshToken,
-        user: { id: `${id}`, email, isActivated },
+        user: { id: `${id}`, email, isActivated, avatarLink },
       };
     } catch (err) {
       console.log(err, 'ERROR FROM REFRESH_TOKEN');
