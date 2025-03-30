@@ -1,6 +1,6 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { AuthserviceController } from './authservice.controller';
-import { MongooseModule } from '@nestjs/mongoose';
+import { InjectModel, MongooseModule } from '@nestjs/mongoose';
 import { AuthService } from './auth.service';
 import { User, UserSchema } from '@app/common/schemas/user.schema';
 import { TokenService } from './token.service';
@@ -19,6 +19,7 @@ import {
   UserRoleSchema,
 } from '@app/common';
 import { RoleService } from './role.service';
+import { Model } from 'mongoose';
 
 @Module({
   imports: [

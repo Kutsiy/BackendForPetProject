@@ -58,9 +58,6 @@ export class AddPostArgs {
 
   @Field(() => String)
   category: string;
-
-  @Field(() => String)
-  authorId: string;
 }
 
 @ObjectType()
@@ -68,3 +65,57 @@ export class AddPostReturn {
   @Field(() => String)
   result: string;
 }
+
+// @ObjectType()
+// export class Post {
+//   @Field(() => String)
+//   id: string;
+
+//   @Field(() => String)
+//   imageUrl: string;
+
+//   @Field(() => String)
+//   title: string;
+
+//   @Field(() => String)
+//   body: string;
+
+//   @Field(() => String)
+//   authorId: string;
+
+//   @Field(() => String)
+//   category: string;
+
+//   @Field(() => Number)
+//   views: number;
+
+//   @Field(() => Number)
+//   likes: number;
+
+//   @Field(() => Number)
+//   dislikes: number;
+
+//   @Field(() => [String])
+//   likedBy: string[];
+
+//   @Field(() => [String])
+//   dislikedBy: string[];
+
+//   @Field(() => [Comment])
+//   comments: Comment[];
+
+//   @Field()
+//   createdAt: Date;
+// }
+
+// @ObjectType()
+// export class Comment {
+//   @Field(() => String)
+//   userId: string;
+
+//   @Field(() => String)
+//   text: string;
+
+//   @Field(() => Date)
+//   createdAt: Date;
+// }

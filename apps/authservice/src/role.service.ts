@@ -14,7 +14,11 @@ export class RoleService {
   ) {}
 
   async createRole(name: string, description: string) {
-    await this.roleModel.create({ name, description });
+    await this.roleModel.findOneAndUpdate(
+      { name },
+      { name, description },
+      { upsert: true, new: true },
+    );
   }
 
   async getRoleIdByName(name: string) {

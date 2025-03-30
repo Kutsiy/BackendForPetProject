@@ -49,7 +49,6 @@ export interface CreatePostArgs {
   title: string;
   body: string;
   category: string;
-  authorId: string;
   refreshToken: string;
 }
 

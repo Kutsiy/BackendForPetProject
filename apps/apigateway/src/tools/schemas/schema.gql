@@ -62,7 +62,7 @@ type Query {
 }
 
 type Mutation {
-  AddPost(file: Upload!, title: String!, body: String!, category: String!, authorId: String!): AddPostReturn!
+  AddPost(file: Upload!, title: String!, body: String!, category: String!): AddPostReturn!
   Refresh: RefreshReturn!
   GetUser: User!
   uploadAvatar(file: Upload!): UploadAvatarReturn!
