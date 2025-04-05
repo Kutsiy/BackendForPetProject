@@ -34,8 +34,10 @@ export class PostserviceController implements PostServiceController {
       searchString: searchStringResult,
       isEmpty,
     } = result;
+    const changedPosts = posts.length > 0 ? PostMapper.toDtoArray(posts) : null;
+    console.log(changedPosts);
     return {
-      posts: posts.length > 0 ? PostMapper.toDtoArray(posts) : null,
+      posts: changedPosts,
       totalCount,
       currentPage,
       pageCount,
@@ -61,6 +63,7 @@ export class PostserviceController implements PostServiceController {
         likes: 0,
         likedBy: [],
         views: 0,
+        viewsBy: [],
       };
     }
     return PostMapper.toDto(result);

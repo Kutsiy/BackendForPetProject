@@ -84,13 +84,22 @@ export class Post {
   body: string;
 
   @Field(() => String)
+  description: string;
+
+  @Field(() => String)
   authorId: string;
+
+  @Field(() => String)
+  authorName;
 
   @Field(() => String)
   category: string;
 
   @Field(() => Number)
   views: number;
+
+  @Field(() => [String])
+  viewsBy: string[];
 
   @Field(() => Number)
   likes: number;

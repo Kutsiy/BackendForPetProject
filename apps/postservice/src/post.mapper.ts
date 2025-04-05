@@ -28,6 +28,9 @@ export class PostDto {
   body: string;
 
   @Expose()
+  description: string;
+
+  @Expose()
   @Transform(({ value }) => value.toString())
   authorId: string;
 
@@ -39,6 +42,9 @@ export class PostDto {
 
   @Expose()
   views: number;
+  @Expose()
+  @Transform(({ value }) => value.map((v) => v.toString()))
+  viewsBy: string[];
 
   @Expose()
   likes: number;
@@ -59,6 +65,7 @@ export class PostDto {
   comments: CommentDto[];
 
   @Expose()
+  @Transform(({ value }) => value.getTime())
   createdAt: number;
 }
 

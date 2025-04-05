@@ -52,14 +52,15 @@ export class PostResolver {
   ) {
     const { req } = context;
     const refreshToken = req.cookies?.refresh_token;
-    const filePath = join(process.cwd(), 'uploads/post', filename);
+    const newFileName: string = Date.now() + filename;
+    const filePath = join(process.cwd(), 'uploads/post', newFileName);
     await new Promise((resolve, reject) =>
       createReadStream()
         .pipe(createWriteStream(filePath))
         .on('finish', resolve)
         .on('error', reject),
     );
-    const postUrl = `/uploads/post/${filename}`;
+    const postUrl = `/uploads/post/${newFileName}`;
     const result = await this.appService.addPost({
       imageUrl: postUrl,
       ...addPostArgs,

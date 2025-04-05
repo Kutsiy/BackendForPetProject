@@ -31,6 +31,9 @@ export class Post {
   @Prop({ default: 0 })
   views: number;
 
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] })
+  viewsBy: Types.ObjectId[];
+
   @Prop({ default: 0 })
   likes: number;
 
@@ -63,21 +66,8 @@ export class Post {
     createdAt: number;
   }[];
 
-  @Prop({ select: false })
-  get createdAt(): number {
-    return this._createdAt ? this._createdAt.getTime() : 0;
-  }
-
-  @Prop({ select: false })
-  get updatedAt(): number {
-    return this._updatedAt ? this._updatedAt.getTime() : 0;
-  }
-
-  @Prop()
-  private _createdAt: Date;
-
-  @Prop()
-  private _updatedAt: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);

@@ -66,6 +66,7 @@ export interface Post {
   authorName: string;
   category: string;
   views: number;
+  viewsBy: string[];
   likes: number;
   dislikes: number;
   likedBy: string[];

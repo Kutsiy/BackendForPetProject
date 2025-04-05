@@ -71,10 +71,11 @@ message Comment {
     string authorName = 6;
     string category = 7;
     int32 views = 8;
-    int32 likes = 9;
-    int32 dislikes = 10;
-    repeated string likedBy = 11;
-    repeated string dislikedBy = 12;
-    repeated Comment comments = 13;
-    int64 createdAt = 14;
+    repeated string viewsBy = 9;
+    int32 likes = 10;
+    int32 dislikes = 11;
+    repeated string likedBy = 12;
+    repeated string dislikedBy = 13;
+    repeated Comment comments = 14;
+    int64 createdAt = 15;
   }

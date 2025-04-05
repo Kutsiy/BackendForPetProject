@@ -19,9 +19,12 @@ type Post {
   imageUrl: String!
   title: String!
   body: String!
+  description: String!
   authorId: String!
+  authorName: String!
   category: String!
   views: Float!
+  viewsBy: [String!]!
   likes: Float!
   dislikes: Float!
   likedBy: [String!]!
