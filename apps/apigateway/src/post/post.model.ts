@@ -1,16 +1,16 @@
 import { ObjectType, Field, Int, ArgsType } from '@nestjs/graphql';
 
-@ObjectType()
-export class Post {
-  @Field()
-  id: string;
+// @ObjectType()
+// export class Post {
+//   @Field()
+//   id: string;
 
-  @Field()
-  title: string;
+//   @Field()
+//   title: string;
 
-  @Field()
-  body: string;
-}
+//   @Field()
+//   body: string;
+// }
 
 @ObjectType()
 export class PaginatedPosts {
@@ -58,6 +58,9 @@ export class AddPostArgs {
 
   @Field(() => String)
   category: string;
+
+  @Field(() => String)
+  description: string;
 }
 
 @ObjectType()
@@ -66,56 +69,56 @@ export class AddPostReturn {
   result: string;
 }
 
-// @ObjectType()
-// export class Post {
-//   @Field(() => String)
-//   id: string;
+@ObjectType()
+export class Post {
+  @Field(() => String)
+  id: string;
 
-//   @Field(() => String)
-//   imageUrl: string;
+  @Field(() => String)
+  imageUrl: string;
 
-//   @Field(() => String)
-//   title: string;
+  @Field(() => String)
+  title: string;
 
-//   @Field(() => String)
-//   body: string;
+  @Field(() => String)
+  body: string;
 
-//   @Field(() => String)
-//   authorId: string;
+  @Field(() => String)
+  authorId: string;
 
-//   @Field(() => String)
-//   category: string;
+  @Field(() => String)
+  category: string;
 
-//   @Field(() => Number)
-//   views: number;
+  @Field(() => Number)
+  views: number;
 
-//   @Field(() => Number)
-//   likes: number;
+  @Field(() => Number)
+  likes: number;
 
-//   @Field(() => Number)
-//   dislikes: number;
+  @Field(() => Number)
+  dislikes: number;
 
-//   @Field(() => [String])
-//   likedBy: string[];
+  @Field(() => [String])
+  likedBy: string[];
 
-//   @Field(() => [String])
-//   dislikedBy: string[];
+  @Field(() => [String])
+  dislikedBy: string[];
 
-//   @Field(() => [Comment])
-//   comments: Comment[];
+  @Field(() => [Comment])
+  comments: Comment[];
 
-//   @Field()
-//   createdAt: Date;
-// }
+  @Field()
+  createdAt: Date;
+}
 
-// @ObjectType()
-// export class Comment {
-//   @Field(() => String)
-//   userId: string;
+@ObjectType()
+export class Comment {
+  @Field(() => String)
+  userId: string;
 
-//   @Field(() => String)
-//   text: string;
+  @Field(() => String)
+  text: string;
 
-//   @Field(() => Date)
-//   createdAt: Date;
-// }
+  @Field(() => Date)
+  createdAt: Date;
+}

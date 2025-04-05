@@ -23,12 +23,6 @@ export interface PostDto {
 export interface Empty {
 }
 
-export interface Post {
-  id: string;
-  title: string;
-  body: string;
-}
-
 export interface PaginatedPosts {
   posts: Post[];
   totalCount: number;
@@ -47,6 +41,7 @@ export interface PaginationArgs {
 export interface CreatePostArgs {
   imageUrl: string;
   title: string;
+  description: string;
   body: string;
   category: string;
   refreshToken: string;
@@ -54,6 +49,28 @@ export interface CreatePostArgs {
 
 export interface CreatePostReturns {
   result: string;
+}
+
+export interface Comment {
+  userId: string;
+  text: string;
+  createdAt: number;
+}
+
+export interface Post {
+  id: string;
+  imageUrl?: string | undefined;
+  title: string;
+  body: string;
+  authorId: string;
+  category: string;
+  views: number;
+  likes: number;
+  dislikes: number;
+  likedBy: string[];
+  dislikedBy: string[];
+  comments: Comment[];
+  createdAt: number;
 }
 
 export const POST_PACKAGE_NAME = "post";

@@ -14,6 +14,9 @@ export class Post {
   @Prop({ required: true })
   body: string;
 
+  @Prop({ required: true })
+  description: string;
+
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   authorId: Types.ObjectId;
 
@@ -42,7 +45,11 @@ export class Post {
       {
         userId: { type: Types.ObjectId, ref: 'User', required: true },
         text: { type: String, required: true },
-        createdAt: { type: Date, default: () => Date.now() },
+        createdAt: {
+          type: Number,
+          default: () => new Date().getTime(),
+          get: () => new Date().getTime(),
+        },
       },
     ],
     default: [],
@@ -50,8 +57,24 @@ export class Post {
   comments: {
     userId: Types.ObjectId;
     text: string;
-    createdAt: Date;
+    createdAt: number;
   }[];
+
+  @Prop({ select: false })
+  get createdAt(): number {
+    return this._createdAt ? this._createdAt.getTime() : 0;
+  }
+
+  @Prop({ select: false })
+  get updatedAt(): number {
+    return this._updatedAt ? this._updatedAt.getTime() : 0;
+  }
+
+  @Prop()
+  private _createdAt: Date;
+
+  @Prop()
+  private _updatedAt: Date;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);

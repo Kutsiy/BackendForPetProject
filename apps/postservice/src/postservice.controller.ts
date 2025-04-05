@@ -13,73 +13,57 @@ import { BadRequestException, Controller } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import * as request from 'supertest';
 import { PostService } from './post.service';
+import { PostMapper } from './post.mapper';
 
 @Controller()
 @PostServiceControllerMethods()
 export class PostserviceController implements PostServiceController {
   constructor(private readonly postService: PostService) {}
 
-  arrayOfWord = [
-    'Hello Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag.',
-    'Hello Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag.',
-    'Hello Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag.',
-    'Hello Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag.',
-    'Hello Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag.',
-    'Hello Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag.',
-    'Hello Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag Lorem ipsum dolor sit am eiusmod tempor incididunt ut labore et dolore mag.  ',
-  ];
-
-  arrayOfPosts: Post[] = Array.from({ length: 1000 }, (_, index) => ({
-    id: `${index + 1}`,
-    title: `Hello${index + 1}`,
-    body:
-      this.arrayOfWord
-        .slice(0, Math.floor(Math.random() * this.arrayOfWord.length - 1))
-        .join('\n ') || 'Hello',
-  }));
-  getAllPosts(request: PaginationArgs): PaginatedPosts {
+  async getAllPosts(request: PaginationArgs): Promise<PaginatedPosts> {
     const { searchString, page, take } = request;
-    let allPosts = this.arrayOfPosts;
-    if (searchString !== '' && searchString) {
-      allPosts = this.arrayOfPosts.filter((val: any) =>
-        val.title.toLowerCase().includes(searchString.toLowerCase()),
-      );
-      if (allPosts.length === 0) {
-        allPosts = [{ id: '-empty', title: 'none', body: 'none' }];
-      }
+    console.log(searchString, page, take);
+    const result = await this.postService.getPosts(searchString, page, take);
+    if (!result || !result.posts) {
+      throw new Error('Posts data is missing or undefined');
     }
-    const isEmpty = allPosts.length === 0 || allPosts[0].id === '-empty';
-    if (page < 1 || take < 1) {
-      throw new BadRequestException('Page and take must be positive integers.');
-    }
-    const skip = (page - 1) * take;
-    const takePage = skip + take;
-    const totalCount = allPosts.length;
-    const pageCount = Math.ceil(totalCount / take);
-    const posts = allPosts.slice(skip, takePage);
-    if (page > pageCount) {
-      throw new Error('Page > pageCount ');
-    }
-    return {
+    const {
       posts,
       totalCount,
-      currentPage: page,
+      currentPage,
       pageCount,
-      searchString,
+      searchString: searchStringResult,
+      isEmpty,
+    } = result;
+    return {
+      posts: posts.length > 0 ? PostMapper.toDtoArray(posts) : null,
+      totalCount,
+      currentPage,
+      pageCount,
+      searchString: searchStringResult,
       isEmpty,
     };
   }
-  getPost(request: FindPostById): Post {
+  async getPost(request: FindPostById): Promise<Post> {
     const { id } = request;
-    const result = this.arrayOfPosts.find((postsId) => id === postsId.id);
+    const result = await this.postService.getPost(id);
     if (result === undefined) {
       return {
         id: 'none',
         body: 'none',
         title: 'none',
+        authorId: 'none',
+        category: 'none',
+        comments: [],
+        createdAt: 0,
+        dislikedBy: [],
+        dislikes: 0,
+        likes: 0,
+        likedBy: [],
+        views: 0,
       };
     }
-    return result;
+    return PostMapper.toDto(result);
   }
 
   async createPost(request: CreatePostArgs): Promise<CreatePostReturns> {

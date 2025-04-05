@@ -1,14 +1,8 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { JwtService } from '@nestjs/jwt';
 import { RpcException } from '@nestjs/microservices';
-import { Request } from 'express';
 import { GraphQLError } from 'graphql';
 
 @Injectable({})
@@ -44,10 +38,11 @@ export class AuthGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync(accessToken, {
         secret: accessJwtSecret,
       });
-      const refreshResult = await this.jwtService.verifyAsync(refreshToken, {
+      await this.jwtService.verifyAsync(refreshToken, {
         secret: refreshJwtSecret,
       });
       request.user = payload;
+      return true;
     } catch (error) {
       throw new GraphQLError('Error signing', {
         extensions: {
@@ -58,7 +53,6 @@ export class AuthGuard implements CanActivate {
         },
       });
     }
-    return true;
   }
 
   // private extractTokenFromHeader(request: Request): string | undefined {

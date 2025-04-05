@@ -26,15 +26,21 @@ export class PostResolver {
 
   @Query(() => PostsModel)
   @RolesSetter(['USER'])
-  Posts(@Args() paginationArgs: PaginationArgs): Observable<PaginatedPosts> {
+  async Posts(@Args() paginationArgs: PaginationArgs) {
     const { searchString, page, take } = paginationArgs;
     let postsSearchString = searchString ?? '';
-    return this.appService.getAllPosts(postsSearchString, page, take);
+    const result = await this.appService.getAllPosts(
+      postsSearchString,
+      page,
+      take,
+    );
+    return await result.toPromise();
   }
 
   @Query(() => Post)
-  Post(@Args() IdArgs: IdArgs) {
-    return this.appService.getPost(IdArgs);
+  async Post(@Args() IdArgs: IdArgs) {
+    const result = await this.appService.getPost(IdArgs);
+    return await result.toPromise();
   }
 
   @Mutation(() => AddPostReturn)
