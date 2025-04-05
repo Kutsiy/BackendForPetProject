@@ -20,13 +20,17 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const accessJwtSecret = this.configService.get<string>('ACCESS_JWT_SECRET');
-    if (!accessJwtSecret) {
+    const refreshJwtSecret =
+      this.configService.get<string>('REFRESH_JWT_SECRET');
+    if (!accessJwtSecret || !refreshJwtSecret) {
       throw new RpcException('JWT secret not defined in environment');
     }
     const graphQlContext = GqlExecutionContext.create(context);
     const request = graphQlContext.getContext().req;
-    const token = request.cookies?.access_token;
-    if (!token) {
+    const accessToken = request.cookies?.access_token;
+    const refreshToken = request.cookies?.refresh_token;
+    if (!refreshToken) return false;
+    if (!accessToken) {
       throw new GraphQLError('You are not authorized', {
         extensions: {
           code: 'UNAUTHORIZED',
@@ -37,8 +41,11 @@ export class AuthGuard implements CanActivate {
       });
     }
     try {
-      const payload = await this.jwtService.verifyAsync(token, {
+      const payload = await this.jwtService.verifyAsync(accessToken, {
         secret: accessJwtSecret,
+      });
+      const refreshResult = await this.jwtService.verifyAsync(refreshToken, {
+        secret: refreshJwtSecret,
       });
       request.user = payload;
     } catch (error) {
