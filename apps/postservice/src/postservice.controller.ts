@@ -22,7 +22,6 @@ export class PostserviceController implements PostServiceController {
 
   async getAllPosts(request: PaginationArgs): Promise<PaginatedPosts> {
     const { searchString, page, take } = request;
-    console.log(searchString, page, take);
     const result = await this.postService.getPosts(searchString, page, take);
     if (!result || !result.posts) {
       throw new Error('Posts data is missing or undefined');
@@ -53,6 +52,7 @@ export class PostserviceController implements PostServiceController {
         body: 'none',
         title: 'none',
         authorId: 'none',
+        authorName: 'none',
         category: 'none',
         comments: [],
         createdAt: 0,

@@ -32,6 +32,9 @@ export class PostDto {
   authorId: string;
 
   @Expose()
+  authorName: string;
+
+  @Expose()
   category: string;
 
   @Expose()

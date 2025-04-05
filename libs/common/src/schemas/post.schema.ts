@@ -20,6 +20,9 @@ export class Post {
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   authorId: Types.ObjectId;
 
+  @Prop({ type: String })
+  authorName: string;
+
   // @Prop({ type: [String], default: [] })
   // tags: string[];
   @Prop({ required: true })

@@ -1,9 +1,8 @@
-import { CreatePostArgs, Empty } from '@app/common';
+import { CreatePostArgs, Empty, User, UserDocumentType } from '@app/common';
 import { Post, PostDocumentType } from '@app/common/schemas/post.schema';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { RpcException } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Payload } from 'apps/authservice/src/token.service';
 import { Model, Types } from 'mongoose';
@@ -11,7 +10,10 @@ import { Model, Types } from 'mongoose';
 @Injectable()
 export class PostService {
   constructor(
-    @InjectModel(Post.name) private readonly postModel: Model<PostDocumentType>,
+    @InjectModel(Post.name, 'postConnection')
+    private readonly postModel: Model<PostDocumentType>,
+    @InjectModel(User.name, 'userConnection')
+    private readonly userModel: Model<UserDocumentType>,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
   ) {}
@@ -74,13 +76,15 @@ export class PostService {
   }
 
   async createPost(request: CreatePostArgs): Promise<Empty> {
-    const { id }: Payload = this.jwtService.decode(request.refreshToken);
+    const { id, email }: Payload = this.jwtService.decode(request.refreshToken);
+    const result = await this.userModel.findOne({ email: email }).exec();
     await this.postModel.create({
       imageUrl: request.imageUrl,
       title: request.title,
       body: request.body,
       description: request.description,
       authorId: id,
+      authorName: result.name,
       category: request.category,
     });
     return {};

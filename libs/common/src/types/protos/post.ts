@@ -63,6 +63,7 @@ export interface Post {
   title: string;
   body: string;
   authorId: string;
+  authorName: string;
   category: string;
   views: number;
   likes: number;

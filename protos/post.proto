@@ -68,12 +68,13 @@ message Comment {
     string title = 3;
     string body = 4;
     string authorId = 5;
-    string category = 6;
-    int32 views = 7;
-    int32 likes = 8;
-    int32 dislikes = 9;
-    repeated string likedBy = 10;
-    repeated string dislikedBy = 11;
-    repeated Comment comments = 12;
-    int64 createdAt = 13;
+    string authorName = 6;
+    string category = 7;
+    int32 views = 8;
+    int32 likes = 9;
+    int32 dislikes = 10;
+    repeated string likedBy = 11;
+    repeated string dislikedBy = 12;
+    repeated Comment comments = 13;
+    int64 createdAt = 14;
   }
