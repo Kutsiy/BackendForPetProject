@@ -14,12 +14,6 @@ export interface FindPostById {
   id: string;
 }
 
-export interface PostDto {
-  id: string;
-  title: string;
-  body: string;
-}
-
 export interface Empty {
 }
 
@@ -62,6 +56,7 @@ export interface Post {
   imageUrl?: string | undefined;
   title: string;
   body: string;
+  description: string;
   authorId: string;
   authorName: string;
   category: string;

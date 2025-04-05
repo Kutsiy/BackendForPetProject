@@ -35,7 +35,6 @@ export class PostserviceController implements PostServiceController {
       isEmpty,
     } = result;
     const changedPosts = posts.length > 0 ? PostMapper.toDtoArray(posts) : null;
-    console.log(changedPosts);
     return {
       posts: changedPosts,
       totalCount,
@@ -52,6 +51,7 @@ export class PostserviceController implements PostServiceController {
       return {
         id: 'none',
         body: 'none',
+        description: 'none',
         title: 'none',
         authorId: 'none',
         authorName: 'none',

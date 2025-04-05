@@ -42,6 +42,7 @@ export class PostDto {
 
   @Expose()
   views: number;
+
   @Expose()
   @Transform(({ value }) => value.map((v) => v.toString()))
   viewsBy: string[];
