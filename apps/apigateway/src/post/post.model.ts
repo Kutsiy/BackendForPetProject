@@ -90,7 +90,7 @@ export class Post {
   authorId: string;
 
   @Field(() => String)
-  authorName;
+  authorName: string;
 
   @Field(() => String)
   category: string;
@@ -115,6 +115,9 @@ export class Post {
 
   @Field(() => [Comment], { nullable: true })
   comments: Comment[];
+
+  @Field(() => Number)
+  commentCount: number;
 
   @Field()
   createdAt: number;

@@ -67,6 +67,7 @@ export interface Post {
   likedBy: string[];
   dislikedBy: string[];
   comments: Comment[];
+  commentCount: number;
   createdAt: number;
 }
 

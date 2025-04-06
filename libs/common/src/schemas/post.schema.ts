@@ -34,12 +34,6 @@ export class Post {
   @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] })
   viewsBy: Types.ObjectId[];
 
-  @Prop({ default: 0 })
-  likes: number;
-
-  @Prop({ default: 0 })
-  dislikes: number;
-
   @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] })
   likedBy: Types.ObjectId[];
 
@@ -73,3 +67,18 @@ export class Post {
 export const PostSchema = SchemaFactory.createForClass(Post);
 
 export type PostType = InstanceType<typeof Post>;
+
+PostSchema.virtual('commentCount').get(function (this: PostDocumentType) {
+  return this.comments?.length || 0;
+});
+
+PostSchema.virtual('likes').get(function (this: PostDocumentType) {
+  return this.likedBy?.length || 0;
+});
+
+PostSchema.virtual('dislikes').get(function (this: PostDocumentType) {
+  return this.dislikedBy?.length || 0;
+});
+
+PostSchema.set('toObject', { virtuals: true });
+PostSchema.set('toJSON', { virtuals: true });

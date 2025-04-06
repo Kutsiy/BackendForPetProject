@@ -30,6 +30,7 @@ type Post {
   likedBy: [String!]
   dislikedBy: [String!]
   comments: [Comment!]
+  commentCount: Float!
   createdAt: Float!
 }
 
