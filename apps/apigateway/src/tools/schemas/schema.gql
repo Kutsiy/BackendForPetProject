@@ -24,12 +24,18 @@ type Post {
   authorName: String!
   category: String!
   views: Float!
-  viewsBy: [String!]!
+  viewsBy: [String!]
   likes: Float!
   dislikes: Float!
-  likedBy: [String!]!
-  dislikedBy: [String!]!
-  comments: [Comment!]!
+  likedBy: [String!]
+  dislikedBy: [String!]
+  comments: [Comment!]
+  createdAt: Float!
+}
+
+type Comment {
+  userId: String!
+  text: String!
   createdAt: DateTime!
 }
 
@@ -37,12 +43,6 @@ type Post {
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
-
-type Comment {
-  userId: String!
-  text: String!
-  createdAt: DateTime!
-}
 
 type Tokens {
   accessToken: String

@@ -67,5 +67,5 @@ message Comment {
     repeated string likedBy = 13;
     repeated string dislikedBy = 14;
     repeated Comment comments = 15;
-    int64 createdAt = 16;
+    int32 createdAt = 16;
   }

@@ -98,7 +98,7 @@ export class Post {
   @Field(() => Number)
   views: number;
 
-  @Field(() => [String])
+  @Field(() => [String], { nullable: true })
   viewsBy: string[];
 
   @Field(() => Number)
@@ -107,17 +107,17 @@ export class Post {
   @Field(() => Number)
   dislikes: number;
 
-  @Field(() => [String])
+  @Field(() => [String], { nullable: true })
   likedBy: string[];
 
-  @Field(() => [String])
+  @Field(() => [String], { nullable: true })
   dislikedBy: string[];
 
-  @Field(() => [Comment])
+  @Field(() => [Comment], { nullable: true })
   comments: Comment[];
 
   @Field()
-  createdAt: Date;
+  createdAt: number;
 }
 
 @ObjectType()

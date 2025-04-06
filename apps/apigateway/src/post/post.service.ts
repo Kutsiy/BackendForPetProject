@@ -3,10 +3,6 @@ import {
   POST_SERVICE_NAME,
   PostServiceClient,
 } from '@app/common';
-import {
-  AUTH_SERVICE_NAME,
-  AuthServiceClient,
-} from '@app/common/types/protos/auth';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 

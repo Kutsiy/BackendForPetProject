@@ -52,7 +52,7 @@ export class PostResolver {
   ) {
     const { req } = context;
     const refreshToken = req.cookies?.refresh_token;
-    const newFileName: string = Date.now() + filename;
+    const newFileName: string = Date.now() + '-' + filename;
     const filePath = join(process.cwd(), 'uploads/post', newFileName);
     await new Promise((resolve, reject) =>
       createReadStream()

@@ -66,7 +66,7 @@ export class PostDto {
   comments: CommentDto[];
 
   @Expose()
-  @Transform(({ value }) => value.getTime())
+  @Transform(({ value }: { value: Date }) => Math.floor(value.getTime() / 1000))
   createdAt: number;
 }
 
