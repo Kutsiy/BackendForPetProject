@@ -50,6 +50,7 @@ export class PostService {
         likes: 0,
         likedBy: [],
         views: 0,
+        commentCount: 0,
       });
       return {
         posts: [emptyPost],

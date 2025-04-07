@@ -9,9 +9,7 @@ import {
   Empty,
   CreatePostReturns,
 } from '@app/common';
-import { BadRequestException, Controller } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import * as request from 'supertest';
+import { Controller } from '@nestjs/common';
 import { PostService } from './post.service';
 import { PostMapper } from './post.mapper';
 
@@ -64,6 +62,7 @@ export class PostserviceController implements PostServiceController {
         likedBy: [],
         views: 0,
         viewsBy: [],
+        commentCount: 0,
       };
     }
     return PostMapper.toDto(result);
