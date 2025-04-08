@@ -71,6 +71,16 @@ export interface Post {
   createdAt: number;
 }
 
+export interface AddViewArgs {
+  id: string;
+  refreshToken: string;
+}
+
+export interface AddViewAReturns {
+  result: string;
+  userExists: boolean;
+}
+
 export const POST_PACKAGE_NAME = "post";
 
 export interface PostServiceClient {
@@ -79,6 +89,8 @@ export interface PostServiceClient {
   getPost(request: FindPostById): Observable<Post>;
 
   createPost(request: CreatePostArgs): Observable<CreatePostReturns>;
+
+  addView(request: AddViewArgs): Observable<AddViewAReturns>;
 }
 
 export interface PostServiceController {
@@ -87,11 +99,13 @@ export interface PostServiceController {
   getPost(request: FindPostById): Promise<Post> | Observable<Post> | Post;
 
   createPost(request: CreatePostArgs): Promise<CreatePostReturns> | Observable<CreatePostReturns> | CreatePostReturns;
+
+  addView(request: AddViewArgs): Promise<AddViewAReturns> | Observable<AddViewAReturns> | AddViewAReturns;
 }
 
 export function PostServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["getAllPosts", "getPost", "createPost"];
+    const grpcMethods: string[] = ["getAllPosts", "getPost", "createPost", "addView"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("PostService", method)(constructor.prototype[method], method, descriptor);

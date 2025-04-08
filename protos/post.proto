@@ -6,6 +6,7 @@ service PostService {
     rpc GetAllPosts(PaginationArgs) returns (PaginatedPosts) {}
     rpc GetPost(FindPostById) returns (Post) {}
     rpc CreatePost(CreatePostArgs) returns (CreatePostReturns) {}
+    rpc AddView(AddViewArgs) returns (AddViewAReturns) {}
 }
 
 message FindPostById {
@@ -70,3 +71,13 @@ message Comment {
     int32 commentCount = 16;
     int32 createdAt = 17;
   }
+
+message AddViewArgs {
+    string id = 1;
+    string refreshToken = 2;
+}
+
+message AddViewAReturns {
+    string result = 1;
+    bool userExists = 2;
+}

@@ -1,4 +1,5 @@
 import {
+  AddViewArgs,
   CreatePostArgs,
   POST_SERVICE_NAME,
   PostServiceClient,
@@ -24,5 +25,9 @@ export class PostService implements OnModuleInit {
 
   async addPost(args: CreatePostArgs) {
     return await this.postService.createPost(args);
+  }
+
+  async addView(args: AddViewArgs) {
+    return await this.postService.addView(args);
   }
 }

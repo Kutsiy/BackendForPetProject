@@ -8,10 +8,13 @@ import {
   CreatePostArgs,
   Empty,
   CreatePostReturns,
+  AddViewAReturns,
+  AddViewArgs,
 } from '@app/common';
 import { Controller } from '@nestjs/common';
 import { PostService } from './post.service';
 import { PostMapper } from './post.mapper';
+import { Observable } from 'rxjs';
 
 @Controller()
 @PostServiceControllerMethods()
@@ -71,5 +74,9 @@ export class PostserviceController implements PostServiceController {
   async createPost(request: CreatePostArgs): Promise<CreatePostReturns> {
     await this.postService.createPost(request);
     return { result: 'post created successfully' };
+  }
+
+  async addView(request: AddViewArgs): Promise<AddViewAReturns> {
+    return await this.postService.addViewById(request);
   }
 }

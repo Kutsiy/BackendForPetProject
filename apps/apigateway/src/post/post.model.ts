@@ -1,17 +1,5 @@
 import { ObjectType, Field, Int, ArgsType } from '@nestjs/graphql';
 
-// @ObjectType()
-// export class Post {
-//   @Field()
-//   id: string;
-
-//   @Field()
-//   title: string;
-
-//   @Field()
-//   body: string;
-// }
-
 @ObjectType()
 export class PaginatedPosts {
   @Field(() => [Post])
@@ -74,7 +62,7 @@ export class Post {
   @Field(() => String)
   id: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   imageUrl: string;
 
   @Field(() => String)
@@ -133,4 +121,13 @@ export class Comment {
 
   @Field(() => Date)
   createdAt: Date;
+}
+
+@ObjectType()
+export class AddViewReturns {
+  @Field(() => String)
+  result: string;
+
+  @Field(() => Boolean)
+  userExists: boolean;
 }

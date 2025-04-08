@@ -1,5 +1,5 @@
 import { Inject, UseGuards } from '@nestjs/common';
-import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { PostService } from './post.service';
 import { Observable } from 'rxjs';
 import { PaginatedPosts } from '@app/common';
@@ -10,6 +10,7 @@ import {
   IdArgs,
   AddPostArgs,
   AddPostReturn,
+  AddViewReturns,
 } from './post.model';
 import { AuthGuard } from '../tools/guards/auth/auth.guard';
 import { RolesGuard } from '../tools/guards/roles/roles.guard';
@@ -66,6 +67,17 @@ export class PostResolver {
       ...addPostArgs,
       refreshToken,
     });
+    return await result.toPromise();
+  }
+
+  @Mutation(() => AddViewReturns)
+  async AddView(
+    @Args('id', { type: () => String }) id: string,
+    @Context() context: { req: Request },
+  ) {
+    const { req } = context;
+    const refreshToken = req.cookies?.refresh_token;
+    const result = await this.appService.addView({ id, refreshToken });
     return await result.toPromise();
   }
 }

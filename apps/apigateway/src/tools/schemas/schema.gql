@@ -16,7 +16,7 @@ type AddPostReturn {
 
 type Post {
   id: String!
-  imageUrl: String!
+  imageUrl: String
   title: String!
   body: String!
   description: String!
@@ -44,6 +44,11 @@ type Comment {
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
+type AddViewReturns {
+  result: String!
+  userExists: Boolean!
+}
 
 type Tokens {
   accessToken: String
@@ -88,6 +93,7 @@ type Query {
 
 type Mutation {
   AddPost(file: Upload!, title: String!, body: String!, category: String!, description: String!): AddPostReturn!
+  AddView(id: String!): AddViewReturns!
   Refresh: RefreshReturn!
   GetUser: User!
   uploadAvatar(file: Upload!): UploadAvatarReturn!

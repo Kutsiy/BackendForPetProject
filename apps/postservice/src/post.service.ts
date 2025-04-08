@@ -1,4 +1,10 @@
-import { CreatePostArgs, Empty, User, UserDocumentType } from '@app/common';
+import {
+  AddViewArgs,
+  CreatePostArgs,
+  Empty,
+  User,
+  UserDocumentType,
+} from '@app/common';
 import { Post, PostDocumentType } from '@app/common/schemas/post.schema';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -96,4 +102,18 @@ export class PostService {
   addDisLikeById() {}
 
   addCommentById() {}
+
+  async addViewById(args: AddViewArgs) {
+    const { id, refreshToken } = args;
+    const { id: userId }: Payload = this.jwtService.decode(refreshToken);
+    const result = await this.postModel.findById(id).exec();
+
+    if (result.viewsBy.some((view) => view === userId)) {
+      return { result: 'View Don`t Add', userExists: true };
+    } else {
+      result.viewsBy.push(userId);
+      await result.save();
+      return { result: 'View Add', userExists: false };
+    }
+  }
 }

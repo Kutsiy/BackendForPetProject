@@ -28,8 +28,8 @@ export class Post {
   @Prop({ required: true })
   category: string;
 
-  @Prop({ default: 0 })
-  views: number;
+  // @Prop({ default: 0 })
+  // views: number;
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] })
   viewsBy: Types.ObjectId[];
@@ -78,6 +78,10 @@ PostSchema.virtual('likes').get(function (this: PostDocumentType) {
 
 PostSchema.virtual('dislikes').get(function (this: PostDocumentType) {
   return this.dislikedBy?.length || 0;
+});
+
+PostSchema.virtual('views').get(function (this: PostDocumentType) {
+  return this.viewsBy?.length || 0;
 });
 
 PostSchema.set('toObject', { virtuals: true });
