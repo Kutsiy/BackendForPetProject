@@ -81,6 +81,17 @@ export interface AddViewAReturns {
   userExists: boolean;
 }
 
+export interface AddLikeArgs {
+  id: string;
+  refreshToken: string;
+}
+
+export interface AddLikeReturns {
+  result: string;
+  currentLikeCount: number;
+  currentDislikeCount: number;
+}
+
 export const POST_PACKAGE_NAME = "post";
 
 export interface PostServiceClient {
@@ -91,6 +102,8 @@ export interface PostServiceClient {
   createPost(request: CreatePostArgs): Observable<CreatePostReturns>;
 
   addView(request: AddViewArgs): Observable<AddViewAReturns>;
+
+  addLike(request: AddLikeArgs): Observable<AddLikeReturns>;
 }
 
 export interface PostServiceController {
@@ -101,11 +114,13 @@ export interface PostServiceController {
   createPost(request: CreatePostArgs): Promise<CreatePostReturns> | Observable<CreatePostReturns> | CreatePostReturns;
 
   addView(request: AddViewArgs): Promise<AddViewAReturns> | Observable<AddViewAReturns> | AddViewAReturns;
+
+  addLike(request: AddLikeArgs): Promise<AddLikeReturns> | Observable<AddLikeReturns> | AddLikeReturns;
 }
 
 export function PostServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["getAllPosts", "getPost", "createPost", "addView"];
+    const grpcMethods: string[] = ["getAllPosts", "getPost", "createPost", "addView", "addLike"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("PostService", method)(constructor.prototype[method], method, descriptor);

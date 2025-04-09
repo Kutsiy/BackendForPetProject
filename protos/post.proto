@@ -7,6 +7,7 @@ service PostService {
     rpc GetPost(FindPostById) returns (Post) {}
     rpc CreatePost(CreatePostArgs) returns (CreatePostReturns) {}
     rpc AddView(AddViewArgs) returns (AddViewAReturns) {}
+    rpc AddLike(AddLikeArgs) returns (AddLikeReturns) {}
 }
 
 message FindPostById {
@@ -80,4 +81,15 @@ message AddViewArgs {
 message AddViewAReturns {
     string result = 1;
     bool userExists = 2;
+}
+
+message AddLikeArgs {
+    string id = 1;
+    string refreshToken = 2;
+}
+
+message AddLikeReturns {
+    string result = 1;
+    int32 currentLikeCount = 2;
+    int32 currentDislikeCount = 3;
 }

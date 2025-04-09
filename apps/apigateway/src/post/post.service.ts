@@ -30,4 +30,8 @@ export class PostService implements OnModuleInit {
   async addView(args: AddViewArgs) {
     return await this.postService.addView(args);
   }
+
+  async addLike(args: AddViewArgs) {
+    return await this.postService.addView(args);
+  }
 }

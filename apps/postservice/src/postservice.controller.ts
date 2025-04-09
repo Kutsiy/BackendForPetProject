@@ -10,6 +10,8 @@ import {
   CreatePostReturns,
   AddViewAReturns,
   AddViewArgs,
+  AddLikeArgs,
+  AddLikeReturns,
 } from '@app/common';
 import { Controller } from '@nestjs/common';
 import { PostService } from './post.service';
@@ -78,5 +80,9 @@ export class PostserviceController implements PostServiceController {
 
   async addView(request: AddViewArgs): Promise<AddViewAReturns> {
     return await this.postService.addViewById(request);
+  }
+
+  async addLike(request: AddLikeArgs): Promise<AddLikeReturns> {
+    return await this.postService.addLikeById(request);
   }
 }
