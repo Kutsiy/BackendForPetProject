@@ -151,7 +151,7 @@ export class GetPostReturns {
 }
 
 @ObjectType()
-export class AddLikeReturns {
+export class AddRateReturns {
   @Field(() => String)
   result: string;
 

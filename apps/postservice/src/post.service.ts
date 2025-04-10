@@ -1,4 +1,6 @@
 import {
+  AddDislikeArgs,
+  AddDislikeReturns,
   AddLikeArgs,
   AddLikeReturns,
   AddViewArgs,
@@ -129,7 +131,7 @@ export class PostService {
     return await this.addRate(args, 'like');
   }
 
-  async addDisLikeById(args) {
+  async addDisLikeById(args: AddDislikeArgs): Promise<AddDislikeReturns> {
     return await this.addRate(args, 'dislike');
   }
 

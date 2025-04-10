@@ -1,8 +1,6 @@
 import { Inject, UseGuards } from '@nestjs/common';
 import { Args, Context, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { PostService } from './post.service';
-import { Observable } from 'rxjs';
-import { PaginatedPosts } from '@app/common';
 import {
   PaginatedPosts as PostsModel,
   Post,
@@ -12,7 +10,7 @@ import {
   AddPostReturn,
   AddViewReturns,
   GetPostReturns,
-  AddLikeReturns,
+  AddRateReturns,
 } from './post.model';
 import { AuthGuard } from '../tools/guards/auth/auth.guard';
 import { RolesGuard } from '../tools/guards/roles/roles.guard';
@@ -86,7 +84,7 @@ export class PostResolver {
     return await result.toPromise();
   }
 
-  @Mutation(() => AddLikeReturns)
+  @Mutation(() => AddRateReturns)
   async AddLike(
     @Args('id', { type: () => String }) id: string,
     @Context() context: { req: Request },
@@ -97,14 +95,14 @@ export class PostResolver {
     return await result.toPromise();
   }
 
-  @Mutation(() => AddLikeReturns)
+  @Mutation(() => AddRateReturns)
   async AddDislike(
     @Args('id', { type: () => String }) id: string,
     @Context() context: { req: Request },
   ) {
     const { req } = context;
     const refreshToken = req.cookies?.refresh_token;
-    const result = await this.appService.addLike({ id, refreshToken });
+    const result = await this.appService.addDislike({ id, refreshToken });
     return await result.toPromise();
   }
 }

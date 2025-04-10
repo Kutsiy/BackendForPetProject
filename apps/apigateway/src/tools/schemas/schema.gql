@@ -60,7 +60,7 @@ type GetPostReturns {
   rate: Rate!
 }
 
-type AddLikeReturns {
+type AddRateReturns {
   result: String!
   currentLikeCount: Int!
   currentDislikeCount: Int!
@@ -112,8 +112,8 @@ type Query {
 type Mutation {
   AddPost(file: Upload!, title: String!, body: String!, category: String!, description: String!): AddPostReturn!
   AddView(id: String!): AddViewReturns!
-  AddLike(id: String!): AddLikeReturns!
-  AddDislike(id: String!): AddLikeReturns!
+  AddLike(id: String!): AddRateReturns!
+  AddDislike(id: String!): AddRateReturns!
   Refresh: RefreshReturn!
   GetUser: User!
   uploadAvatar(file: Upload!): UploadAvatarReturn!
