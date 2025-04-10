@@ -90,6 +90,8 @@ export interface AddLikeReturns {
   result: string;
   currentLikeCount: number;
   currentDislikeCount: number;
+  userSetLike: boolean;
+  userSetDislike: boolean;
 }
 
 export const POST_PACKAGE_NAME = "post";

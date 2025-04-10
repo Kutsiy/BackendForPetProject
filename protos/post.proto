@@ -92,4 +92,6 @@ message AddLikeReturns {
     string result = 1;
     int32 currentLikeCount = 2;
     int32 currentDislikeCount = 3;
+    bool userSetLike = 4;
+    bool userSetDislike = 5;
 }

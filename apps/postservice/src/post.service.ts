@@ -13,7 +13,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Payload } from 'apps/authservice/src/token.service';
-import { Model, Types } from 'mongoose';
+import { Model, ObjectId, Types } from 'mongoose';
 
 type AddRateArgs = {
   id: string;
@@ -24,6 +24,8 @@ type AddRateReturns = {
   result: string;
   currentLikeCount: number;
   currentDislikeCount: number;
+  userSetLike: boolean;
+  userSetDislike: boolean;
 };
 
 @Injectable()
@@ -128,45 +130,47 @@ export class PostService {
     if (!post) {
       throw new Error('Post not found');
     }
-    const hasLiked = post.likedBy.some((like) => like.equals(userId));
-    const hasDisliked = post.dislikedBy.some((dislike) =>
-      dislike.equals(userId),
+    const hasLiked = post.likedBy.some(
+      (like) => like.toString() === userId.toString(),
+    );
+    const hasDisliked = post.dislikedBy.some(
+      (dislike) => dislike.toString() === userId.toString(),
     );
     if (type === 'like') {
       if (hasDisliked && !hasLiked) {
         await this.removeFromArrayField(post, 'dislikedBy', userId);
         await this.addToArrayField(post, 'likedBy', userId);
-        return this.buildResponse('Added Like', post);
+        return this.buildResponse('Added Like', post, true, false);
       }
 
       if (hasLiked) {
         await this.removeFromArrayField(post, 'likedBy', userId);
-        return this.buildResponse('Removed Like', post);
+        return this.buildResponse('Removed Like', post, false, false);
       }
 
       await this.addToArrayField(post, 'likedBy', userId);
-      return this.buildResponse('Added Like', post);
+      return this.buildResponse('Added Like', post, true, false);
     }
 
     if (type === 'dislike') {
       if (!hasDisliked && hasLiked) {
         await this.removeFromArrayField(post, 'likedBy', userId);
         await this.addToArrayField(post, 'dislikedBy', userId);
-        return this.buildResponse('Added Dislike', post);
+        return this.buildResponse('Added Dislike', post, false, true);
       }
 
       if (hasDisliked) {
         await this.removeFromArrayField(post, 'dislikedBy', userId);
-        return this.buildResponse('Removed Dislike', post);
+        return this.buildResponse('Removed Dislike', post, false, false);
       }
 
       await this.addToArrayField(post, 'dislikedBy', userId);
-      return this.buildResponse('Added Dislike', post);
+      return this.buildResponse('Added Dislike', post, false, true);
     }
   }
 
   private async addToArrayField(
-    post: any,
+    post: PostDocumentType,
     field: 'likedBy' | 'dislikedBy',
     userId: Types.ObjectId,
   ) {
@@ -175,19 +179,28 @@ export class PostService {
   }
 
   private async removeFromArrayField(
-    post: any,
+    post: PostDocumentType,
     field: 'likedBy' | 'dislikedBy',
     userId: Types.ObjectId,
   ) {
-    post[field] = post[field].filter((id) => !id.equals(userId));
+    post[field] = post[field].filter(
+      (id: Types.ObjectId) => !(id.toString() === userId.toString()),
+    );
     await post.save();
   }
 
-  private buildResponse(result: string, post: any): AddRateReturns {
+  private buildResponse(
+    result: string,
+    post: PostDocumentType,
+    userSetLike: boolean,
+    userSetDislike: boolean,
+  ): AddRateReturns {
     return {
       result,
       currentLikeCount: post.likedBy.length,
       currentDislikeCount: post.dislikedBy.length,
+      userSetLike,
+      userSetDislike,
     };
   }
 
@@ -198,7 +211,7 @@ export class PostService {
     const { id: userId }: Payload = this.jwtService.decode(refreshToken);
     const result = await this.postModel.findById(id).exec();
 
-    if (result.viewsBy.some((view) => view.equals(userId))) {
+    if (result.viewsBy.some((view) => view.toString() === userId.toString())) {
       return { result: 'View Don`t Add', userExists: true };
     } else {
       result.viewsBy.push(userId);
