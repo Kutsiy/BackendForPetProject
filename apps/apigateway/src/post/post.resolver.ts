@@ -96,4 +96,15 @@ export class PostResolver {
     const result = await this.appService.addLike({ id, refreshToken });
     return await result.toPromise();
   }
+
+  @Mutation(() => AddLikeReturns)
+  async AddDislike(
+    @Args('id', { type: () => String }) id: string,
+    @Context() context: { req: Request },
+  ) {
+    const { req } = context;
+    const refreshToken = req.cookies?.refresh_token;
+    const result = await this.appService.addLike({ id, refreshToken });
+    return await result.toPromise();
+  }
 }
