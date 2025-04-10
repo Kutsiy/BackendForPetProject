@@ -12,6 +12,7 @@ import {
   AddPostReturn,
   AddViewReturns,
   GetPostReturns,
+  AddLikeReturns,
 } from './post.model';
 import { AuthGuard } from '../tools/guards/auth/auth.guard';
 import { RolesGuard } from '../tools/guards/roles/roles.guard';
@@ -85,7 +86,7 @@ export class PostResolver {
     return await result.toPromise();
   }
 
-  @Mutation(() => AddViewReturns)
+  @Mutation(() => AddLikeReturns)
   async AddLike(
     @Args('id', { type: () => String }) id: string,
     @Context() context: { req: Request },

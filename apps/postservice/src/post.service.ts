@@ -150,17 +150,20 @@ export class PostService {
       (dislike) => dislike.toString() === userId.toString(),
     );
     if (type === 'like') {
+      console.log('a');
       if (hasDisliked && !hasLiked) {
+        console.log('b');
         await this.removeFromArrayField(post, 'dislikedBy', userId);
         await this.addToArrayField(post, 'likedBy', userId);
         return this.buildResponse('Added Like', post, true, false);
       }
 
       if (hasLiked) {
+        console.log('c');
         await this.removeFromArrayField(post, 'likedBy', userId);
         return this.buildResponse('Removed Like', post, false, false);
       }
-
+      console.log('d');
       await this.addToArrayField(post, 'likedBy', userId);
       return this.buildResponse('Added Like', post, true, false);
     }

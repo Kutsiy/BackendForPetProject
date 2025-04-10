@@ -149,3 +149,21 @@ export class GetPostReturns {
   @Field(() => Rate)
   rate: Rate;
 }
+
+@ObjectType()
+export class AddLikeReturns {
+  @Field(() => String)
+  result: string;
+
+  @Field(() => Int)
+  currentLikeCount: number;
+
+  @Field(() => Int)
+  currentDislikeCount: number;
+
+  @Field(() => Boolean)
+  userSetLike: boolean;
+
+  @Field(() => Boolean)
+  userSetDislike: boolean;
+}
