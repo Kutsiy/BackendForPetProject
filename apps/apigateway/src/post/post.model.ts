@@ -131,3 +131,21 @@ export class AddViewReturns {
   @Field(() => Boolean)
   userExists: boolean;
 }
+
+@ObjectType()
+export class Rate {
+  @Field(() => Boolean)
+  userSetLike: boolean;
+
+  @Field(() => Boolean)
+  userSetDislike: boolean;
+}
+
+@ObjectType()
+export class GetPostReturns {
+  @Field(() => Post)
+  post: Post;
+
+  @Field(() => Rate)
+  rate: Rate;
+}

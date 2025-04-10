@@ -12,6 +12,17 @@ export const protobufPackage = "post";
 
 export interface FindPostById {
   id: string;
+  refreshToken: string;
+}
+
+export interface Rate {
+  userSetLike: boolean;
+  userSetDislike: boolean;
+}
+
+export interface GetPostReturns {
+  post: Post | undefined;
+  rate: Rate | undefined;
 }
 
 export interface Empty {
@@ -99,7 +110,7 @@ export const POST_PACKAGE_NAME = "post";
 export interface PostServiceClient {
   getAllPosts(request: PaginationArgs): Observable<PaginatedPosts>;
 
-  getPost(request: FindPostById): Observable<Post>;
+  getPost(request: FindPostById): Observable<GetPostReturns>;
 
   createPost(request: CreatePostArgs): Observable<CreatePostReturns>;
 
@@ -111,7 +122,7 @@ export interface PostServiceClient {
 export interface PostServiceController {
   getAllPosts(request: PaginationArgs): Promise<PaginatedPosts> | Observable<PaginatedPosts> | PaginatedPosts;
 
-  getPost(request: FindPostById): Promise<Post> | Observable<Post> | Post;
+  getPost(request: FindPostById): Promise<GetPostReturns> | Observable<GetPostReturns> | GetPostReturns;
 
   createPost(request: CreatePostArgs): Promise<CreatePostReturns> | Observable<CreatePostReturns> | CreatePostReturns;
 

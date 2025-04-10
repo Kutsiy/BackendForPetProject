@@ -92,9 +92,22 @@ export class PostService {
     };
   }
 
-  async getPost(id: string) {
-    const result = await this.postModel.findById(id).exec();
-    return result;
+  async getPost(id: string, refreshToken: string) {
+    const { id: userId }: Payload = this.jwtService.decode(refreshToken);
+    const post = await this.postModel.findById(id).exec();
+    const hasLiked = post.likedBy.some(
+      (like) => like.toString() === userId.toString(),
+    );
+    const hasDisliked = post.dislikedBy.some(
+      (dislike) => dislike.toString() === userId.toString(),
+    );
+    return {
+      post,
+      rate: {
+        userSetLike: hasLiked,
+        userSetDislike: hasDisliked,
+      },
+    };
   }
 
   async createPost(request: CreatePostArgs): Promise<Empty> {

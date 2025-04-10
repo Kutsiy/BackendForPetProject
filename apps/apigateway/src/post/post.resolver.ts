@@ -11,6 +11,7 @@ import {
   AddPostArgs,
   AddPostReturn,
   AddViewReturns,
+  GetPostReturns,
 } from './post.model';
 import { AuthGuard } from '../tools/guards/auth/auth.guard';
 import { RolesGuard } from '../tools/guards/roles/roles.guard';
@@ -38,9 +39,12 @@ export class PostResolver {
     return await result.toPromise();
   }
 
-  @Query(() => Post)
-  async Post(@Args() IdArgs: IdArgs) {
-    const result = await this.appService.getPost(IdArgs);
+  @Query(() => GetPostReturns)
+  async Post(@Args() IdArgs: IdArgs, @Context() context: { req: Request }) {
+    const { req } = context;
+    const refreshToken = req.cookies?.refresh_token;
+    const { id } = IdArgs;
+    const result = await this.appService.getPost({ id, refreshToken });
     return await result.toPromise();
   }
 

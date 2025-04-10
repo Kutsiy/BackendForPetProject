@@ -4,7 +4,7 @@ package post;
 
 service PostService {
     rpc GetAllPosts(PaginationArgs) returns (PaginatedPosts) {}
-    rpc GetPost(FindPostById) returns (Post) {}
+    rpc GetPost(FindPostById) returns (GetPostReturns) {}
     rpc CreatePost(CreatePostArgs) returns (CreatePostReturns) {}
     rpc AddView(AddViewArgs) returns (AddViewAReturns) {}
     rpc AddLike(AddLikeArgs) returns (AddLikeReturns) {}
@@ -12,6 +12,17 @@ service PostService {
 
 message FindPostById {
     string id = 1;
+    string refreshToken = 2;
+}
+
+message Rate {
+    bool userSetLike = 1;
+    bool userSetDislike = 2;
+}
+
+message GetPostReturns {
+    Post post = 1;
+    Rate rate =2;
 }
 
 

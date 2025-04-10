@@ -50,6 +50,16 @@ type AddViewReturns {
   userExists: Boolean!
 }
 
+type Rate {
+  userSetLike: Boolean!
+  userSetDislike: Boolean!
+}
+
+type GetPostReturns {
+  post: Post!
+  rate: Rate!
+}
+
 type Tokens {
   accessToken: String
   refreshToken: String
@@ -84,7 +94,7 @@ type UploadAvatarReturn {
 
 type Query {
   Posts(searchString: String, page: Int! = 1, take: Int! = 10): PaginatedPosts!
-  Post(id: String): Post!
+  Post(id: String): GetPostReturns!
   Login(email: String!, password: String!): AuthReturn!
   LogOut: Tokens!
   SignUp(name: String!, email: String!, password: String!): AuthReturn!

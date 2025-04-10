@@ -19,7 +19,7 @@ export class PostService implements OnModuleInit {
     return await this.postService.getAllPosts({ searchString, page, take });
   }
 
-  async getPost(args: { id: string }) {
+  async getPost(args: { id: string; refreshToken: string }) {
     return await this.postService.getPost(args);
   }
 

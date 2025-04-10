@@ -12,6 +12,7 @@ import {
   AddViewArgs,
   AddLikeArgs,
   AddLikeReturns,
+  GetPostReturns,
 } from '@app/common';
 import { Controller } from '@nestjs/common';
 import { PostService } from './post.service';
@@ -47,30 +48,36 @@ export class PostserviceController implements PostServiceController {
       isEmpty,
     };
   }
-  async getPost(request: FindPostById): Promise<Post> {
-    const { id } = request;
-    const result = await this.postService.getPost(id);
-    if (result === undefined) {
+  async getPost(request: FindPostById): Promise<GetPostReturns> {
+    const { id, refreshToken } = request;
+    const { post, rate } = await this.postService.getPost(id, refreshToken);
+    if (post === undefined) {
       return {
-        id: 'none',
-        body: 'none',
-        description: 'none',
-        title: 'none',
-        authorId: 'none',
-        authorName: 'none',
-        category: 'none',
-        comments: [],
-        createdAt: 0,
-        dislikedBy: [],
-        dislikes: 0,
-        likes: 0,
-        likedBy: [],
-        views: 0,
-        viewsBy: [],
-        commentCount: 0,
+        post: {
+          id: 'none',
+          body: 'none',
+          description: 'none',
+          title: 'none',
+          authorId: 'none',
+          authorName: 'none',
+          category: 'none',
+          comments: [],
+          createdAt: 0,
+          dislikedBy: [],
+          dislikes: 0,
+          likes: 0,
+          likedBy: [],
+          views: 0,
+          viewsBy: [],
+          commentCount: 0,
+        },
+        rate: {
+          userSetLike: false,
+          userSetDislike: false,
+        },
       };
     }
-    return PostMapper.toDto(result);
+    return { post: PostMapper.toDto(post), rate };
   }
 
   async createPost(request: CreatePostArgs): Promise<CreatePostReturns> {
