@@ -8,6 +8,8 @@ import {
   Empty,
   User,
   UserDocumentType,
+  UserRatePost,
+  UserRatePostDocumentType,
 } from '@app/common';
 import { Post, PostDocumentType } from '@app/common/schemas/post.schema';
 import { BadRequestException, Injectable } from '@nestjs/common';
@@ -15,6 +17,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Payload } from 'apps/authservice/src/token.service';
+import { Type } from 'class-transformer';
 import { Model, ObjectId, Types } from 'mongoose';
 
 type AddRateArgs = {
@@ -37,6 +40,8 @@ export class PostService {
     private readonly postModel: Model<PostDocumentType>,
     @InjectModel(User.name, 'userConnection')
     private readonly userModel: Model<UserDocumentType>,
+    @InjectModel(UserRatePost.name, 'postConnection')
+    private readonly postRateModel: Model<UserRatePostDocumentType>,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
   ) {}
@@ -141,44 +146,59 @@ export class PostService {
   ): Promise<AddRateReturns> {
     const { id, refreshToken } = args;
     const { id: userId }: Payload = this.jwtService.decode(refreshToken);
-    const post = await this.postModel.findById(id).exec();
+    const postId = new Types.ObjectId(id);
+    const userObjectId = new Types.ObjectId(userId);
+    const post = await this.postModel.findById(postId).exec();
     if (!post) {
       throw new Error('Post not found');
     }
+    const rate = await this.postRateModel
+      .findOne({ userId: userObjectId, postId: postId })
+      .exec();
     const hasLiked = post.likedBy.some(
-      (like) => like.toString() === userId.toString(),
+      (like) => like.toString() === userObjectId.toString(),
     );
     const hasDisliked = post.dislikedBy.some(
-      (dislike) => dislike.toString() === userId.toString(),
+      (dislike) => dislike.toString() === userObjectId.toString(),
     );
     if (type === 'like') {
       if (hasDisliked && !hasLiked) {
-        await this.removeFromArrayField(post, 'dislikedBy', userId);
-        await this.addToArrayField(post, 'likedBy', userId);
+        await this.removeFromArrayField(post, 'dislikedBy', userObjectId);
+        await this.addToArrayField(post, 'likedBy', userObjectId);
+        await this.upsertRate(rate, userObjectId, postId, 'like');
         return this.buildResponse('Added Like', post, true, false);
       }
 
       if (hasLiked) {
-        await this.removeFromArrayField(post, 'likedBy', userId);
+        await this.removeFromArrayField(post, 'likedBy', userObjectId);
+        if (rate) {
+          await rate.deleteOne();
+        }
         return this.buildResponse('Removed Like', post, false, false);
       }
-      await this.addToArrayField(post, 'likedBy', userId);
+      await this.addToArrayField(post, 'likedBy', userObjectId);
+      await this.upsertRate(rate, userObjectId, postId, 'like');
       return this.buildResponse('Added Like', post, true, false);
     }
 
     if (type === 'dislike') {
       if (!hasDisliked && hasLiked) {
-        await this.removeFromArrayField(post, 'likedBy', userId);
-        await this.addToArrayField(post, 'dislikedBy', userId);
+        await this.removeFromArrayField(post, 'likedBy', userObjectId);
+        await this.addToArrayField(post, 'dislikedBy', userObjectId);
+        await this.upsertRate(rate, userObjectId, postId, 'dislike');
         return this.buildResponse('Added Dislike', post, false, true);
       }
 
       if (hasDisliked) {
-        await this.removeFromArrayField(post, 'dislikedBy', userId);
+        await this.removeFromArrayField(post, 'dislikedBy', userObjectId);
+        if (rate) {
+          await rate.deleteOne();
+        }
         return this.buildResponse('Removed Dislike', post, false, false);
       }
 
-      await this.addToArrayField(post, 'dislikedBy', userId);
+      await this.addToArrayField(post, 'dislikedBy', userObjectId);
+      await this.upsertRate(rate, userObjectId, postId, 'dislike');
       return this.buildResponse('Added Dislike', post, false, true);
     }
   }
@@ -218,17 +238,34 @@ export class PostService {
     };
   }
 
+  private async upsertRate(
+    rate: UserRatePostDocumentType,
+    userId: Types.ObjectId,
+    postId: Types.ObjectId,
+    rating: 'like' | 'dislike',
+  ) {
+    if (rate) {
+      rate.rating = rating;
+      await rate.save();
+    } else {
+      await this.postRateModel.create({ userId, postId, rating });
+    }
+  }
+
   addCommentById() {}
 
   async addViewById(args: AddViewArgs) {
     const { id, refreshToken } = args;
     const { id: userId }: Payload = this.jwtService.decode(refreshToken);
-    const result = await this.postModel.findById(id).exec();
-
-    if (result.viewsBy.some((view) => view.toString() === userId.toString())) {
+    const postId = new Types.ObjectId(id);
+    const result = await this.postModel.findById(postId).exec();
+    const userObjectId = new Types.ObjectId(userId);
+    if (
+      result.viewsBy.some((view) => view.toString() === userObjectId.toString())
+    ) {
       return { result: 'View Don`t Add', userExists: true };
     } else {
-      result.viewsBy.push(userId);
+      result.viewsBy.push(userObjectId);
       await result.save();
       return { result: 'View Add', userExists: false };
     }

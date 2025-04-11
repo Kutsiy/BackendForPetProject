@@ -1,7 +1,14 @@
 import { Module } from '@nestjs/common';
 import { PostserviceController } from './postservice.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { PostName, PostSchema, User, UserSchema } from '@app/common/schemas';
+import {
+  PostName,
+  PostSchema,
+  User,
+  UserRatePost,
+  UserRatePostSchema,
+  UserSchema,
+} from '@app/common/schemas';
 import { PostService } from './post.service';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule, JwtService } from '@nestjs/jwt';
@@ -21,7 +28,10 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
       },
     ),
     MongooseModule.forFeature(
-      [{ name: PostName.name, schema: PostSchema }],
+      [
+        { name: PostName.name, schema: PostSchema },
+        { name: UserRatePost.name, schema: UserRatePostSchema },
+      ],
       'postConnection',
     ),
     MongooseModule.forFeature(

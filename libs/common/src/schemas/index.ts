@@ -7,3 +7,4 @@ export {
   PostSchema,
   PostType as PostSchemaType,
 } from './post.schema';
+export * from './user-rate-post.schema';
