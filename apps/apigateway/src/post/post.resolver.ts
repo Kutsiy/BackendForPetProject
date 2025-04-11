@@ -11,6 +11,8 @@ import {
   AddViewReturns,
   GetPostReturns,
   AddRateReturns,
+  AddCommentArgs,
+  AddCommentReturn,
 } from './post.model';
 import { AuthGuard } from '../tools/guards/auth/auth.guard';
 import { RolesGuard } from '../tools/guards/roles/roles.guard';
@@ -103,6 +105,20 @@ export class PostResolver {
     const { req } = context;
     const refreshToken = req.cookies?.refresh_token;
     const result = await this.appService.addDislike({ id, refreshToken });
+    return await result.toPromise();
+  }
+
+  @Mutation(() => AddCommentReturn)
+  async AddComment(
+    @Args() commentArgs: AddCommentArgs,
+    @Context() context: { req: Request },
+  ) {
+    const { req } = context;
+    const refreshToken = req.cookies?.refresh_token;
+    const result = await this.appService.addComment({
+      ...commentArgs,
+      refreshToken,
+    });
     return await result.toPromise();
   }
 }

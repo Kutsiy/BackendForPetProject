@@ -1,9 +1,13 @@
 import {
+  AddCommentArgs,
+  AddCommentReturn,
   AddDislikeArgs,
   AddDislikeReturns,
   AddLikeArgs,
   AddLikeReturns,
   AddViewArgs,
+  CommentPost,
+  CommentPostPostDocumentType,
   CreatePostArgs,
   Empty,
   User,
@@ -21,6 +25,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Payload } from 'apps/authservice/src/token.service';
 import { Type } from 'class-transformer';
 import { Model, ObjectId, Types } from 'mongoose';
+import { PostMapper } from './post.mapper';
 
 type AddRateArgs = {
   id: string;
@@ -46,6 +51,8 @@ export class PostService {
     private readonly postRateModel: Model<UserRatePostDocumentType>,
     @InjectModel(UserViewPost.name, 'postConnection')
     private readonly postViewModel: Model<UserViewPostDocumentType>,
+    @InjectModel(CommentPost.name, 'postConnection')
+    private readonly commentModel: Model<CommentPostPostDocumentType>,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
   ) {}
@@ -106,6 +113,16 @@ export class PostService {
   async getPost(id: string, refreshToken: string) {
     const { id: userId }: Payload = this.jwtService.decode(refreshToken);
     const post = await this.postModel.findById(id).exec();
+
+    const comments = await this.commentModel
+      .find()
+      .populate({
+        path: 'authorId',
+        select: 'name avatarLink',
+        model: this.userModel,
+      })
+      .exec();
+
     const hasLiked = post.likedBy.some(
       (like) => like.toString() === userId.toString(),
     );
@@ -114,6 +131,7 @@ export class PostService {
     );
     return {
       post,
+      comments,
       rate: {
         userSetLike: hasLiked,
         userSetDislike: hasDisliked,
@@ -256,8 +274,6 @@ export class PostService {
     }
   }
 
-  addCommentById() {}
-
   async addViewById(args: AddViewArgs) {
     const { id, refreshToken } = args;
     const { id: userId }: Payload = this.jwtService.decode(refreshToken);
@@ -285,5 +301,22 @@ export class PostService {
         currentViewsCount: result.viewsBy.length,
       };
     }
+  }
+
+  async addCommentById(args: AddCommentArgs): Promise<AddCommentReturn> {
+    const { id, refreshToken, text } = args;
+    const { id: userId }: Payload = this.jwtService.decode(refreshToken);
+    const postId = new Types.ObjectId(id);
+    const userObjectId = new Types.ObjectId(userId);
+    await this.commentModel.create({ authorId: userObjectId, postId, text });
+    const result = await this.commentModel
+      .find()
+      .populate({
+        path: 'authorId',
+        select: 'name avatarLink',
+        model: this.userModel,
+      })
+      .exec();
+    return { comments: PostMapper.CommentsToDtoArray(result) };
   }
 }

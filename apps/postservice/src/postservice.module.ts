@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { PostserviceController } from './postservice.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
+  CommentPost,
+  CommentPostSchema,
   PostName,
   PostSchema,
   User,
@@ -34,6 +36,7 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
         { name: PostName.name, schema: PostSchema },
         { name: UserRatePost.name, schema: UserRatePostSchema },
         { name: UserViewPost.name, schema: UserViewPostSchema },
+        { name: CommentPost.name, schema: CommentPostSchema },
       ],
       'postConnection',
     ),

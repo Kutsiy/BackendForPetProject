@@ -29,21 +29,22 @@ type Post {
   dislikes: Float!
   likedBy: [String!]
   dislikedBy: [String!]
-  comments: [Comment!]
+  comments: [String!]
   commentCount: Float!
   createdAt: Float!
 }
 
-type Comment {
-  userId: String!
-  text: String!
-  createdAt: DateTime!
+type UserCommentInfo {
+  name: String!
+  avatarLink: String!
 }
 
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
+type Comment {
+  authorId: UserCommentInfo!
+  postId: String!
+  text: String!
+  createdAt: Float!
+}
 
 type AddViewReturns {
   result: String!
@@ -58,6 +59,7 @@ type Rate {
 
 type GetPostReturns {
   post: Post!
+  comments: [Comment!]
   rate: Rate!
 }
 
@@ -67,6 +69,10 @@ type AddRateReturns {
   currentDislikeCount: Int!
   userSetLike: Boolean!
   userSetDislike: Boolean!
+}
+
+type AddCommentReturn {
+  comments: [Comment!]!
 }
 
 type Tokens {
@@ -115,6 +121,7 @@ type Mutation {
   AddView(id: String!): AddViewReturns!
   AddLike(id: String!): AddRateReturns!
   AddDislike(id: String!): AddRateReturns!
+  AddComment(text: String!, id: String!): AddCommentReturn!
   Refresh: RefreshReturn!
   GetUser: User!
   uploadAvatar(file: Upload!): UploadAvatarReturn!

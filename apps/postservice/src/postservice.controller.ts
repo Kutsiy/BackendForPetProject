@@ -15,6 +15,8 @@ import {
   GetPostReturns,
   AddDislikeArgs,
   AddDislikeReturns,
+  AddCommentArgs,
+  AddCommentReturn,
 } from '@app/common';
 import { Controller } from '@nestjs/common';
 import { PostService } from './post.service';
@@ -52,7 +54,10 @@ export class PostserviceController implements PostServiceController {
   }
   async getPost(request: FindPostById): Promise<GetPostReturns> {
     const { id, refreshToken } = request;
-    const { post, rate } = await this.postService.getPost(id, refreshToken);
+    const { post, rate, comments } = await this.postService.getPost(
+      id,
+      refreshToken,
+    );
     if (post === undefined) {
       return {
         post: {
@@ -73,13 +78,18 @@ export class PostserviceController implements PostServiceController {
           viewsBy: [],
           commentCount: 0,
         },
+        comments: [],
         rate: {
           userSetLike: false,
           userSetDislike: false,
         },
       };
     }
-    return { post: PostMapper.toDto(post), rate };
+    return {
+      post: PostMapper.toDto(post),
+      rate,
+      comments: PostMapper.CommentsToDtoArray(comments),
+    };
   }
 
   async createPost(request: CreatePostArgs): Promise<CreatePostReturns> {
@@ -97,5 +107,9 @@ export class PostserviceController implements PostServiceController {
 
   async addDislike(request: AddDislikeArgs): Promise<AddDislikeReturns> {
     return await this.postService.addDisLikeById(request);
+  }
+
+  async addComment(request: AddCommentArgs): Promise<AddCommentReturn> {
+    return await this.postService.addCommentById(request);
   }
 }

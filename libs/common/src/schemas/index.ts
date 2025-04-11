@@ -9,3 +9,4 @@ export {
 } from './post.schema';
 export * from './user-rate-post.schema';
 export * from './user-view-post.schema';
+export * from './comment.schema';

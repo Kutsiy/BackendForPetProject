@@ -22,6 +22,7 @@ export interface Rate {
 
 export interface GetPostReturns {
   post: Post | undefined;
+  comments: Comment[];
   rate: Rate | undefined;
 }
 
@@ -56,8 +57,14 @@ export interface CreatePostReturns {
   result: string;
 }
 
+export interface UserCommentInfo {
+  name: string;
+  avatarLink: string;
+}
+
 export interface Comment {
-  userId: string;
+  authorId: UserCommentInfo | undefined;
+  postId: string;
   text: string;
   createdAt: number;
 }
@@ -77,7 +84,7 @@ export interface Post {
   dislikes: number;
   likedBy: string[];
   dislikedBy: string[];
-  comments: Comment[];
+  comments: string[];
   commentCount: number;
   createdAt: number;
 }
@@ -119,6 +126,16 @@ export interface AddDislikeReturns {
   userSetDislike: boolean;
 }
 
+export interface AddCommentArgs {
+  text: string;
+  id: string;
+  refreshToken: string;
+}
+
+export interface AddCommentReturn {
+  comments: Comment[];
+}
+
 export const POST_PACKAGE_NAME = "post";
 
 export interface PostServiceClient {
@@ -133,6 +150,8 @@ export interface PostServiceClient {
   addLike(request: AddLikeArgs): Observable<AddLikeReturns>;
 
   addDislike(request: AddDislikeArgs): Observable<AddDislikeReturns>;
+
+  addComment(request: AddCommentArgs): Observable<AddCommentReturn>;
 }
 
 export interface PostServiceController {
@@ -147,11 +166,21 @@ export interface PostServiceController {
   addLike(request: AddLikeArgs): Promise<AddLikeReturns> | Observable<AddLikeReturns> | AddLikeReturns;
 
   addDislike(request: AddDislikeArgs): Promise<AddDislikeReturns> | Observable<AddDislikeReturns> | AddDislikeReturns;
+
+  addComment(request: AddCommentArgs): Promise<AddCommentReturn> | Observable<AddCommentReturn> | AddCommentReturn;
 }
 
 export function PostServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["getAllPosts", "getPost", "createPost", "addView", "addLike", "addDislike"];
+    const grpcMethods: string[] = [
+      "getAllPosts",
+      "getPost",
+      "createPost",
+      "addView",
+      "addLike",
+      "addDislike",
+      "addComment",
+    ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("PostService", method)(constructor.prototype[method], method, descriptor);

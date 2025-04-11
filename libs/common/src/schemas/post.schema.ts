@@ -40,25 +40,8 @@ export class Post {
   @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] })
   dislikedBy: Types.ObjectId[];
 
-  @Prop({
-    type: [
-      {
-        userId: { type: Types.ObjectId, ref: 'User', required: true },
-        text: { type: String, required: true },
-        createdAt: {
-          type: Number,
-          default: () => new Date().getTime(),
-          get: () => new Date().getTime(),
-        },
-      },
-    ],
-    default: [],
-  })
-  comments: {
-    userId: Types.ObjectId;
-    text: string;
-    createdAt: number;
-  }[];
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Comment' }], default: [] })
+  comments: Types.ObjectId[];
 
   createdAt: Date;
   updatedAt: Date;
@@ -86,3 +69,13 @@ PostSchema.virtual('views').get(function (this: PostDocumentType) {
 
 PostSchema.set('toObject', { virtuals: true });
 PostSchema.set('toJSON', { virtuals: true });
+
+// {
+//   userId: { type: Types.ObjectId, ref: 'User', required: true },
+//   text: { type: String, required: true },
+//   createdAt: {
+//     type: Number,
+//     default: () => new Date().getTime(),
+//     get: () => new Date().getTime(),
+//   },
+// },

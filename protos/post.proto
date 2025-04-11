@@ -9,6 +9,7 @@ service PostService {
     rpc AddView(AddViewArgs) returns (AddViewAReturns) {}
     rpc AddLike(AddLikeArgs) returns (AddLikeReturns) {}
     rpc AddDislike(AddDislikeArgs) returns (AddDislikeReturns) {}
+    rpc AddComment(AddCommentArgs) returns (AddCommentReturn) {}
 }
 
 message FindPostById {
@@ -23,7 +24,8 @@ message Rate {
 
 message GetPostReturns {
     Post post = 1;
-    Rate rate =2;
+    repeated Comment comments = 2;
+    Rate rate = 3;
 }
 
 
@@ -59,10 +61,16 @@ message CreatePostReturns {
     string result = 1;
 }
 
+message UserCommentInfo {
+    string name = 1;
+    string avatarLink = 2;
+}
+
 message Comment {
-    string userId = 1;
-    string text = 2;
-    int64 createdAt = 3;
+    UserCommentInfo authorId = 1;
+    string postId = 2;
+    string text = 3;
+    int32 createdAt = 4;
   }
 
   message Post {
@@ -80,7 +88,7 @@ message Comment {
     int32 dislikes = 12;
     repeated string likedBy = 13;
     repeated string dislikedBy = 14;
-    repeated Comment comments = 15;
+    repeated string comments = 15;
     int32 commentCount = 16;
     int32 createdAt = 17;
   }
@@ -89,6 +97,8 @@ message AddViewArgs {
     string id = 1;
     string refreshToken = 2;
 }
+
+
 
 message AddViewAReturns {
     string result = 1;
@@ -121,4 +131,14 @@ message AddDislikeReturns {
     int32 currentDislikeCount = 3;
     bool userSetLike = 4;
     bool userSetDislike = 5;
+}
+
+message AddCommentArgs {
+    string text = 1;
+    string id = 2;
+    string refreshToken = 3;
+}
+
+message AddCommentReturn {
+    repeated Comment comments = 1;
 }

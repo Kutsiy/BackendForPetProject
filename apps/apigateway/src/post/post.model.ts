@@ -101,8 +101,8 @@ export class Post {
   @Field(() => [String], { nullable: true })
   dislikedBy: string[];
 
-  @Field(() => [Comment], { nullable: true })
-  comments: Comment[];
+  @Field(() => [String], { nullable: true })
+  comments: string[];
 
   @Field(() => Number)
   commentCount: number;
@@ -112,15 +112,27 @@ export class Post {
 }
 
 @ObjectType()
-export class Comment {
+export class UserCommentInfo {
   @Field(() => String)
-  userId: string;
+  name: string;
+
+  @Field(() => String)
+  avatarLink: string;
+}
+
+@ObjectType()
+export class Comment {
+  @Field(() => UserCommentInfo)
+  authorId: UserCommentInfo;
+
+  @Field(() => String)
+  postId: string;
 
   @Field(() => String)
   text: string;
 
-  @Field(() => Date)
-  createdAt: Date;
+  @Field(() => Number)
+  createdAt: number;
 }
 
 @ObjectType()
@@ -149,6 +161,9 @@ export class GetPostReturns {
   @Field(() => Post)
   post: Post;
 
+  @Field(() => [Comment], { nullable: true })
+  comments: Comment[];
+
   @Field(() => Rate)
   rate: Rate;
 }
@@ -169,4 +184,19 @@ export class AddRateReturns {
 
   @Field(() => Boolean)
   userSetDislike: boolean;
+}
+
+@ArgsType()
+export class AddCommentArgs {
+  @Field(() => String)
+  text: string;
+
+  @Field(() => String)
+  id: string;
+}
+
+@ObjectType()
+export class AddCommentReturn {
+  @Field(() => [Comment])
+  comments: Comment[];
 }

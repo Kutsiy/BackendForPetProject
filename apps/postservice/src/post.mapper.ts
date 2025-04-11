@@ -1,15 +1,20 @@
+import { CommentPostPostDocumentType } from '@app/common';
 import { PostDocumentType } from '@app/common/schemas/post.schema';
 import { Expose, Type, Transform, plainToInstance } from 'class-transformer';
 
 export class CommentDto {
   @Expose()
+  authorId: { name: string; avatarLink: string };
+
+  @Expose()
   @Transform(({ value }) => value.toString())
-  userId: string;
+  postId: string;
 
   @Expose()
   text: string;
 
   @Expose()
+  @Transform(({ value }: { value: Date }) => Math.floor(value.getTime() / 1000))
   createdAt: number;
 }
 
@@ -62,8 +67,8 @@ export class PostDto {
   dislikedBy: string[];
 
   @Expose()
-  @Type(() => CommentDto)
-  comments: CommentDto[];
+  @Transform(({ value }) => value.map((v) => v.toString()))
+  comments: string[];
 
   @Expose()
   commentCount: number;
@@ -81,5 +86,16 @@ export class PostMapper {
 
   static toDtoArray(posts: PostDocumentType[]): PostDto[] {
     return posts.map(PostMapper.toDto);
+  }
+
+  static CommentToDto(comment: CommentPostPostDocumentType): CommentDto {
+    const json = comment.toObject({ virtuals: true });
+    return plainToInstance(CommentDto, json, { excludeExtraneousValues: true });
+  }
+
+  static CommentsToDtoArray(
+    comments: CommentPostPostDocumentType[],
+  ): CommentDto[] {
+    return comments.map(PostMapper.CommentToDto);
   }
 }

@@ -1,4 +1,5 @@
 import {
+  AddCommentArgs,
   AddViewArgs,
   CreatePostArgs,
   POST_SERVICE_NAME,
@@ -37,5 +38,9 @@ export class PostService implements OnModuleInit {
 
   async addDislike(args: AddViewArgs) {
     return await this.postService.addDislike(args);
+  }
+
+  async addComment(args: AddCommentArgs) {
+    return await this.postService.addComment(args);
   }
 }
