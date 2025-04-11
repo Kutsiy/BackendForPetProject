@@ -308,7 +308,14 @@ export class PostService {
     const { id: userId }: Payload = this.jwtService.decode(refreshToken);
     const postId = new Types.ObjectId(id);
     const userObjectId = new Types.ObjectId(userId);
-    await this.commentModel.create({ authorId: userObjectId, postId, text });
+    const post = await this.postModel.findById(postId).exec();
+    const comment = await this.commentModel.create({
+      authorId: userObjectId,
+      postId,
+      text,
+    });
+    post.comments.push(comment._id);
+    await post.save();
     const result = await this.commentModel
       .find()
       .populate({
