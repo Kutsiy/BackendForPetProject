@@ -90,6 +90,7 @@ export interface AddViewArgs {
 export interface AddViewAReturns {
   result: string;
   userExists: boolean;
+  currentViewsCount: number;
 }
 
 export interface AddLikeArgs {

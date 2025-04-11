@@ -10,6 +10,8 @@ import {
   UserDocumentType,
   UserRatePost,
   UserRatePostDocumentType,
+  UserViewPost,
+  UserViewPostDocumentType,
 } from '@app/common';
 import { Post, PostDocumentType } from '@app/common/schemas/post.schema';
 import { BadRequestException, Injectable } from '@nestjs/common';
@@ -42,6 +44,8 @@ export class PostService {
     private readonly userModel: Model<UserDocumentType>,
     @InjectModel(UserRatePost.name, 'postConnection')
     private readonly postRateModel: Model<UserRatePostDocumentType>,
+    @InjectModel(UserViewPost.name, 'postConnection')
+    private readonly postViewModel: Model<UserViewPostDocumentType>,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
   ) {}
@@ -258,16 +262,28 @@ export class PostService {
     const { id, refreshToken } = args;
     const { id: userId }: Payload = this.jwtService.decode(refreshToken);
     const postId = new Types.ObjectId(id);
-    const result = await this.postModel.findById(postId).exec();
     const userObjectId = new Types.ObjectId(userId);
+    const result = await this.postModel.findById(postId).exec();
+    if (!result) {
+      throw new Error('Post not found');
+    }
     if (
       result.viewsBy.some((view) => view.toString() === userObjectId.toString())
     ) {
-      return { result: 'View Don`t Add', userExists: true };
+      return {
+        result: 'View Don`t Add',
+        userExists: true,
+        currentViewsCount: result.viewsBy.length,
+      };
     } else {
       result.viewsBy.push(userObjectId);
       await result.save();
-      return { result: 'View Add', userExists: false };
+      await this.postViewModel.create({ userId: userObjectId, postId: postId });
+      return {
+        result: 'View Add',
+        userExists: false,
+        currentViewsCount: result.viewsBy.length,
+      };
     }
   }
 }

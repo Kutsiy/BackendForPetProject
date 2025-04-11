@@ -48,6 +48,7 @@ scalar DateTime
 type AddViewReturns {
   result: String!
   userExists: Boolean!
+  currentViewsCount: Int!
 }
 
 type Rate {

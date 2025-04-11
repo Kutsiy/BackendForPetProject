@@ -93,6 +93,7 @@ message AddViewArgs {
 message AddViewAReturns {
     string result = 1;
     bool userExists = 2;
+    int32 currentViewsCount = 3;
 }
 
 message AddLikeArgs {

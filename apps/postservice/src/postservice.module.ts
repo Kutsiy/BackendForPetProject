@@ -8,6 +8,8 @@ import {
   UserRatePost,
   UserRatePostSchema,
   UserSchema,
+  UserViewPost,
+  UserViewPostSchema,
 } from '@app/common/schemas';
 import { PostService } from './post.service';
 import { ConfigModule } from '@nestjs/config';
@@ -31,6 +33,7 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
       [
         { name: PostName.name, schema: PostSchema },
         { name: UserRatePost.name, schema: UserRatePostSchema },
+        { name: UserViewPost.name, schema: UserViewPostSchema },
       ],
       'postConnection',
     ),

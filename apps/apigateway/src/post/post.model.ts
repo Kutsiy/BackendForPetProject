@@ -130,6 +130,9 @@ export class AddViewReturns {
 
   @Field(() => Boolean)
   userExists: boolean;
+
+  @Field(() => Int)
+  currentViewsCount: number;
 }
 
 @ObjectType()
