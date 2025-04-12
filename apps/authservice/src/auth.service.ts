@@ -10,6 +10,8 @@ import { Model } from 'mongoose';
 import {
   AuthReturns,
   LoginArgs,
+  SendMailArgs,
+  SendMailReturn,
   SignUpArgs,
 } from '@app/common/types/protos/auth';
 import { RpcException } from '@nestjs/microservices';
@@ -81,11 +83,6 @@ export class AuthService {
     if (coincidence) {
       throw new RpcException('A user with this email already exists.');
     }
-    // if (!coincidence.isActivated) {
-    //   throw new RpcException(
-    //     'A user with this email already exists, but not activated',
-    //   );
-    // }
     const hashPassword = await hash(args.password, 10);
     const roleId = await this.roleService.getRoleIdByName('USER');
 
@@ -184,6 +181,22 @@ export class AuthService {
       );
     } catch (error) {
       console.log(error);
+    }
+  }
+
+  async sendMail(args: SendMailArgs): Promise<SendMailReturn> {
+    try {
+      const { refreshToken } = args;
+      const { email }: Payload =
+        await this.tokenService.getUserByToken(refreshToken);
+      const user = await this.userModel.findOne({ email }).exec();
+      await this.mailService.sendMail({
+        link: user.linkForActivate,
+        mail: email,
+      });
+      return { result: 'Mail Send' };
+    } catch (e) {
+      console.log(e);
     }
   }
 }

@@ -97,3 +97,9 @@ export class UploadAvatarReturn {
   @Field(() => String)
   avatarLink: string;
 }
+
+@ObjectType()
+export class SendMailResult {
+  @Field(() => String)
+  result: string;
+}

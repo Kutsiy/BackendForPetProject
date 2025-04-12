@@ -3,6 +3,7 @@ import {
   AuthReturn,
   LoginArgs,
   RefreshReturn,
+  SendMailResult,
   SignUpArgs,
   Tokens,
   UploadAvatarReturn,
@@ -137,5 +138,16 @@ export class AuthResolver {
     const { avatarLink } = await result.toPromise();
 
     return { avatarLink: avatarLink };
+  }
+
+  @Query(() => SendMailResult)
+  @UseGuards(AuthGuard)
+  async SendMail(@Context() context: { req: Request }) {
+    const { req } = context;
+    const result = await this.authService.sendMail({
+      refreshToken: req.cookies?.refresh_token,
+    });
+    const mailResult = await result.toPromise();
+    return mailResult;
   }
 }

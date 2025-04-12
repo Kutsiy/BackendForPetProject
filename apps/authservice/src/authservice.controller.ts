@@ -15,6 +15,8 @@ import {
   UserInfo,
   UploadAvatarArgs,
   UploadAvatarReturn,
+  SendMailArgs,
+  SendMailReturn,
 } from '@app/common/types/protos/auth';
 import { Observable } from 'rxjs';
 
@@ -65,5 +67,9 @@ export class AuthserviceController implements AuthServiceController {
     const { refreshToken, avatarLink } = request;
     await this.authService.uploadAvatar(refreshToken, avatarLink);
     return { avatarLink };
+  }
+
+  async sendMail(request: SendMailArgs): Promise<SendMailReturn> {
+    return await this.authService.sendMail(request);
   }
 }

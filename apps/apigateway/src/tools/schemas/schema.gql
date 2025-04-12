@@ -107,6 +107,10 @@ type UploadAvatarReturn {
   avatarLink: String!
 }
 
+type SendMailResult {
+  result: String!
+}
+
 type Query {
   Posts(searchString: String, page: Int! = 1, take: Int! = 10): PaginatedPosts!
   Post(id: String): GetPostReturns!
@@ -114,6 +118,7 @@ type Query {
   LogOut: Tokens!
   SignUp(name: String!, email: String!, password: String!): AuthReturn!
   GetAllInfoAboutUser: UserInfo!
+  SendMail: SendMailResult!
 }
 
 type Mutation {

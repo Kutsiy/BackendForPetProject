@@ -5,6 +5,7 @@ import {
   GetUserArgs,
   LoginArgs,
   RefreshArgs,
+  SendMailArgs,
   SignUpArgs,
   UploadAvatarArgs,
 } from '@app/common/types/protos/auth';
@@ -42,5 +43,9 @@ export class AuthService implements OnModuleInit {
 
   async uploadAvatar(args: UploadAvatarArgs) {
     return await this.authService.uploadAvatar(args);
+  }
+
+  async sendMail(args: SendMailArgs) {
+    return await this.authService.sendMail(args);
   }
 }
