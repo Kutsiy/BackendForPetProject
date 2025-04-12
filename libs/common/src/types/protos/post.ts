@@ -42,6 +42,8 @@ export interface PaginationArgs {
   searchString: string;
   page: number;
   take: number;
+  category: string;
+  sortFilter: string;
 }
 
 export interface CreatePostArgs {

@@ -56,12 +56,46 @@ export class PostService {
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
   ) {}
-  async getPosts(searchString: string, page: number, take: number) {
+  async getPosts(
+    searchString: string,
+    page: number,
+    take: number,
+    category: string,
+    sortFilter: string,
+  ) {
     let query = this.postModel.find();
     const countQuery = this.postModel.find();
     if (searchString && searchString !== '') {
       query = query.where('title').regex(new RegExp(searchString, 'i'));
+      countQuery.where('title').regex(new RegExp(searchString, 'i'));
     }
+
+    if (category && category !== 'none') {
+      query = query.where('category').regex(new RegExp(category, 'i'));
+      countQuery.where('category').regex(new RegExp(category, 'i'));
+    }
+
+    switch (sortFilter) {
+      case 'popular':
+        query = query.sort({ likes: -1 });
+        break;
+      case 'newest':
+        query = query.sort({ createdAt: -1 });
+        break;
+      case 'oldest':
+        query = query.sort({ createdAt: 1 });
+        break;
+      case 'views':
+        query = query.sort({ views: -1 });
+        break;
+      case 'none':
+        query = query.sort({ createdAt: -1 });
+        break;
+      default:
+        query = query.sort({ createdAt: -1 });
+        break;
+    }
+
     if (page < 1 || take < 1) {
       throw new BadRequestException('Page and take must be positive integers.');
     }
@@ -115,7 +149,7 @@ export class PostService {
     const post = await this.postModel.findById(id).exec();
 
     const comments = await this.commentModel
-      .find()
+      .find({ postId: post._id })
       .populate({
         path: 'authorId',
         select: 'name avatarLink',
@@ -317,7 +351,7 @@ export class PostService {
     post.comments.push(comment._id);
     await post.save();
     const result = await this.commentModel
-      .find()
+      .find({ postId: post._id })
       .populate({
         path: 'authorId',
         select: 'name avatarLink',

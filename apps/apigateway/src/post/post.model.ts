@@ -28,6 +28,12 @@ export class PaginationArgs {
 
   @Field(() => Int)
   take: number = 10;
+
+  @Field(() => String, { nullable: true })
+  category: string;
+
+  @Field(() => String, { nullable: true })
+  sortFilter: string;
 }
 
 @ArgsType()

@@ -45,6 +45,8 @@ message PaginationArgs {
     string searchString = 1;
     int32 page = 2;
     int32 take = 3;
+    string category = 4;
+    string sortFilter = 5;
 }
 
 message CreatePostArgs {

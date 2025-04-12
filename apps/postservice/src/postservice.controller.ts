@@ -29,8 +29,14 @@ export class PostserviceController implements PostServiceController {
   constructor(private readonly postService: PostService) {}
 
   async getAllPosts(request: PaginationArgs): Promise<PaginatedPosts> {
-    const { searchString, page, take } = request;
-    const result = await this.postService.getPosts(searchString, page, take);
+    const { searchString, page, take, category, sortFilter } = request;
+    const result = await this.postService.getPosts(
+      searchString,
+      page,
+      take,
+      category,
+      sortFilter,
+    );
     if (!result || !result.posts) {
       throw new Error('Posts data is missing or undefined');
     }

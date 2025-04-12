@@ -30,12 +30,14 @@ export class PostResolver {
   @Query(() => PostsModel)
   @RolesSetter(['USER'])
   async Posts(@Args() paginationArgs: PaginationArgs) {
-    const { searchString, page, take } = paginationArgs;
+    const { searchString, page, take, category, sortFilter } = paginationArgs;
     let postsSearchString = searchString ?? '';
     const result = await this.appService.getAllPosts(
       postsSearchString,
       page,
       take,
+      category,
+      sortFilter,
     );
     return await result.toPromise();
   }

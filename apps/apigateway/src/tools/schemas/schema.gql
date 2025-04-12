@@ -112,7 +112,7 @@ type SendMailResult {
 }
 
 type Query {
-  Posts(searchString: String, page: Int! = 1, take: Int! = 10): PaginatedPosts!
+  Posts(searchString: String, page: Int! = 1, take: Int! = 10, category: String, sortFilter: String): PaginatedPosts!
   Post(id: String): GetPostReturns!
   Login(email: String!, password: String!): AuthReturn!
   LogOut: Tokens!
