@@ -66,10 +66,12 @@ export interface UserCommentInfo {
 }
 
 export interface Comment {
+  postIdString: string;
   authorId: UserCommentInfo | undefined;
   postId: string;
   text: string;
   createdAt: number;
+  idString: string;
 }
 
 export interface Post {
@@ -159,10 +161,15 @@ export interface FindPostByUserAndDeleteReturn {
 export interface FindCommentByUserAndDeleteArgs {
   refreshToken: string;
   id: string;
+  commentId: string;
 }
 
 export interface FindCommentByUserAndDeleteReturn {
   comments: Comment[];
+}
+
+export interface GetPopularPostReturn {
+  posts: Post[];
 }
 
 export const POST_PACKAGE_NAME = "post";
@@ -191,6 +198,8 @@ export interface PostServiceClient {
   findPostByUserAndDelete(request: FindPostByUserAndDeleteArgs): Observable<FindPostByUserAndDeleteReturn>;
 
   findCommentByUserAndDelete(request: FindCommentByUserAndDeleteArgs): Observable<FindCommentByUserAndDeleteReturn>;
+
+  getPopularPost(request: Empty): Observable<GetPopularPostReturn>;
 }
 
 export interface PostServiceController {
@@ -230,6 +239,10 @@ export interface PostServiceController {
     | Promise<FindCommentByUserAndDeleteReturn>
     | Observable<FindCommentByUserAndDeleteReturn>
     | FindCommentByUserAndDeleteReturn;
+
+  getPopularPost(
+    request: Empty,
+  ): Promise<GetPopularPostReturn> | Observable<GetPopularPostReturn> | GetPopularPostReturn;
 }
 
 export function PostServiceControllerMethods() {
@@ -247,6 +260,7 @@ export function PostServiceControllerMethods() {
       "getRatePostByUser",
       "findPostByUserAndDelete",
       "findCommentByUserAndDelete",
+      "getPopularPost",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

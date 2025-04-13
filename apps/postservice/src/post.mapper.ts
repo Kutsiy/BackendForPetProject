@@ -4,6 +4,12 @@ import { Expose, Type, Transform, plainToInstance } from 'class-transformer';
 
 export class CommentDto {
   @Expose()
+  postIdString: string;
+
+  @Expose()
+  idString: string;
+
+  @Expose()
   authorId: { id: string; name: string; avatarLink: string };
 
   @Expose()

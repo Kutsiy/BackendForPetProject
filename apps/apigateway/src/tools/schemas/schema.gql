@@ -41,6 +41,8 @@ type UserCommentInfo {
 }
 
 type Comment {
+  postIdString: String!
+  idString: String!
   authorId: UserCommentInfo!
   postId: String!
   text: String!
@@ -77,6 +79,14 @@ type AddCommentReturn {
 }
 
 type GetPostByUserReturns {
+  posts: [Post!]
+}
+
+type FindCommentByUserAndDelete {
+  comments: [Comment!]
+}
+
+type GetPopularPostReturns {
   posts: [Post!]
 }
 
@@ -120,6 +130,7 @@ type Query {
   Posts(searchString: String, page: Int! = 1, take: Int! = 10, category: String, sortFilter: String): PaginatedPosts!
   Post(id: String): GetPostReturns!
   PostByUser: GetPostByUserReturns!
+  GetPopularPost: GetPopularPostReturns!
   Login(email: String!, password: String!): AuthReturn!
   LogOut: Tokens!
   SignUp(name: String!, email: String!, password: String!): AuthReturn!
@@ -134,6 +145,7 @@ type Mutation {
   AddDislike(id: String!): AddRateReturns!
   AddComment(text: String!, id: String!): AddCommentReturn!
   FindPostByUserAndDelete(id: String!): GetPostByUserReturns!
+  FindCommentByUserAndDelete(id: String!, commentId: String!): FindCommentByUserAndDelete!
   Refresh: RefreshReturn!
   GetUser: User!
   uploadAvatar(file: Upload!): UploadAvatarReturn!

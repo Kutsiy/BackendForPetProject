@@ -13,6 +13,25 @@ export class CommentPost {
 
   @Prop({ required: true })
   text: string;
+
+  @Prop()
+  postIdString: string;
+
+  @Prop()
+  idString: string;
 }
 
 export const CommentPostSchema = SchemaFactory.createForClass(CommentPost);
+
+CommentPostSchema.pre('save', function (next) {
+  const doc = this as CommentPostPostDocumentType;
+
+  if (doc.postId) {
+    doc.postIdString = doc.postId.toString();
+  }
+  if (doc._id) {
+    doc.idString = doc._id.toString();
+  }
+
+  next();
+});

@@ -14,6 +14,7 @@ import {
   FindCommentByUserAndDeleteReturn,
   FindPostByUserAndDeleteArgs,
   FindPostByUserAndDeleteReturn,
+  GetPopularPostReturn,
   GetPostByUserArgs,
   GetPostByUserReturn,
   User,
@@ -86,9 +87,6 @@ export class PostService {
     }
 
     switch (sortFilter) {
-      case 'popular':
-        query = query.sort({ likes: -1 });
-        break;
       case 'newest':
         query = query.sort({ createdAt: -1 });
         break;
@@ -368,6 +366,8 @@ export class PostService {
         model: this.userModel,
       })
       .exec();
+
+    console.log(result);
     return { comments: PostMapper.CommentsToDtoArray(result) };
   }
 
@@ -438,7 +438,7 @@ export class PostService {
       .find({ userId: userObjectId })
       .populate('postId')
       .exec();
-    console.log();
+    console.log(result);
     return { posts: [] };
   }
   async getRatePostByUser(
@@ -461,12 +461,43 @@ export class PostService {
   async findCommentByUserAndDelete(
     args: FindCommentByUserAndDeleteArgs,
   ): Promise<FindCommentByUserAndDeleteReturn> {
-    const { id, refreshToken } = args;
+    const { id, refreshToken, commentId } = args;
     const { id: userId }: Payload = this.jwtService.decode(refreshToken);
     const postId = new Types.ObjectId(id);
     const userObjectId = new Types.ObjectId(userId);
-    this.commentModel.deleteOne({ authorId: userObjectId, postId }).exec();
-    const result = await this.commentModel.find({ postId }).exec();
-    return { comments: PostMapper.CommentsToDtoArray(result) };
+    const commentObjectId = new Types.ObjectId(commentId);
+    const comment = await this.commentModel
+      .findOne({ authorId: userObjectId, postId, _id: commentObjectId })
+      .exec();
+    if (!comment) {
+      throw new Error('Comment not found or user is not the author');
+    }
+    await this.commentModel
+      .deleteOne({ authorId: userObjectId, postId, _id: commentObjectId })
+      .exec();
+    const result = await this.commentModel
+      .find({ postId })
+      .populate({
+        path: 'authorId',
+        select: 'name avatarLink',
+        model: this.userModel,
+      })
+      .exec();
+    await this.postModel
+      .updateOne({ _id: postId }, { $pull: { comments: commentObjectId } })
+      .exec();
+    return {
+      comments: PostMapper.CommentsToDtoArray(result),
+    };
+  }
+
+  async getPopularPost(): Promise<GetPopularPostReturn> {
+    const result = await this.postModel
+      .find()
+      .sort({ likes: -1 })
+      .limit(4)
+      .exec();
+
+    return { posts: PostMapper.toDtoArray(result) };
   }
 }

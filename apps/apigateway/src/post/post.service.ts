@@ -2,6 +2,7 @@ import {
   AddCommentArgs,
   AddViewArgs,
   CreatePostArgs,
+  FindCommentByUserAndDeleteArgs,
   FindPostByUserAndDeleteArgs,
   GetPostByUserArgs,
   POST_SERVICE_NAME,
@@ -58,5 +59,13 @@ export class PostService implements OnModuleInit {
 
   async findPostByUserAndDelete(args: FindPostByUserAndDeleteArgs) {
     return await this.postService.findPostByUserAndDelete(args);
+  }
+
+  async findCommentByUserAndDelete(args: FindCommentByUserAndDeleteArgs) {
+    return await this.postService.findCommentByUserAndDelete(args);
+  }
+
+  async getPopularPost() {
+    return await this.postService.getPopularPost({});
   }
 }

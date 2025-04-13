@@ -14,6 +14,8 @@ import {
   AddCommentArgs,
   AddCommentReturn,
   GetPostByUserReturns,
+  FindCommentByUserAndDelete,
+  GetPopularPostReturns,
 } from './post.model';
 import { AuthGuard } from '../tools/guards/auth/auth.guard';
 import { RolesGuard } from '../tools/guards/roles/roles.guard';
@@ -144,6 +146,28 @@ export class PostResolver {
       id,
       refreshToken,
     });
+    return await result.toPromise();
+  }
+
+  @Mutation(() => FindCommentByUserAndDelete)
+  async FindCommentByUserAndDelete(
+    @Args('id', { type: () => String }) id: string,
+    @Args('commentId', { type: () => String }) commentId: string,
+    @Context() context: { req: Request },
+  ) {
+    const { req } = context;
+    const refreshToken = req.cookies?.refresh_token;
+    const result = await this.appService.findCommentByUserAndDelete({
+      id,
+      refreshToken,
+      commentId,
+    });
+    return await result.toPromise();
+  }
+
+  @Query(() => GetPopularPostReturns)
+  async GetPopularPost() {
+    const result = await this.appService.getPopularPost();
     return await result.toPromise();
   }
 }

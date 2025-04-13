@@ -15,6 +15,7 @@ service PostService {
     rpc GetRatePostByUser(GetPostByUserArgs) returns (GetPostByUserReturn) {}
     rpc FindPostByUserAndDelete(FindPostByUserAndDeleteArgs) returns (FindPostByUserAndDeleteReturn) {}
     rpc FindCommentByUserAndDelete(FindCommentByUserAndDeleteArgs) returns (FindCommentByUserAndDeleteReturn) {}
+    rpc GetPopularPost(Empty) returns (GetPopularPostReturn) {}
 }
 
 message FindPostById {
@@ -75,10 +76,12 @@ message UserCommentInfo {
 }
 
 message Comment {
-    UserCommentInfo authorId = 1;
-    string postId = 2;
-    string text = 3;
-    int32 createdAt = 4;
+    string postIdString = 1;
+    UserCommentInfo authorId = 2;
+    string postId = 3;
+    string text = 4;
+    int32 createdAt = 5;
+    string idString = 6;
   }
 
   message Post {
@@ -172,8 +175,13 @@ message FindPostByUserAndDeleteReturn {
 message FindCommentByUserAndDeleteArgs {
     string refreshToken = 1;
     string id = 2;
+    string commentId = 3;
 }
 
 message FindCommentByUserAndDeleteReturn {
     repeated Comment comments = 1;
+}
+
+message GetPopularPostReturn {
+    repeated Post posts = 1;
 }

@@ -131,6 +131,12 @@ export class UserCommentInfo {
 
 @ObjectType()
 export class Comment {
+  @Field(() => String)
+  postIdString: string;
+
+  @Field(() => String)
+  idString: string;
+
   @Field(() => UserCommentInfo)
   authorId: UserCommentInfo;
 
@@ -212,6 +218,18 @@ export class AddCommentReturn {
 
 @ObjectType()
 export class GetPostByUserReturns {
+  @Field(() => [Post], { nullable: true })
+  posts: Post[];
+}
+
+@ObjectType()
+export class FindCommentByUserAndDelete {
+  @Field(() => [Comment], { nullable: true })
+  comments: Comment[];
+}
+
+@ObjectType()
+export class GetPopularPostReturns {
   @Field(() => [Post], { nullable: true })
   posts: Post[];
 }

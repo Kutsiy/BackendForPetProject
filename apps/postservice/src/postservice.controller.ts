@@ -23,6 +23,7 @@ import {
   FindPostByUserAndDeleteReturn,
   FindCommentByUserAndDeleteArgs,
   FindCommentByUserAndDeleteReturn,
+  GetPopularPostReturn,
 } from '@app/common';
 import { Controller } from '@nestjs/common';
 import { PostService } from './post.service';
@@ -152,5 +153,9 @@ export class PostserviceController implements PostServiceController {
     request: FindCommentByUserAndDeleteArgs,
   ): Promise<FindCommentByUserAndDeleteReturn> {
     return await this.postService.findCommentByUserAndDelete(request);
+  }
+
+  async getPopularPost(request: Empty): Promise<GetPopularPostReturn> {
+    return await this.postService.getPopularPost();
   }
 }
