@@ -10,6 +10,12 @@ import {
   CommentPostPostDocumentType,
   CreatePostArgs,
   Empty,
+  FindCommentByUserAndDeleteArgs,
+  FindCommentByUserAndDeleteReturn,
+  FindPostByUserAndDeleteArgs,
+  FindPostByUserAndDeleteReturn,
+  GetPostByUserArgs,
+  GetPostByUserReturn,
   User,
   UserDocumentType,
   UserRatePost,
@@ -23,10 +29,10 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Payload } from 'apps/authservice/src/token.service';
-import { Type } from 'class-transformer';
 import { Model, ObjectId, Types } from 'mongoose';
 import { PostMapper } from './post.mapper';
-
+import { join } from 'path';
+const fs = require('fs');
 type AddRateArgs = {
   id: string;
   refreshToken: string;
@@ -53,6 +59,10 @@ export class PostService {
     private readonly postViewModel: Model<UserViewPostDocumentType>,
     @InjectModel(CommentPost.name, 'postConnection')
     private readonly commentModel: Model<CommentPostPostDocumentType>,
+    @InjectModel(UserViewPost.name, 'postConnection')
+    private readonly viewModel: Model<UserViewPostDocumentType>,
+    @InjectModel(UserRatePost.name, 'postConnection')
+    private readonly rateModel: Model<UserRatePostDocumentType>,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
   ) {}
@@ -358,6 +368,105 @@ export class PostService {
         model: this.userModel,
       })
       .exec();
+    return { comments: PostMapper.CommentsToDtoArray(result) };
+  }
+
+  async getPostByUser(args: GetPostByUserArgs): Promise<GetPostByUserReturn> {
+    const { refreshToken } = args;
+    const { id: userId }: Payload = this.jwtService.decode(refreshToken);
+    const result = await this.postModel.find({ authorId: userId }).exec();
+    return { posts: PostMapper.toDtoArray(result) };
+  }
+
+  async findPostByUserAndDelete(
+    args: FindPostByUserAndDeleteArgs,
+  ): Promise<FindPostByUserAndDeleteReturn> {
+    const { id, refreshToken } = args;
+    const { id: userId }: Payload = this.jwtService.decode(refreshToken);
+    const postId = new Types.ObjectId(id);
+    const post = await this.postModel
+      .findOne({
+        _id: postId,
+        authorId: userId,
+      })
+      .exec();
+    if (!post) {
+      throw new Error('Post not found or user is not the author');
+    }
+    if (post.imageUrl !== '' && post.imageUrl) {
+      const oldAvatarPath = join(process.cwd(), post.imageUrl);
+      try {
+        await fs.access(oldAvatarPath, () => {});
+        await fs.unlink(oldAvatarPath, () => {});
+      } catch (err) {
+        console.error('Error', err);
+      }
+    }
+    await this.postModel.deleteOne({ _id: postId, authorId: userId }).exec();
+    await this.viewModel.deleteMany({ postId: postId }).exec();
+    await this.rateModel.deleteMany({ postId: postId }).exec();
+    await this.commentModel.deleteMany({ postId: postId }).exec();
+    const result = await this.postModel.find({ authorId: userId }).exec();
+    console.log(result);
+    if (!result) {
+      const emptyPost = new this.postModel({
+        title: 'none',
+        body: 'none',
+        authorId: 'none',
+        category: 'none',
+        comments: [],
+        createdAt: 0,
+        dislikedBy: [],
+        dislikes: 0,
+        likes: 0,
+        likedBy: [],
+        views: 0,
+        commentCount: 0,
+      });
+      return { posts: PostMapper.toDtoArray([emptyPost]) };
+    }
+    return { posts: PostMapper.toDtoArray(result) };
+  }
+
+  async getViewPostByUser(
+    args: GetPostByUserArgs,
+  ): Promise<GetPostByUserReturn> {
+    const { refreshToken } = args;
+    const { id: userId }: Payload = this.jwtService.decode(refreshToken);
+    const userObjectId = new Types.ObjectId(userId);
+    const result = await this.viewModel
+      .find({ userId: userObjectId })
+      .populate('postId')
+      .exec();
+    console.log();
+    return { posts: [] };
+  }
+  async getRatePostByUser(
+    args: GetPostByUserArgs,
+  ): Promise<GetPostByUserReturn> {
+    const { refreshToken } = args;
+    const { id: userId }: Payload = this.jwtService.decode(refreshToken);
+    const userObjectId = new Types.ObjectId(userId);
+    const resultLike = await this.rateModel
+      .find({ userId: userId, rating: 'like' })
+      .populate('postId')
+      .exec();
+    const resultDislike = await this.rateModel
+      .find({ userId: userId, rating: 'dislike' })
+      .populate('postId')
+      .exec();
+    console.log(resultLike, resultDislike);
+    return { posts: [] };
+  }
+  async findCommentByUserAndDelete(
+    args: FindCommentByUserAndDeleteArgs,
+  ): Promise<FindCommentByUserAndDeleteReturn> {
+    const { id, refreshToken } = args;
+    const { id: userId }: Payload = this.jwtService.decode(refreshToken);
+    const postId = new Types.ObjectId(id);
+    const userObjectId = new Types.ObjectId(userId);
+    this.commentModel.deleteOne({ authorId: userObjectId, postId }).exec();
+    const result = await this.commentModel.find({ postId }).exec();
     return { comments: PostMapper.CommentsToDtoArray(result) };
   }
 }

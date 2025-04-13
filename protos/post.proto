@@ -10,6 +10,11 @@ service PostService {
     rpc AddLike(AddLikeArgs) returns (AddLikeReturns) {}
     rpc AddDislike(AddDislikeArgs) returns (AddDislikeReturns) {}
     rpc AddComment(AddCommentArgs) returns (AddCommentReturn) {}
+    rpc GetPostByUser(GetPostByUserArgs) returns (GetPostByUserReturn) {}
+    rpc GetViewPostByUser(GetPostByUserArgs) returns (GetPostByUserReturn) {}
+    rpc GetRatePostByUser(GetPostByUserArgs) returns (GetPostByUserReturn) {}
+    rpc FindPostByUserAndDelete(FindPostByUserAndDeleteArgs) returns (FindPostByUserAndDeleteReturn) {}
+    rpc FindCommentByUserAndDelete(FindCommentByUserAndDeleteArgs) returns (FindCommentByUserAndDeleteReturn) {}
 }
 
 message FindPostById {
@@ -66,6 +71,7 @@ message CreatePostReturns {
 message UserCommentInfo {
     string name = 1;
     string avatarLink = 2;
+    string id = 3;
 }
 
 message Comment {
@@ -142,5 +148,32 @@ message AddCommentArgs {
 }
 
 message AddCommentReturn {
+    repeated Comment comments = 1;
+}
+
+message GetPostByUserArgs {
+    string refreshToken = 1;
+}
+
+message GetPostByUserReturn {
+    repeated Post posts = 1;
+}
+
+
+message FindPostByUserAndDeleteArgs {
+    string refreshToken = 1;
+    string id = 2;
+}
+
+message FindPostByUserAndDeleteReturn {
+    repeated Post posts = 1;
+}
+
+message FindCommentByUserAndDeleteArgs {
+    string refreshToken = 1;
+    string id = 2;
+}
+
+message FindCommentByUserAndDeleteReturn {
     repeated Comment comments = 1;
 }

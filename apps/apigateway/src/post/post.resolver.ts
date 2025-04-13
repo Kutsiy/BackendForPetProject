@@ -13,6 +13,7 @@ import {
   AddRateReturns,
   AddCommentArgs,
   AddCommentReturn,
+  GetPostByUserReturns,
 } from './post.model';
 import { AuthGuard } from '../tools/guards/auth/auth.guard';
 import { RolesGuard } from '../tools/guards/roles/roles.guard';
@@ -119,6 +120,28 @@ export class PostResolver {
     const refreshToken = req.cookies?.refresh_token;
     const result = await this.appService.addComment({
       ...commentArgs,
+      refreshToken,
+    });
+    return await result.toPromise();
+  }
+
+  @Query(() => GetPostByUserReturns)
+  async PostByUser(@Context() context: { req: Request }) {
+    const { req } = context;
+    const refreshToken = req.cookies?.refresh_token;
+    const result = await this.appService.getPostByUser({ refreshToken });
+    return await result.toPromise();
+  }
+
+  @Mutation(() => GetPostByUserReturns)
+  async FindPostByUserAndDelete(
+    @Args('id', { type: () => String }) id: string,
+    @Context() context: { req: Request },
+  ) {
+    const { req } = context;
+    const refreshToken = req.cookies?.refresh_token;
+    const result = await this.appService.findPostByUserAndDelete({
+      id,
       refreshToken,
     });
     return await result.toPromise();

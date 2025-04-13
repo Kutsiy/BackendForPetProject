@@ -62,6 +62,7 @@ export interface CreatePostReturns {
 export interface UserCommentInfo {
   name: string;
   avatarLink: string;
+  id: string;
 }
 
 export interface Comment {
@@ -138,6 +139,32 @@ export interface AddCommentReturn {
   comments: Comment[];
 }
 
+export interface GetPostByUserArgs {
+  refreshToken: string;
+}
+
+export interface GetPostByUserReturn {
+  posts: Post[];
+}
+
+export interface FindPostByUserAndDeleteArgs {
+  refreshToken: string;
+  id: string;
+}
+
+export interface FindPostByUserAndDeleteReturn {
+  posts: Post[];
+}
+
+export interface FindCommentByUserAndDeleteArgs {
+  refreshToken: string;
+  id: string;
+}
+
+export interface FindCommentByUserAndDeleteReturn {
+  comments: Comment[];
+}
+
 export const POST_PACKAGE_NAME = "post";
 
 export interface PostServiceClient {
@@ -154,6 +181,16 @@ export interface PostServiceClient {
   addDislike(request: AddDislikeArgs): Observable<AddDislikeReturns>;
 
   addComment(request: AddCommentArgs): Observable<AddCommentReturn>;
+
+  getPostByUser(request: GetPostByUserArgs): Observable<GetPostByUserReturn>;
+
+  getViewPostByUser(request: GetPostByUserArgs): Observable<GetPostByUserReturn>;
+
+  getRatePostByUser(request: GetPostByUserArgs): Observable<GetPostByUserReturn>;
+
+  findPostByUserAndDelete(request: FindPostByUserAndDeleteArgs): Observable<FindPostByUserAndDeleteReturn>;
+
+  findCommentByUserAndDelete(request: FindCommentByUserAndDeleteArgs): Observable<FindCommentByUserAndDeleteReturn>;
 }
 
 export interface PostServiceController {
@@ -170,6 +207,29 @@ export interface PostServiceController {
   addDislike(request: AddDislikeArgs): Promise<AddDislikeReturns> | Observable<AddDislikeReturns> | AddDislikeReturns;
 
   addComment(request: AddCommentArgs): Promise<AddCommentReturn> | Observable<AddCommentReturn> | AddCommentReturn;
+
+  getPostByUser(
+    request: GetPostByUserArgs,
+  ): Promise<GetPostByUserReturn> | Observable<GetPostByUserReturn> | GetPostByUserReturn;
+
+  getViewPostByUser(
+    request: GetPostByUserArgs,
+  ): Promise<GetPostByUserReturn> | Observable<GetPostByUserReturn> | GetPostByUserReturn;
+
+  getRatePostByUser(
+    request: GetPostByUserArgs,
+  ): Promise<GetPostByUserReturn> | Observable<GetPostByUserReturn> | GetPostByUserReturn;
+
+  findPostByUserAndDelete(
+    request: FindPostByUserAndDeleteArgs,
+  ): Promise<FindPostByUserAndDeleteReturn> | Observable<FindPostByUserAndDeleteReturn> | FindPostByUserAndDeleteReturn;
+
+  findCommentByUserAndDelete(
+    request: FindCommentByUserAndDeleteArgs,
+  ):
+    | Promise<FindCommentByUserAndDeleteReturn>
+    | Observable<FindCommentByUserAndDeleteReturn>
+    | FindCommentByUserAndDeleteReturn;
 }
 
 export function PostServiceControllerMethods() {
@@ -182,6 +242,11 @@ export function PostServiceControllerMethods() {
       "addLike",
       "addDislike",
       "addComment",
+      "getPostByUser",
+      "getViewPostByUser",
+      "getRatePostByUser",
+      "findPostByUserAndDelete",
+      "findCommentByUserAndDelete",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

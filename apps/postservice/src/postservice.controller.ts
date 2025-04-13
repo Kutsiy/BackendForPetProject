@@ -17,6 +17,12 @@ import {
   AddDislikeReturns,
   AddCommentArgs,
   AddCommentReturn,
+  GetPostByUserArgs,
+  GetPostByUserReturn,
+  FindPostByUserAndDeleteArgs,
+  FindPostByUserAndDeleteReturn,
+  FindCommentByUserAndDeleteArgs,
+  FindCommentByUserAndDeleteReturn,
 } from '@app/common';
 import { Controller } from '@nestjs/common';
 import { PostService } from './post.service';
@@ -117,5 +123,34 @@ export class PostserviceController implements PostServiceController {
 
   async addComment(request: AddCommentArgs): Promise<AddCommentReturn> {
     return await this.postService.addCommentById(request);
+  }
+
+  async getPostByUser(
+    request: GetPostByUserArgs,
+  ): Promise<GetPostByUserReturn> {
+    return await this.postService.getPostByUser(request);
+  }
+
+  async findPostByUserAndDelete(
+    request: FindPostByUserAndDeleteArgs,
+  ): Promise<FindPostByUserAndDeleteReturn> {
+    return await this.postService.findPostByUserAndDelete(request);
+  }
+
+  async getViewPostByUser(
+    request: GetPostByUserArgs,
+  ): Promise<GetPostByUserReturn> {
+    return await this.postService.getViewPostByUser(request);
+  }
+  async getRatePostByUser(
+    request: GetPostByUserArgs,
+  ): Promise<GetPostByUserReturn> {
+    return await this.postService.getRatePostByUser(request);
+  }
+
+  async findCommentByUserAndDelete(
+    request: FindCommentByUserAndDeleteArgs,
+  ): Promise<FindCommentByUserAndDeleteReturn> {
+    return await this.postService.findCommentByUserAndDelete(request);
   }
 }

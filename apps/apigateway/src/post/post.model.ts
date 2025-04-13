@@ -124,6 +124,9 @@ export class UserCommentInfo {
 
   @Field(() => String)
   avatarLink: string;
+
+  @Field(() => String)
+  id: string;
 }
 
 @ObjectType()
@@ -205,4 +208,10 @@ export class AddCommentArgs {
 export class AddCommentReturn {
   @Field(() => [Comment])
   comments: Comment[];
+}
+
+@ObjectType()
+export class GetPostByUserReturns {
+  @Field(() => [Post], { nullable: true })
+  posts: Post[];
 }

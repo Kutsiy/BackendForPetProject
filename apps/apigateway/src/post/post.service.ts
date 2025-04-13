@@ -2,6 +2,8 @@ import {
   AddCommentArgs,
   AddViewArgs,
   CreatePostArgs,
+  FindPostByUserAndDeleteArgs,
+  GetPostByUserArgs,
   POST_SERVICE_NAME,
   PostServiceClient,
 } from '@app/common';
@@ -48,5 +50,13 @@ export class PostService implements OnModuleInit {
 
   async addComment(args: AddCommentArgs) {
     return await this.postService.addComment(args);
+  }
+
+  async getPostByUser(args: GetPostByUserArgs) {
+    return await this.postService.getPostByUser(args);
+  }
+
+  async findPostByUserAndDelete(args: FindPostByUserAndDeleteArgs) {
+    return await this.postService.findPostByUserAndDelete(args);
   }
 }

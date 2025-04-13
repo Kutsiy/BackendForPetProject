@@ -4,7 +4,7 @@ import { Expose, Type, Transform, plainToInstance } from 'class-transformer';
 
 export class CommentDto {
   @Expose()
-  authorId: { name: string; avatarLink: string };
+  authorId: { id: string; name: string; avatarLink: string };
 
   @Expose()
   @Transform(({ value }) => value.toString())
