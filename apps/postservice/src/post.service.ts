@@ -367,7 +367,6 @@ export class PostService {
       })
       .exec();
 
-    console.log(result);
     return { comments: PostMapper.CommentsToDtoArray(result) };
   }
 
@@ -407,7 +406,6 @@ export class PostService {
     await this.rateModel.deleteMany({ postId: postId }).exec();
     await this.commentModel.deleteMany({ postId: postId }).exec();
     const result = await this.postModel.find({ authorId: userId }).exec();
-    console.log(result);
     if (!result) {
       const emptyPost = new this.postModel({
         title: 'none',
@@ -455,7 +453,7 @@ export class PostService {
       .find({ userId: userId, rating: 'dislike' })
       .populate('postId')
       .exec();
-    console.log(resultLike, resultDislike);
+    console.log(resultDislike, resultLike);
     return { posts: [] };
   }
   async findCommentByUserAndDelete(

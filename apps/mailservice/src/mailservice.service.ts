@@ -48,7 +48,6 @@ export class MailserviceService {
     if (user.isActivated) throw new RpcException('Account already activated');
     user.isActivated = true;
     user.save();
-    console.log('LOGGG');
     return { link: 'http://localhost:4200' };
   }
 }

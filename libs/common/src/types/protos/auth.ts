@@ -78,6 +78,14 @@ export interface SendMailReturn {
   result: string;
 }
 
+export interface DeleteAccountArgs {
+  refreshToken: string;
+}
+
+export interface DeleteAccountReturn {
+  result: string;
+}
+
 export interface EmptyAuth {
 }
 
@@ -99,6 +107,8 @@ export interface AuthServiceClient {
   uploadAvatar(request: UploadAvatarArgs): Observable<UploadAvatarReturn>;
 
   sendMail(request: SendMailArgs): Observable<SendMailReturn>;
+
+  deleteAccount(request: DeleteAccountArgs): Observable<DeleteAccountReturn>;
 }
 
 export interface AuthServiceController {
@@ -119,6 +129,10 @@ export interface AuthServiceController {
   ): Promise<UploadAvatarReturn> | Observable<UploadAvatarReturn> | UploadAvatarReturn;
 
   sendMail(request: SendMailArgs): Promise<SendMailReturn> | Observable<SendMailReturn> | SendMailReturn;
+
+  deleteAccount(
+    request: DeleteAccountArgs,
+  ): Promise<DeleteAccountReturn> | Observable<DeleteAccountReturn> | DeleteAccountReturn;
 }
 
 export function AuthServiceControllerMethods() {
@@ -132,6 +146,7 @@ export function AuthServiceControllerMethods() {
       "getAllInfoAboutUser",
       "uploadAvatar",
       "sendMail",
+      "deleteAccount",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

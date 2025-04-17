@@ -17,6 +17,8 @@ import {
   UploadAvatarReturn,
   SendMailArgs,
   SendMailReturn,
+  DeleteAccountArgs,
+  DeleteAccountReturn,
 } from '@app/common/types/protos/auth';
 import { Observable } from 'rxjs';
 
@@ -71,5 +73,11 @@ export class AuthserviceController implements AuthServiceController {
 
   async sendMail(request: SendMailArgs): Promise<SendMailReturn> {
     return await this.authService.sendMail(request);
+  }
+
+  async deleteAccount(
+    request: DeleteAccountArgs,
+  ): Promise<DeleteAccountReturn> {
+    return await this.authService.deleteAccount(request);
   }
 }

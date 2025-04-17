@@ -11,6 +11,7 @@ service AuthService {
     rpc GetAllInfoAboutUser(GetAllInfoAboutUserArgs) returns (UserInfo) {}
     rpc UploadAvatar(UploadAvatarArgs) returns (UploadAvatarReturn) {}
     rpc SendMail(SendMailArgs) returns (SendMailReturn) {}
+    rpc DeleteAccount(DeleteAccountArgs) returns (DeleteAccountReturn) {}
 }
 
 message LoginArgs {
@@ -79,6 +80,14 @@ message SendMailArgs {
 }
 
 message SendMailReturn {
+    string result = 1;
+}
+
+message DeleteAccountArgs {
+    string refreshToken = 1;
+}
+
+message DeleteAccountReturn {
     string result = 1;
 }
 

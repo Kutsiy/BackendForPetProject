@@ -149,4 +149,8 @@ export class TokenService {
     }
     return this.jwtService.decode(refreshToken);
   }
+
+  async deleteUserToken(userId) {
+    await this.tokenModel.deleteOne({ userId });
+  }
 }

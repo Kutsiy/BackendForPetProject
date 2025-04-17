@@ -6,9 +6,11 @@ import {
   UserRole,
   UserRoleDocumentType,
 } from '@app/common';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import {
   AuthReturns,
+  DeleteAccountArgs,
+  DeleteAccountReturn,
   LoginArgs,
   SendMailArgs,
   SendMailReturn,
@@ -198,5 +200,16 @@ export class AuthService {
     } catch (e) {
       console.log(e);
     }
+  }
+
+  async deleteAccount(args: DeleteAccountArgs): Promise<DeleteAccountReturn> {
+    const { refreshToken } = args;
+    const { id }: Payload =
+      await this.tokenService.getUserByToken(refreshToken);
+    const userId = new Types.ObjectId(id);
+    await this.userModel.deleteOne({ _id: userId });
+    await this.userRoleModel.deleteMany({ userId });
+    await this.tokenService.deleteUserToken(userId);
+    return { result: 'Account has been deleted' };
   }
 }
