@@ -11,12 +11,20 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { protobufPackage as mailProtobufPackage } from '@app/common/types/protos/mail';
 import {
+  CommentPost,
+  CommentPostSchema,
+  PostName,
+  PostSchema,
   Role,
   RoleSchema,
   Token,
   TokenSchema,
+  UserRatePost,
+  UserRatePostSchema,
   UserRole,
   UserRoleSchema,
+  UserViewPost,
+  UserViewPostSchema,
 } from '@app/common';
 import { RoleService } from './role.service';
 import { Model } from 'mongoose';
@@ -30,12 +38,27 @@ import { Model } from 'mongoose';
       'mongodb+srv://kycujegor2020:vF1LewKKMDRE3h8L@user.mitxz.mongodb.net/?retryWrites=true&w=majority&appName=User',
       {},
     ),
+    MongooseModule.forRoot(
+      'mongodb+srv://kycujegor2020:V70y4HO1DNZvGxkC@posts.z6fvh.mongodb.net/?retryWrites=true&w=majority&appName=Posts',
+      {
+        connectionName: 'postConnection',
+      },
+    ),
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
       { name: Role.name, schema: RoleSchema },
       { name: Token.name, schema: TokenSchema },
       { name: UserRole.name, schema: UserRoleSchema },
     ]),
+    MongooseModule.forFeature(
+      [
+        { name: PostName.name, schema: PostSchema },
+        { name: UserRatePost.name, schema: UserRatePostSchema },
+        { name: UserViewPost.name, schema: UserViewPostSchema },
+        { name: CommentPost.name, schema: CommentPostSchema },
+      ],
+      'postConnection',
+    ),
     JwtModule,
     ClientsModule.register([
       {

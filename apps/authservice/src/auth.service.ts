@@ -1,10 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import {
+  CommentPost,
+  CommentPostPostDocumentType,
   User,
   UserDocumentType,
+  UserRatePost,
+  UserRatePostDocumentType,
   UserRole,
   UserRoleDocumentType,
+  UserViewPost,
+  UserViewPostDocumentType,
 } from '@app/common';
 import { Model, Types } from 'mongoose';
 import {
@@ -23,6 +29,7 @@ import { Payload, TokenService } from './token.service';
 import { MailService } from './mail/mail.service';
 import { RoleService } from './role.service';
 import { join } from 'path';
+import { Post, PostDocumentType } from '@app/common/schemas/post.schema';
 const fs = require('fs');
 
 @Injectable()
@@ -34,6 +41,18 @@ export class AuthService {
     private readonly tokenService: TokenService,
     private readonly mailService: MailService,
     private readonly roleService: RoleService,
+    @InjectModel(UserRatePost.name, 'postConnection')
+    private readonly postRateModel: Model<UserRatePostDocumentType>,
+    @InjectModel(UserViewPost.name, 'postConnection')
+    private readonly postViewModel: Model<UserViewPostDocumentType>,
+    @InjectModel(CommentPost.name, 'postConnection')
+    private readonly commentModel: Model<CommentPostPostDocumentType>,
+    @InjectModel(UserViewPost.name, 'postConnection')
+    private readonly viewModel: Model<UserViewPostDocumentType>,
+    @InjectModel(UserRatePost.name, 'postConnection')
+    private readonly rateModel: Model<UserRatePostDocumentType>,
+    @InjectModel(Post.name, 'postConnection')
+    private readonly postModel: Model<PostDocumentType>,
   ) {}
   async login(args: LoginArgs): Promise<AuthReturns> {
     const coincidence = await this.userModel
@@ -204,12 +223,17 @@ export class AuthService {
 
   async deleteAccount(args: DeleteAccountArgs): Promise<DeleteAccountReturn> {
     const { refreshToken } = args;
-    const { id }: Payload =
-      await this.tokenService.getUserByToken(refreshToken);
-    const userId = new Types.ObjectId(id);
-    await this.userModel.deleteOne({ _id: userId });
-    await this.userRoleModel.deleteMany({ userId });
-    await this.tokenService.deleteUserToken(userId);
+    try {
+      const { id }: Payload =
+        await this.tokenService.getUserByToken(refreshToken);
+      const userId = new Types.ObjectId(id);
+      await this.userModel.deleteOne({ _id: userId });
+      await this.userRoleModel.deleteMany({ userId });
+      await this.postModel.deleteMany({ authorId: userId.toString() });
+      await this.tokenService.deleteUserToken(userId);
+    } catch (e) {
+      new RpcException('Error with delete');
+    }
     return { result: 'Account has been deleted' };
   }
 }

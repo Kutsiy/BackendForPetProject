@@ -183,13 +183,14 @@ export class PostService {
 
   async createPost(request: CreatePostArgs): Promise<Empty> {
     const { id, email }: Payload = this.jwtService.decode(request.refreshToken);
+    const authorId = new Types.ObjectId(id);
     const result = await this.userModel.findOne({ email: email }).exec();
     await this.postModel.create({
       imageUrl: request.imageUrl,
       title: request.title,
       body: request.body,
       description: request.description,
-      authorId: id,
+      authorId: authorId,
       authorName: result.name,
       category: request.category,
     });
@@ -373,7 +374,8 @@ export class PostService {
   async getPostByUser(args: GetPostByUserArgs): Promise<GetPostByUserReturn> {
     const { refreshToken } = args;
     const { id: userId }: Payload = this.jwtService.decode(refreshToken);
-    const result = await this.postModel.find({ authorId: userId }).exec();
+    const userObjectId = new Types.ObjectId(userId);
+    const result = await this.postModel.find({ authorId: userObjectId }).exec();
     return { posts: PostMapper.toDtoArray(result) };
   }
 
