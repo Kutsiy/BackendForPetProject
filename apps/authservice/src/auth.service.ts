@@ -47,10 +47,6 @@ export class AuthService {
     private readonly postViewModel: Model<UserViewPostDocumentType>,
     @InjectModel(CommentPost.name, 'postConnection')
     private readonly commentModel: Model<CommentPostPostDocumentType>,
-    @InjectModel(UserViewPost.name, 'postConnection')
-    private readonly viewModel: Model<UserViewPostDocumentType>,
-    @InjectModel(UserRatePost.name, 'postConnection')
-    private readonly rateModel: Model<UserRatePostDocumentType>,
     @InjectModel(Post.name, 'postConnection')
     private readonly postModel: Model<PostDocumentType>,
   ) {}
@@ -227,12 +223,21 @@ export class AuthService {
       const { id }: Payload =
         await this.tokenService.getUserByToken(refreshToken);
       const userId = new Types.ObjectId(id);
-      await this.userModel.deleteOne({ _id: userId });
-      await this.userRoleModel.deleteMany({ userId });
-      await this.postModel.deleteMany({ authorId: userId.toString() });
-      await this.tokenService.deleteUserToken(userId);
+
+      const { deletedCount } = await this.userModel.deleteOne({ _id: userId });
+      if (!deletedCount) {
+        throw new RpcException('User not found');
+      }
+      await Promise.all([
+        this.userRoleModel.deleteMany({ userId }),
+        this.postModel.deleteMany({ authorId: userId }),
+        this.commentModel.deleteMany({ authorId: userId }),
+        this.postRateModel.deleteMany({ userId }),
+        this.postViewModel.deleteMany({ userId }),
+        this.tokenService.deleteUserToken(userId),
+      ]);
     } catch (e) {
-      new RpcException('Error with delete');
+      throw new RpcException(e.message || 'Error with delete');
     }
     return { result: 'Account has been deleted' };
   }

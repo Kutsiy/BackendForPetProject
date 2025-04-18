@@ -1,6 +1,7 @@
 import {
   AUTH_SERVICE_NAME,
   AuthServiceClient,
+  DeleteAccountArgs,
   GetAllInfoAboutUserArgs,
   GetUserArgs,
   LoginArgs,
@@ -47,5 +48,9 @@ export class AuthService implements OnModuleInit {
 
   async sendMail(args: SendMailArgs) {
     return await this.authService.sendMail(args);
+  }
+
+  async deleteAccount(args: DeleteAccountArgs) {
+    return await this.authService.deleteAccount(args);
   }
 }

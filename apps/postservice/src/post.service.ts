@@ -60,10 +60,6 @@ export class PostService {
     private readonly postViewModel: Model<UserViewPostDocumentType>,
     @InjectModel(CommentPost.name, 'postConnection')
     private readonly commentModel: Model<CommentPostPostDocumentType>,
-    @InjectModel(UserViewPost.name, 'postConnection')
-    private readonly viewModel: Model<UserViewPostDocumentType>,
-    @InjectModel(UserRatePost.name, 'postConnection')
-    private readonly rateModel: Model<UserRatePostDocumentType>,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
   ) {}
@@ -404,8 +400,8 @@ export class PostService {
       }
     }
     await this.postModel.deleteOne({ _id: postId, authorId: userId }).exec();
-    await this.viewModel.deleteMany({ postId: postId }).exec();
-    await this.rateModel.deleteMany({ postId: postId }).exec();
+    await this.postViewModel.deleteMany({ postId: postId }).exec();
+    await this.postRateModel.deleteMany({ postId: postId }).exec();
     await this.commentModel.deleteMany({ postId: postId }).exec();
     const result = await this.postModel.find({ authorId: userId }).exec();
     if (!result) {
@@ -434,7 +430,7 @@ export class PostService {
     const { refreshToken } = args;
     const { id: userId }: Payload = this.jwtService.decode(refreshToken);
     const userObjectId = new Types.ObjectId(userId);
-    const result = await this.viewModel
+    const result = await this.postViewModel
       .find({ userId: userObjectId })
       .populate('postId')
       .exec();
@@ -447,11 +443,11 @@ export class PostService {
     const { refreshToken } = args;
     const { id: userId }: Payload = this.jwtService.decode(refreshToken);
     const userObjectId = new Types.ObjectId(userId);
-    const resultLike = await this.rateModel
+    const resultLike = await this.postRateModel
       .find({ userId: userId, rating: 'like' })
       .populate('postId')
       .exec();
-    const resultDislike = await this.rateModel
+    const resultDislike = await this.postRateModel
       .find({ userId: userId, rating: 'dislike' })
       .populate('postId')
       .exec();
