@@ -103,3 +103,9 @@ export class SendMailResult {
   @Field(() => String)
   result: string;
 }
+
+@ObjectType()
+export class DeleteAccountReturn {
+  @Field(() => String)
+  result: string;
+}

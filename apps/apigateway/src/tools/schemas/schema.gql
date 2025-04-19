@@ -126,6 +126,10 @@ type SendMailResult {
   result: String!
 }
 
+type DeleteAccountReturn {
+  result: String!
+}
+
 type Query {
   Posts(searchString: String, page: Int! = 1, take: Int! = 10, category: String, sortFilter: String): PaginatedPosts!
   Post(id: String): GetPostReturns!
@@ -136,6 +140,7 @@ type Query {
   SignUp(name: String!, email: String!, password: String!): AuthReturn!
   GetAllInfoAboutUser: UserInfo!
   SendMail: SendMailResult!
+  DeleteAccount: DeleteAccountReturn!
 }
 
 type Mutation {

@@ -1,6 +1,7 @@
 import { Resolver, Query, Args, Context, Mutation } from '@nestjs/graphql';
 import {
   AuthReturn,
+  DeleteAccountReturn,
   LoginArgs,
   RefreshReturn,
   SendMailResult,
@@ -149,5 +150,17 @@ export class AuthResolver {
     });
     const mailResult = await result.toPromise();
     return mailResult;
+  }
+
+  @Query(() => DeleteAccountReturn)
+  @UseGuards(AuthGuard)
+  async DeleteAccount(@Context() context: { req: Request; res: Response }) {
+    const { req, res } = context;
+    const result = await this.authService.deleteAccount({
+      refreshToken: req.cookies?.refresh_token,
+    });
+    res.clearCookie('access_token');
+    res.clearCookie('refresh_token');
+    return await result.toPromise();
   }
 }

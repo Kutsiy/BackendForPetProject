@@ -47,6 +47,7 @@ export class MailserviceService {
     if (!user) throw new RpcException('User not found');
     if (user.isActivated) throw new RpcException('Account already activated');
     user.isActivated = true;
+    user.linkForActivate = '';
     user.save();
     return { link: 'http://localhost:4200' };
   }
