@@ -225,10 +225,26 @@ export class AuthService {
         await this.tokenService.getUserByToken(refreshToken);
       const userId = new Types.ObjectId(id);
 
-      const { deletedCount } = await this.userModel.deleteOne({ _id: userId });
-      if (!deletedCount) {
+      const user = await this.userModel.findOne({ _id: userId }).exec();
+      if (!user) {
         throw new RpcException('User not found');
       }
+
+      if (user.avatarLink !== '' && user.avatarLink) {
+        const avatarPath = join(process.cwd(), user.avatarLink);
+        try {
+          await fs.access(avatarPath, () => {});
+          await fs.unlink(avatarPath, () => {});
+        } catch (err) {
+          console.error('Error', err);
+        }
+      }
+
+      const { deletedCount } = await this.userModel.deleteOne({ _id: userId });
+      if (!deletedCount) {
+        throw new RpcException('User not deleted');
+      }
+
       await Promise.all([
         this.userRoleModel.deleteMany({ userId }),
         this.postModel.deleteMany({ authorId: userId }),
