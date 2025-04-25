@@ -245,6 +245,20 @@ export class AuthService {
         throw new RpcException('User not deleted');
       }
 
+      const userPosts = await this.postModel.find({ authorId: userId }).exec();
+
+      if (userPosts) {
+        userPosts.forEach(async (post) => {
+          const imagePath = join(process.cwd(), post.imageUrl);
+          try {
+            await fs.access(imagePath, () => {});
+            await fs.unlink(imagePath, () => {});
+          } catch (err) {
+            console.error('Error', err);
+          }
+        });
+      }
+
       await Promise.all([
         this.userRoleModel.deleteMany({ userId }),
         this.postModel.deleteMany({ authorId: userId }),
