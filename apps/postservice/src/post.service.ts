@@ -381,10 +381,11 @@ export class PostService {
     const { id, refreshToken } = args;
     const { id: userId }: Payload = this.jwtService.decode(refreshToken);
     const postId = new Types.ObjectId(id);
+    const userObjectId = new Types.ObjectId(userId);
     const post = await this.postModel
       .findOne({
         _id: postId,
-        authorId: userId,
+        authorId: userObjectId,
       })
       .exec();
     if (!post) {
@@ -399,7 +400,9 @@ export class PostService {
         console.error('Error', err);
       }
     }
-    await this.postModel.deleteOne({ _id: postId, authorId: userId }).exec();
+    await this.postModel
+      .deleteOne({ _id: postId, authorId: userObjectId })
+      .exec();
     await this.postViewModel.deleteMany({ postId: postId }).exec();
     await this.postRateModel.deleteMany({ postId: postId }).exec();
     await this.commentModel.deleteMany({ postId: postId }).exec();
