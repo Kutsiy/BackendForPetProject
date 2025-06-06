@@ -149,9 +149,7 @@ export class PostService {
   }
 
   async getPost(id: string, refreshToken: string) {
-    const { id: userId }: Payload = this.jwtService.decode(refreshToken);
     const post = await this.postModel.findById(id).exec();
-
     const comments = await this.commentModel
       .find({ postId: post._id })
       .populate({
@@ -160,21 +158,33 @@ export class PostService {
         model: this.userModel,
       })
       .exec();
+    if (refreshToken) {
+      const { id: userId }: Payload = this.jwtService.decode(refreshToken);
 
-    const hasLiked = post.likedBy.some(
-      (like) => like.toString() === userId.toString(),
-    );
-    const hasDisliked = post.dislikedBy.some(
-      (dislike) => dislike.toString() === userId.toString(),
-    );
-    return {
-      post,
-      comments,
-      rate: {
-        userSetLike: hasLiked,
-        userSetDislike: hasDisliked,
-      },
-    };
+      const hasLiked = post.likedBy.some(
+        (like) => like.toString() === userId.toString(),
+      );
+      const hasDisliked = post.dislikedBy.some(
+        (dislike) => dislike.toString() === userId.toString(),
+      );
+      return {
+        post,
+        comments,
+        rate: {
+          userSetLike: hasLiked,
+          userSetDislike: hasDisliked,
+        },
+      };
+    } else {
+      return {
+        post,
+        comments,
+        rate: {
+          userSetLike: false,
+          userSetDislike: false,
+        },
+      };
+    }
   }
 
   async createPost(request: CreatePostArgs): Promise<Empty> {
