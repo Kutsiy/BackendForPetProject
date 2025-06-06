@@ -26,12 +26,10 @@ import { join } from 'path';
 import { createWriteStream } from 'fs';
 
 @Resolver(() => Post)
-@UseGuards(AuthGuard, RolesGuard)
 export class PostResolver {
   constructor(@Inject(PostService) private appService: PostService) {}
 
   @Query(() => PostsModel)
-  @RolesSetter(['USER'])
   async Posts(@Args() paginationArgs: PaginationArgs) {
     const { searchString, page, take, category, sortFilter } = paginationArgs;
     let postsSearchString = searchString ?? '';
@@ -55,6 +53,7 @@ export class PostResolver {
   }
 
   @Mutation(() => AddPostReturn)
+  @UseGuards(AuthGuard, RolesGuard)
   async AddPost(
     @Args({ name: 'file', type: () => GraphQLUpload })
     { createReadStream, filename }: FileUpload,
@@ -81,6 +80,7 @@ export class PostResolver {
   }
 
   @Mutation(() => AddViewReturns)
+  @UseGuards(AuthGuard, RolesGuard)
   async AddView(
     @Args('id', { type: () => String }) id: string,
     @Context() context: { req: Request },
@@ -92,6 +92,7 @@ export class PostResolver {
   }
 
   @Mutation(() => AddRateReturns)
+  @UseGuards(AuthGuard, RolesGuard)
   async AddLike(
     @Args('id', { type: () => String }) id: string,
     @Context() context: { req: Request },
@@ -103,6 +104,7 @@ export class PostResolver {
   }
 
   @Mutation(() => AddRateReturns)
+  @UseGuards(AuthGuard, RolesGuard)
   async AddDislike(
     @Args('id', { type: () => String }) id: string,
     @Context() context: { req: Request },
@@ -114,6 +116,7 @@ export class PostResolver {
   }
 
   @Mutation(() => AddCommentReturn)
+  @UseGuards(AuthGuard, RolesGuard)
   async AddComment(
     @Args() commentArgs: AddCommentArgs,
     @Context() context: { req: Request },
@@ -128,6 +131,7 @@ export class PostResolver {
   }
 
   @Query(() => GetPostByUserReturns)
+  @UseGuards(AuthGuard, RolesGuard)
   async PostByUser(@Context() context: { req: Request }) {
     const { req } = context;
     const refreshToken = req.cookies?.refresh_token;
@@ -136,6 +140,7 @@ export class PostResolver {
   }
 
   @Mutation(() => GetPostByUserReturns)
+  @UseGuards(AuthGuard, RolesGuard)
   async FindPostByUserAndDelete(
     @Args('id', { type: () => String }) id: string,
     @Context() context: { req: Request },
@@ -150,6 +155,7 @@ export class PostResolver {
   }
 
   @Mutation(() => FindCommentByUserAndDelete)
+  @UseGuards(AuthGuard, RolesGuard)
   async FindCommentByUserAndDelete(
     @Args('id', { type: () => String }) id: string,
     @Args('commentId', { type: () => String }) commentId: string,
